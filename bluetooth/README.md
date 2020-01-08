@@ -1,22 +1,16 @@
-A library for Dart developers.
+# bluetooth
 
-Created from templates made available by Stagehand under a BSD-style
-[license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
+Bluetooth common
 
-## Usage
+# Setup
 
-A simple usage example:
+```yaml
+dependencies:
 
-```dart
-import 'package:bluetooth/bluetooth.dart';
-
-main() {
-  var awesome = new Awesome();
-}
+  tekartik_bluetooth:
+    git:
+      url: git://git@github.com/tekartik/bluetooth.dart
+      path: bluetooth
+      ref: dart2
+    version: '>=0.2.1'
 ```
-
-## Features and bugs
-
-Please file feature requests and bugs at the [issue tracker][tracker].
-
-[tracker]: http://example.com/issues/replaceme

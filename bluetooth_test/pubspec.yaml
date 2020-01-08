@@ -15,7 +15,12 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   process_run:
-
+  tekartik_bluetooth:
+    git:
+      url: git://github.com/tekartik/bluetooth.dart
+      path: bluetooth
+      ref: dart2
+    version: '>=0.2.1'
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
