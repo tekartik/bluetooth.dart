@@ -25,7 +25,7 @@ dependencies:
     version: '>=0.9.7+1'
   tekartik_bluetooth_flutter:
     git:
-      url: ssh://git@gitlab.com/tekartik/bluetooth.dart
+      url: git://github.com/tekartik/bluetooth.dart
       path: bluetooth_flutter
       ref: dart2
     version: '>=0.2.1'
