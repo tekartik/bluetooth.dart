@@ -1,7 +1,7 @@
 // ignore_for_file: implementation_imports
-import 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart';
-import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
-import 'package:tekartik_bluetooth_flutter/src/mixin.dart';
+import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
+import 'package:tekartik_bluetooth_flutter_blue/bluetooth_manager.dart';
+import 'package:tekartik_bluetooth_flutter_blue/src/mixin.dart';
 import 'package:tekartik_bluetooth_server/bluetooth.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_web_socket/web_socket.dart';

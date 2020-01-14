@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
+import 'package:tekartik_bluetooth_flutter_blue/bluetooth_manager.dart';
 import 'package:tekartik_bluetooth_server/src/bluetooth_server.dart';
 import 'package:tekartik_bluetooth_server/src/service.dart';
 import 'package:tekartik_web_socket/web_socket.dart';

@@ -32,8 +32,8 @@ dev_dependencies:
     sdk: flutter
   process_run: '>=0.10.3'
   test:
-  tekartik_bluetooth_flutter:
-    path: ../bluetooth_flutter
+  tekartik_bluetooth_flutter_blue:
+    path: ../bluetooth_flutter_blue
 
   tekartik_test_menu_flutter:
     git:

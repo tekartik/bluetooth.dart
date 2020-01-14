@@ -3,8 +3,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tekartik_bluetooth/ble.dart';
-import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
-import 'package:tekartik_bluetooth_flutter/src/constant.dart'; // ignore: implementation_imports
+import 'package:tekartik_bluetooth_flutter_blue/bluetooth_manager.dart';
+import 'package:tekartik_bluetooth_flutter_blue/src/constant.dart'; // ignore: implementation_imports
 import 'package:tekartik_bluetooth_test_app/utils/app_uuid_utils.dart';
 import 'package:tekartik_common_utils/hex_utils.dart';
 

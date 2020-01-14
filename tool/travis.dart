@@ -17,6 +17,7 @@ dart tool/travis.dart
 
   // Flutter package
   for (var dir in [
+    'bluetooth_flutter_blue',
     'bluetooth_flutter',
     'bluetooth_server',
     'bluetooth_server_app',

@@ -1,4 +1,4 @@
-import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
+import 'package:tekartik_bluetooth_flutter_blue/bluetooth_manager.dart';
 import 'package:tekartik_bluetooth_server/bluetooth.dart';
 import 'package:test/test.dart';
 

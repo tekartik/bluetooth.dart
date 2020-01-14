@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
+import 'package:tekartik_bluetooth_flutter_blue/bluetooth_manager.dart';
 import 'package:tekartik_bluetooth_test_app/constant.dart';
 import 'package:tekartik_bluetooth_test_app/import/common_import.dart';
 
