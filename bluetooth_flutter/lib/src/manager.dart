@@ -78,9 +78,6 @@ class BluetoothFlutterManagerImpl
   final bool supportsEnable = Platform.isAndroid;
 
   @override
-  Future<BluetoothState> get state => BluetoothFlutter.bluetoothState;
-
-  @override
   Future<T> invokeMethod<T>(String method, [arguments]) async {
     /*
     await channel.invokeMethod(method, arguments);

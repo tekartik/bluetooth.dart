@@ -7,7 +7,6 @@ import 'package:tekartik_common_utils/bool_utils.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_common_utils/hex_utils.dart';
 
-export 'package:flutter_blue/flutter_blue.dart';
 export 'package:tekartik_bluetooth/bluetooth.dart';
 export 'package:tekartik_bluetooth/bluetooth_state_service.dart';
 

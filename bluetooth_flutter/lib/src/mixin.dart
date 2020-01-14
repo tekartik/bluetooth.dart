@@ -1,5 +1,3 @@
-import 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart'
-    show BluetoothState;
 import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
 import 'package:tekartik_bluetooth_flutter/src/bluetooth_device.dart';
 import 'package:tekartik_bluetooth_flutter/src/client/connection.dart';
@@ -22,9 +20,6 @@ class MixinTest with BluetoothFlutterManagerMixin {
 
   @override
   bool get isIOS => null;
-
-  @override
-  Future<BluetoothState> get state => null;
 }
 
 mixin BluetoothFlutterManagerMixin implements BluetoothFlutterManager {

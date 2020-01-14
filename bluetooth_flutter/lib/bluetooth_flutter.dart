@@ -1,15 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_blue/flutter_blue.dart' as blue;
-import 'package:flutter_blue/flutter_blue.dart' hide ScanResult;
 import 'package:synchronized/synchronized.dart';
-import 'package:tekartik_bluetooth_flutter/bluetooth_flutter_peripheral.dart'
-    hide ScanResult;
+import 'package:tekartik_bluetooth_flutter/bluetooth_flutter_peripheral.dart';
+import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
 import 'package:tekartik_bluetooth_flutter/src/plugin.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
-export 'package:flutter_blue/flutter_blue.dart';
 export 'package:tekartik_bluetooth/bluetooth.dart';
 export 'package:tekartik_bluetooth/bluetooth_state_service.dart';
 export 'package:tekartik_bluetooth_flutter/src/constant.dart'
@@ -35,9 +32,11 @@ class BluetoothFlutter {
   }
 
   static Future<bool> get _isSupportedReady async {
-    return _isSupported ??= await blue.FlutterBlue.instance.isAvailable;
+    return _isSupported ??=
+        (await bluetoothManager.getInfo()).hasBluetoothBle ?? false;
   }
 
+  /*
   static Future<blue.BluetoothState> get bluetoothState async {
     _isSupported ??= await _isSupportedReady;
     if (_isSupported) {
@@ -46,6 +45,7 @@ class BluetoothFlutter {
       return BluetoothState.unavailable;
     }
   }
+   */
 
   static final _enableLock = Lock();
 

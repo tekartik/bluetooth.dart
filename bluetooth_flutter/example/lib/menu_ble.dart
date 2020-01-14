@@ -4,8 +4,7 @@ import 'dart:typed_data';
 import 'package:tekartik_bluetooth/uuid.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart'
     show BluetoothFlutter;
-import 'package:tekartik_bluetooth_flutter/bluetooth_flutter_peripheral.dart'
-    hide BluetoothDevice;
+import 'package:tekartik_bluetooth_flutter/bluetooth_flutter_peripheral.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
 import 'package:tekartik_bluetooth_flutter_example/ble_utils.dart';
 import 'package:tekartik_bluetooth_flutter_example/constant.dart';
