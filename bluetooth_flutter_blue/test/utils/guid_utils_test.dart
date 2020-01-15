@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter_peripheral.dart';
+import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
 import 'package:tekartik_bluetooth_flutter_blue/utils/guid_utils.dart';
 
 void main() {

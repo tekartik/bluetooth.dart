@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tekartik_bluetooth/ble.dart';
-import 'package:tekartik_bluetooth_flutter_blue/bluetooth_manager.dart';
+import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
 import 'package:tekartik_bluetooth_test_app/page/ble_characteristic_page.dart';
 import 'package:tekartik_bluetooth_test_app/utils/app_uuid_utils.dart';
 

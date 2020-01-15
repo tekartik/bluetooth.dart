@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart';
 import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
-import 'package:tekartik_bluetooth_flutter_blue/bluetooth_manager.dart';
 
 import 'menu_main.dart' as menu_main;
 
@@ -17,7 +17,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   BluetoothState _bluetoothState;
   DateTime _statusDate;
-  final _bluetoothManager = bluetoothManager;
+
+  // final _bluetoothManager = bluetoothManager;
 
   @override
   void initState() {
@@ -53,7 +54,7 @@ class _MyAppState extends State<MyApp> {
 
   Future getStatus() async {
     var now = DateTime.now();
-    var bluetoothState = await _bluetoothManager.state;
+    var bluetoothState = await BluetoothFlutterBlue.bluetoothState;
     print('$now $bluetoothState');
 
     _setVars() {

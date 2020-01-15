@@ -41,6 +41,8 @@ dependency_overrides:
     path: ../bluetooth
   tekartik_bluetooth_flutter_blue:
     path: ../bluetooth_flutter_blue
+  tekartik_bluetooth_flutter:
+    path: ../bluetooth_flutter
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

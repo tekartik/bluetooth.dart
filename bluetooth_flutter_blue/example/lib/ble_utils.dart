@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:device_info/device_info.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
-import 'package:tekartik_bluetooth_flutter_blue/bluetooth_manager.dart';
+import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
 
 BluetoothStateService _bluetoothStateService;
 final _lock = Lock();

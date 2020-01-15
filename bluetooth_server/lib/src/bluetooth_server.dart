@@ -3,7 +3,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:json_rpc_2/json_rpc_2.dart' as json_rpc;
-import 'package:tekartik_bluetooth_flutter_blue/src/manager.dart';
+import 'package:tekartik_bluetooth_flutter/src/manager.dart';
 import 'package:tekartik_bluetooth_server/bluetooth_context.dart';
 import 'package:tekartik_bluetooth_server/src/constant.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
