@@ -8,10 +8,10 @@ import 'package:tekartik_web_socket/web_socket.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  group("bluetooth_impl", () {
-    const MethodChannel channel = MethodChannel('com.tekartik.bluetooth');
+  group('bluetooth_impl', () {
+    const channel = MethodChannel('com.tekartik.bluetooth');
 
-    final List<MethodCall> log = <MethodCall>[];
+    final log = <MethodCall>[];
     String response;
 
     channel.setMockMethodCallHandler((MethodCall methodCall) async {
@@ -45,13 +45,13 @@ void main() {
     });
 
     /*
-    test("getDatabasesPath", () async {
+    test('getDatabasesPath', () async {
       response = 'path';
       var databasesPath = await databaseFactory.getDatabasesPath();
       expect(databasesPath, 'path');
     });
 
-    test("deleteDatabase", () async {
+    test('deleteDatabase', () async {
       await databaseFactory.deleteDatabase('dummy');
     });
 

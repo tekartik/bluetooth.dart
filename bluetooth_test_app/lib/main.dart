@@ -46,8 +46,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -82,12 +80,8 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
+            const Text(
+              'Tap to view devices',
             ),
           ],
         ),
@@ -98,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
             var deviceId = await Navigator.of(context)
                 .push<String>(MaterialPageRoute(builder: (_) => ScanPage()));
             if (deviceId != null) {
-              Navigator.of(context).push<String>(MaterialPageRoute(
+              await Navigator.of(context).push<String>(MaterialPageRoute(
                   builder: (_) => DevicePage(deviceId: deviceId)));
             }
           }();

@@ -11,7 +11,7 @@ const bluetoothServerUrlEnvKey = 'TEKARTIK_BLUETOOTH_SERVER_URL';
 const bluetoothServerPortEnvKey = 'TEKARTIK_BLUETOOTH_SERVER_PORT';
 
 int parseBluetoothServerUrlPort(String url, {int defaultValue}) {
-  int port = parseInt(url.split('\:').last);
+  var port = parseInt(url.split('\:').last);
   return port ?? defaultValue;
 }
 
@@ -25,9 +25,8 @@ Future<BluetoothServerFlutterService>
       parseInt(const String.fromEnvironment(bluetoothServerPortEnvKey));
 
   var url = envUrl;
-  if (url == null) {
-    url = getBluetoothServerUrl(port: envPort);
-  }
+  url ??= getBluetoothServerUrl(port: envPort);
+
   try {
     service = await BluetoothServerFlutterService.create(url);
   } catch (e) {
@@ -72,7 +71,7 @@ class BluetoothServerContext implements BluetoothContext {
       client = await BluetoothServerClient.connect(url,
           webSocketChannelClientFactory: webSocketChannelClientFactory);
       if (client != null) {
-        this._client = client;
+        _client = client;
       }
       return client;
     } catch (e) {

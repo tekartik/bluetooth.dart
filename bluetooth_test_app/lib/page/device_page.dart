@@ -64,11 +64,11 @@ class _DevicePageState extends State<DevicePage> {
             },
             itemBuilder: (BuildContext context) {
               return [
-                PopupMenuItem<int>(
+                const PopupMenuItem<int>(
                   value: 1,
                   child: Text('Disconnect'),
                 ),
-                PopupMenuItem<int>(
+                const PopupMenuItem<int>(
                   value: 2,
                   child: Text('Reconnect'),
                 )
@@ -104,9 +104,9 @@ class _DevicePageState extends State<DevicePage> {
                       stateText = 'Disconnected';
                       break;
                   }
-                  bool discoveringServices =
+                  var discoveringServices =
                       snapshot?.data?.discoveringServices ?? false;
-                  var subtitle;
+                  String subtitle;
                   if (discoveringServices) {
                     subtitle = 'Discovering services...';
                   }
@@ -126,7 +126,7 @@ class _DevicePageState extends State<DevicePage> {
                   return Column(
                       children: list
                           .map((service) => ListTile(
-                                title: Text('Service'),
+                                title: const Text('Service'),
                                 subtitle:
                                     Text(service.uuid.toString() ?? 'no uuid'),
                                 onTap: () {
@@ -162,7 +162,7 @@ class _DevicePageState extends State<DevicePage> {
 
     connection = await bluetoothManager.newConnection(widget.deviceId);
 
-    stateSubscription?.cancel();
+    unawaited(stateSubscription?.cancel());
     stateSubscription = connection.onConnectionState.listen((state) {
       // devPrint('got state: $state');
       connectionState

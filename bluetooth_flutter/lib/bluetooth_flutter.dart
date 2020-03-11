@@ -26,7 +26,7 @@ class BluetoothFlutter {
   static MethodChannel get _channel => bluetoothFlutterPlugin.methodChannel;
 
   static Future<String> get platformVersion async {
-    final String version =
+    final version =
         (await _channel.invokeMethod('getPlatformVersion')) as String;
     return version;
   }
@@ -52,7 +52,7 @@ class BluetoothFlutter {
   // Using a request code means explaining version
   static Future enableBluetooth({int requestCode}) async {
     _isSupported ??= await _isSupportedReady;
-    assert(_isSupported, "call bluetoothState first");
+    assert(_isSupported, 'call bluetoothState first');
     await _enableLock.synchronized(() async {
       await _channel.invokeMethod(
           'enableBluetooth', <String, dynamic>{'requestCode': requestCode});
@@ -67,7 +67,7 @@ class BluetoothFlutter {
 
   static Future startAdvertising({AdvertiseData advertiseData}) async {
     _isSupported ??= await _isSupportedReady;
-    assert(_isSupported, "call bluetoothState first");
+    assert(_isSupported, 'call bluetoothState first');
 
     await _channel.invokeMethod(
         'peripheralStartAdvertising', advertiseData?.toMap());
@@ -75,14 +75,14 @@ class BluetoothFlutter {
 
   static Future stopAdvertising() async {
     _isSupported ??= await _isSupportedReady;
-    assert(_isSupported, "call bluetoothState first");
+    assert(_isSupported, 'call bluetoothState first');
 
     await _channel.invokeMethod('stopAdvertising', null);
   }
 
   static Future requireBluetoothAdmin({int requestCode}) async {
     _isSupported ??= await _isSupportedReady;
-    assert(_isSupported, "call bluetoothState first");
+    assert(_isSupported, 'call bluetoothState first');
     await _enableLock.synchronized(() async {
       await _channel.invokeMethod(
           'enableBluetooth', <String, dynamic>{'requestCode': requestCode});
@@ -91,7 +91,7 @@ class BluetoothFlutter {
 
   static Future disableBluetooth() async {
     _isSupported ??= await _isSupportedReady;
-    assert(_isSupported, "call bluetoothStatus first");
+    assert(_isSupported, 'call bluetoothStatus first');
     await _enableLock.synchronized(() async {
       await _channel.invokeMethod('disableBluetooth');
     });
@@ -105,7 +105,7 @@ class BluetoothFlutter {
   static Future<BluetoothPeripheral> initPeripheral(
       {List<BluetoothGattService> services, String deviceName}) async {
     _isSupported ??= await _isSupportedReady;
-    assert(_isSupported, "call bluetoothStatus first");
+    assert(_isSupported, 'call bluetoothStatus first');
 
     var peripheral =
         BluetoothPeripheral(services: services, deviceName: deviceName);

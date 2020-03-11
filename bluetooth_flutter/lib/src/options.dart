@@ -13,7 +13,7 @@ class BluetoothOptions {
   int logLevel;
 
   Map<String, dynamic> toMap() {
-    final Map<String, dynamic> map = <String, dynamic>{};
+    final map = <String, dynamic>{};
     if (logLevel != null) {
       map[paramLogLevel] = logLevel;
     }

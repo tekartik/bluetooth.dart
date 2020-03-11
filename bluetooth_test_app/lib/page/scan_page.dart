@@ -25,7 +25,7 @@ class _ScanPageState extends State<ScanPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ble scan'),
+        title: const Text('Ble scan'),
       ),
       body: Builder(builder: (context) {
         if (!_inited) {
@@ -47,7 +47,7 @@ class _ScanPageState extends State<ScanPage> {
             builder: (context, snapshot) {
               if (scanSubscription == null) {
                 return ListView(children: <Widget>[
-                  ListTile(
+                  const ListTile(
                     title: Text('Tap scan for devices'),
                   )
                 ]);
@@ -55,7 +55,7 @@ class _ScanPageState extends State<ScanPage> {
               var result = snapshot?.data;
               var list = result?.list;
               if (list?.isEmpty ?? true) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               }
               return ListView.builder(
                   itemCount: list.length,
@@ -119,7 +119,8 @@ class _ScanPageState extends State<ScanPage> {
     var info = await bluetoothManager.getInfo();
     // devPrint('info: $info');
     if (!info.hasBluetoothBle) {
-      final snackBar = SnackBar(content: Text('Bluetooth BLE not supported'));
+      final snackBar =
+          const SnackBar(content: Text('Bluetooth BLE not supported'));
       Scaffold.of(context).showSnackBar(snackBar);
       return;
     } else if (!info.isBluetoothEnabled) {
@@ -130,8 +131,8 @@ class _ScanPageState extends State<ScanPage> {
       }
     }
     if (!info.isBluetoothEnabled) {
-      final snackBar =
-          SnackBar(content: Text('Please enable Bluetooth on your device'));
+      final snackBar = const SnackBar(
+          content: Text('Please enable Bluetooth on your device'));
       Scaffold.of(context).showSnackBar(snackBar);
       return;
     }
@@ -139,7 +140,7 @@ class _ScanPageState extends State<ScanPage> {
     if (bluetoothManager.isAndroid) {
       if (!await bluetoothManager.checkCoarseLocationPermission(
           androidRequestCode: androidCheckCoarseLocationPermission)) {
-        final snackBar = SnackBar(
+        final snackBar = const SnackBar(
             content: Text(
                 'Please enable location services to scan for nearby devices'));
         Scaffold.of(context).showSnackBar(snackBar);

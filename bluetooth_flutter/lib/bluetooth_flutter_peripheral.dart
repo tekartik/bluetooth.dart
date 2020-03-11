@@ -217,7 +217,7 @@ class BluetoothPeripheral {
     @required Uuid128 serviceUuid,
     @required Uuid128 characteristicUuid,
   }) async {
-    Uint8List bytes = (await bluetoothFlutterPlugin.methodChannel
+    var bytes = (await bluetoothFlutterPlugin.methodChannel
         .invokeMethod('peripheralGetCharacteristicValue', {
       'service': serviceUuid.toString(),
       'characteristic': characteristicUuid.toString(),

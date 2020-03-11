@@ -82,7 +82,7 @@ class BluetoothFlutterManagerImpl
     /*
     await channel.invokeMethod(method, arguments);
      */
-    final T result = await channel.invokeMethod(method, arguments) as T;
+    final result = await channel.invokeMethod(method, arguments) as T;
     return result;
   }
 

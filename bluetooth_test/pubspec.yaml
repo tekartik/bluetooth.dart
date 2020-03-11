@@ -21,6 +21,10 @@ dev_dependencies:
       path: bluetooth
       ref: dart2
     version: '>=0.2.1'
+
+dependency_overrides:
+  pedantic: '>=1.9.0'
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
