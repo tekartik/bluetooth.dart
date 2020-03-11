@@ -17,7 +17,7 @@ class AppBleCharacteristic {
 }
 
 class _ValueState {
-  Exception exception;
+  dynamic exception;
   Uint8List value;
 }
 
@@ -40,11 +40,10 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage> {
     var descriptors = widget?.appBleCharacteristic?.characteristic?.descriptors;
     var characteristic = widget?.appBleCharacteristic?.characteristic;
 
-    bool canRead =
-        ((characteristic?.properties ?? 0) & blePropertyRead) != null;
+    var canRead = ((characteristic?.properties ?? 0) & blePropertyRead) != null;
 
     var propertySb = StringBuffer();
-    _addPropertyText(String text, bool test) {
+    void _addPropertyText(String text, bool test) {
       if (test ?? false) {
         if (propertySb.isNotEmpty) {
           propertySb.write(', ');
@@ -57,14 +56,14 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('Characteristic'),
+          title: const Text('Characteristic'),
         ),
         body: ListView(children: <Widget>[
           ListTile(
-              title: Text('Characteristic'),
+              title: const Text('Characteristic'),
               subtitle: Text(uuidText(characteristic?.uuid))),
           ListTile(
-              title: Text('Properties'),
+              title: const Text('Properties'),
               subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -76,7 +75,7 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage> {
           if (descriptors?.isNotEmpty ?? false)
             ...descriptors?.map((descriptor) {
               return ListTile(
-                  title: Text('Descriptor'),
+                  title: const Text('Descriptor'),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -93,7 +92,7 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage> {
                   var state = snapshot.data;
                   return ListTile(
                       leading: RaisedButton(
-                        child: Text('READ'),
+                        child: const Text('READ'),
                         onPressed: () {
                           () async {
                             try {

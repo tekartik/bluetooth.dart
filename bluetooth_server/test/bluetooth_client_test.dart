@@ -12,7 +12,7 @@ Future main() async {
   group('client', () {
     test('init', () async {
       // var state =
-      await service.state;
+      // await service.state;
 
       // await sqfliteServer.close();
     });

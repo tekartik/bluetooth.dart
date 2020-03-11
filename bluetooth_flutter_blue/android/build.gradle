@@ -1,0 +1,51 @@
+group 'com.tekartik.bluetooth.flutter'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.4.0'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+allprojects {
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        }
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        // 18 to have Jelly Bean MR2 for BluetoothManager
+        // 19 for flutter_blue
+        minSdkVersion 19
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+
+}
+
+dependencies {
+    implementation 'androidx.annotation:annotation:1.0.0'
+    testImplementation 'junit:junit:4.12'
+    implementation 'androidx.core:core:1.1.0'
+}

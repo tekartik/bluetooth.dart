@@ -1,4 +1,3 @@
-import 'package:flutter_blue/flutter_blue.dart' show BluetoothState;
 import 'package:tekartik_bluetooth/bluetooth_state_service.dart';
 import 'package:tekartik_bluetooth_flutter/src/bluetooth_device.dart';
 import 'package:tekartik_bluetooth_flutter/src/client/connection.dart';
@@ -42,9 +41,6 @@ abstract class BluetoothInfo {
 }
 
 abstract class BluetoothFlutterManager implements BluetoothStateService {
-  // TODO deprecate
-  Future<BluetoothState> get state;
-
   bool get isIOS;
 
   bool get isAndroid;

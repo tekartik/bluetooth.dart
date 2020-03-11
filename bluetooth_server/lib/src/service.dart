@@ -1,5 +1,4 @@
 // ignore_for_file: implementation_imports
-import 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
 import 'package:tekartik_bluetooth_flutter/src/mixin.dart';
 import 'package:tekartik_bluetooth_server/bluetooth.dart';
@@ -31,10 +30,11 @@ class BluetoothServerFlutterService
   Future<T> invokeMethod<T>(String method, [dynamic arguments]) =>
       context.invoke<T>(method, arguments);
 
+  /*
   @override
   // TODO: implement state
   Future<BluetoothState> get state => null;
-
+  */
   @override
   bool get isAndroid => context.isAndroid;
 

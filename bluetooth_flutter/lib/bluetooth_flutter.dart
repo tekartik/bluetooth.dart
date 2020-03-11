@@ -1,15 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_blue/flutter_blue.dart' as blue;
-import 'package:flutter_blue/flutter_blue.dart' hide ScanResult;
 import 'package:synchronized/synchronized.dart';
-import 'package:tekartik_bluetooth_flutter/bluetooth_flutter_peripheral.dart'
-    hide ScanResult;
+import 'package:tekartik_bluetooth_flutter/bluetooth_flutter_peripheral.dart';
+import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
 import 'package:tekartik_bluetooth_flutter/src/plugin.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
-export 'package:flutter_blue/flutter_blue.dart';
 export 'package:tekartik_bluetooth/bluetooth.dart';
 export 'package:tekartik_bluetooth/bluetooth_state_service.dart';
 export 'package:tekartik_bluetooth_flutter/src/constant.dart'
@@ -29,15 +26,17 @@ class BluetoothFlutter {
   static MethodChannel get _channel => bluetoothFlutterPlugin.methodChannel;
 
   static Future<String> get platformVersion async {
-    final String version =
+    final version =
         (await _channel.invokeMethod('getPlatformVersion')) as String;
     return version;
   }
 
   static Future<bool> get _isSupportedReady async {
-    return _isSupported ??= await blue.FlutterBlue.instance.isAvailable;
+    return _isSupported ??=
+        (await bluetoothManager.getInfo()).hasBluetoothBle ?? false;
   }
 
+  /*
   static Future<blue.BluetoothState> get bluetoothState async {
     _isSupported ??= await _isSupportedReady;
     if (_isSupported) {
@@ -46,13 +45,14 @@ class BluetoothFlutter {
       return BluetoothState.unavailable;
     }
   }
+   */
 
   static final _enableLock = Lock();
 
   // Using a request code means explaining version
   static Future enableBluetooth({int requestCode}) async {
     _isSupported ??= await _isSupportedReady;
-    assert(_isSupported, "call bluetoothState first");
+    assert(_isSupported, 'call bluetoothState first');
     await _enableLock.synchronized(() async {
       await _channel.invokeMethod(
           'enableBluetooth', <String, dynamic>{'requestCode': requestCode});
@@ -67,7 +67,7 @@ class BluetoothFlutter {
 
   static Future startAdvertising({AdvertiseData advertiseData}) async {
     _isSupported ??= await _isSupportedReady;
-    assert(_isSupported, "call bluetoothState first");
+    assert(_isSupported, 'call bluetoothState first');
 
     await _channel.invokeMethod(
         'peripheralStartAdvertising', advertiseData?.toMap());
@@ -75,14 +75,14 @@ class BluetoothFlutter {
 
   static Future stopAdvertising() async {
     _isSupported ??= await _isSupportedReady;
-    assert(_isSupported, "call bluetoothState first");
+    assert(_isSupported, 'call bluetoothState first');
 
     await _channel.invokeMethod('stopAdvertising', null);
   }
 
   static Future requireBluetoothAdmin({int requestCode}) async {
     _isSupported ??= await _isSupportedReady;
-    assert(_isSupported, "call bluetoothState first");
+    assert(_isSupported, 'call bluetoothState first');
     await _enableLock.synchronized(() async {
       await _channel.invokeMethod(
           'enableBluetooth', <String, dynamic>{'requestCode': requestCode});
@@ -91,7 +91,7 @@ class BluetoothFlutter {
 
   static Future disableBluetooth() async {
     _isSupported ??= await _isSupportedReady;
-    assert(_isSupported, "call bluetoothStatus first");
+    assert(_isSupported, 'call bluetoothStatus first');
     await _enableLock.synchronized(() async {
       await _channel.invokeMethod('disableBluetooth');
     });
@@ -105,7 +105,7 @@ class BluetoothFlutter {
   static Future<BluetoothPeripheral> initPeripheral(
       {List<BluetoothGattService> services, String deviceName}) async {
     _isSupported ??= await _isSupportedReady;
-    assert(_isSupported, "call bluetoothStatus first");
+    assert(_isSupported, 'call bluetoothStatus first');
 
     var peripheral =
         BluetoothPeripheral(services: services, deviceName: deviceName);

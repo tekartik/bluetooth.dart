@@ -15,7 +15,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  BluetoothState _bluetoothState;
+  BluetoothInfo _bluetoothInfo;
   DateTime _statusDate;
   final _bluetoothManager = bluetoothManager;
 
@@ -53,12 +53,12 @@ class _MyAppState extends State<MyApp> {
 
   Future getStatus() async {
     var now = DateTime.now();
-    var bluetoothState = await _bluetoothManager.state;
+    var bluetoothState = await _bluetoothManager.getInfo();
     print('$now $bluetoothState');
 
     _setVars() {
       _statusDate = now;
-      _bluetoothState = bluetoothState;
+      _bluetoothInfo = bluetoothState;
     }
 
     if (!mounted) {
@@ -80,7 +80,7 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Center(
           child: Column(children: <Widget>[
-            Text('on: $_statusDate\nBluetooth status $_bluetoothState'),
+            Text('on: $_statusDate\nBluetooth status $_bluetoothInfo'),
             RaisedButton(
                 child: Text('enable'),
                 onPressed: () async {

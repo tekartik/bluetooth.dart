@@ -11,7 +11,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_blue: '>=0.6.0+1'
   uuid:
   synchronized:
   tekartik_bluetooth:
@@ -22,6 +21,7 @@ dependencies:
     version: '>=0.2.1'
 
 dependency_overrides:
+  pedantic: '>=1.9.0'
   tekartik_bluetooth:
     path: ../bluetooth
   # flutter_blue:

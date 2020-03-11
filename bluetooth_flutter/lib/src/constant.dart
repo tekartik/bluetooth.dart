@@ -1,6 +1,6 @@
 const String methodSetOptions = 'setOptions';
-const String methodGetStatus = "get_status";
-const String methodEnable = "enable";
+const String methodGetStatus = 'get_status';
+const String methodEnable = 'enable';
 
 const String namespace = 'com.tekartik.bluetooth_flutter';
 

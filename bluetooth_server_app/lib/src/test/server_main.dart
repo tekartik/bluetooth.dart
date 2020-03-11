@@ -6,9 +6,7 @@ void main() {
   menu('server', () {
     BluetoothServer server;
     item('start', () async {
-      if (server == null) {
-        server = await BluetoothServer.serve(port: defaultPort);
-      }
+      server ??= await BluetoothServer.serve(port: defaultPort);
     });
     item('stop', () async {
       await server?.close();

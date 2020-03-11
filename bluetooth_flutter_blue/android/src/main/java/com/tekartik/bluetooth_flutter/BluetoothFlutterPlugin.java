@@ -1,0 +1,490 @@
+package com.tekartik.bluetooth_flutter;
+
+import android.Manifest;
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothProfile;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Handler;
+import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.tekartik.bluetooth_flutter.client.BleClientPlugin;
+import com.tekartik.bluetooth_flutter.peripheral.BlePeripheralPlugin;
+import com.tekartik.bluetooth_flutter.peripheral.Peripheral;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import io.flutter.plugin.common.EventChannel;
+import io.flutter.plugin.common.MethodCall;
+import io.flutter.plugin.common.MethodChannel;
+import io.flutter.plugin.common.MethodChannel.Result;
+import io.flutter.plugin.common.PluginRegistry;
+import io.flutter.plugin.common.PluginRegistry.Registrar;
+
+import static com.tekartik.bluetooth_flutter.BfluPluginError.errorCodeNoPeripheral;
+import static com.tekartik.bluetooth_flutter.BfluPluginError.errorOtherError;
+import static com.tekartik.bluetooth_flutter.BfluPluginError.errorUnsupported;
+
+/**
+ * BluetoothFlutterPlugin
+ */
+public class BluetoothFlutterPlugin extends Plugin implements PluginRegistry.RequestPermissionsResultListener {
+
+
+    public static final String TAG = "BfluPlugin";
+    public static BluetoothFlutterPlugin instance;
+    BluetoothManager bluetoothManager;
+    public BluetoothAdapter bluetoothAdapter;
+
+    static public String NAMESPACE = "com.tekartik.bluetooth_flutter";
+    // the call is synchronized from the dart side so we're fine
+    int enableBluetoothRequestCode;
+    Result enableBluetoothResult;
+
+    int checkCoarseLocationPermissionRequestCode;
+    Result checkCoarseLocationPermissionResult;
+
+    BleClientPlugin clientPlugin;
+    BlePeripheralPlugin peripheralPlugin;
+
+    private Peripheral peripheral;
+    public int logLevel = LogLevel.none;
+
+    public final MethodChannel channel;
+    public final EventChannel connectionChannel;
+    public final EventChannel callbackChannel;
+    public final EventChannel writeCharacteristicChannel;
+    private Boolean mHasBluetooth;
+    private Boolean mHasBluetoothBle;
+    private Context mApplicationContext;
+    final Handler handler;
+
+    private BleClientPlugin getClientPlugin() {
+        if (clientPlugin == null) {
+            clientPlugin = new BleClientPlugin(this);
+        }
+        return clientPlugin;
+    }
+
+    private BlePeripheralPlugin getPeripheralPlugin() {
+        if (peripheralPlugin == null) {
+            peripheralPlugin = new BlePeripheralPlugin(this);
+        }
+        return peripheralPlugin;
+    }
+
+
+    private boolean hasBluetooth() {
+        if (mHasBluetooth == null) {
+            // Use this check to determine whether BLE is supported on the device. Then
+            // you can selectively disable BLE-related features.
+            this.bluetoothManager = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
+            if (bluetoothManager != null) {
+                bluetoothAdapter = bluetoothManager.getAdapter();
+                if (bluetoothAdapter != null) {
+                    mHasBluetooth = true;
+                    return true;
+                }
+            }
+            mHasBluetooth = false;
+        }
+
+        return mHasBluetooth;
+    }
+
+    private boolean hasBluetoothBle() {
+        if (mHasBluetoothBle == null) {
+            // Use this check to determine whether BLE is supported on the device. Then
+            // you can selectively disable BLE-related features.
+            mHasBluetoothBle = mApplicationContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE);
+        }
+        return mHasBluetoothBle;
+    }
+
+    public BluetoothFlutterPlugin(Registrar registrar) {
+        // activity required here
+        super(registrar);
+        assert (instance == null);
+        instance = this;
+        handler = new Handler();
+        mApplicationContext = registrar.context().getApplicationContext();
+
+        channel = new MethodChannel(registrar.messenger(), "tekartik_bluetooth_flutter");
+        channel.setMethodCallHandler(this);
+
+
+        callbackChannel = new EventChannel(registrar.messenger(), NAMESPACE + "/callback");
+        callbackChannel.setStreamHandler(callbackHandler);
+        // TODO needed? can we reuse callbackChannel?
+        connectionChannel = new EventChannel(registrar.messenger(), NAMESPACE + "/connection");
+        connectionChannel.setStreamHandler(stateHandler);
+        writeCharacteristicChannel = new EventChannel(registrar.messenger(), NAMESPACE + "/writeCharacteristic");
+        writeCharacteristicChannel.setStreamHandler(writeCharacteristicHandler);
+
+        registrar.addRequestPermissionsResultListener(this);
+
+    }
+
+    public EventChannel.EventSink connectionSink;
+    private final EventChannel.StreamHandler stateHandler = new EventChannel.StreamHandler() {
+        @Override
+        public void onListen(Object o, EventChannel.EventSink eventSink) {
+            connectionSink = eventSink;
+        }
+
+        @Override
+        public void onCancel(Object o) {
+            connectionSink = null;
+        }
+    };
+
+    public EventChannel.EventSink writeCharacteristicSink;
+    private final EventChannel.StreamHandler writeCharacteristicHandler = new EventChannel.StreamHandler() {
+        @Override
+        public void onListen(Object o, EventChannel.EventSink eventSink) {
+            writeCharacteristicSink = eventSink;
+        }
+
+        @Override
+        public void onCancel(Object o) {
+            writeCharacteristicSink = null;
+        }
+    };
+
+    public EventChannel.EventSink callbackSink;
+    private final EventChannel.StreamHandler callbackHandler = new EventChannel.StreamHandler() {
+        @Override
+        public void onListen(Object o, EventChannel.EventSink eventSink) {
+            callbackSink = eventSink;
+        }
+
+        @Override
+        public void onCancel(Object o) {
+            callbackSink = null;
+        }
+    };
+
+    /**
+     * Plugin registration.
+     */
+    public static void registerWith(Registrar registrar) {
+        BluetoothFlutterPlugin plugin = new BluetoothFlutterPlugin(registrar);
+        registrar.addActivityResultListener(plugin);
+    }
+
+    //@SuppressLint("MissingPermission")
+    @Override
+    public void onMethodCall(MethodCall call, Result result) {
+        try {
+            onRequest(new PluginRequest(call, result));
+        } catch (Exception e) {
+            result.error(call.method, "exception " + e, call.arguments);
+        }
+    }
+
+    public void onRequest(PluginRequest request) {
+        if (hasVerboseLevel()) {
+            Log.d(TAG, "onRequest(" + request.call.method + ", " + request.call.arguments +")");
+        }
+        MethodCall call = request.call;
+        Result result = request.result;
+        String method = call.method;
+        this.bluetoothManager = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
+        if (bluetoothManager != null) {
+            bluetoothAdapter = bluetoothManager.getAdapter();
+        }
+
+        if (method.equals("getPlatformVersion")) {
+            result.success("Android " + Build.VERSION.RELEASE);
+        } else if (call.method.equals("enableBluetooth")) {
+            onEnableBluetooth(request);
+        } else if (method.equals("disableBluetooth")) {
+            if (bluetoothAdapter.isEnabled()) {
+                // Requires admin permission
+                bluetoothAdapter.disable();
+            }
+        } else if (method.equals("peripheralStartAdvertising")) {
+            getPeripheralPlugin().onStartAdvertising(request);
+
+        } else if (method.equals("peripheralInit")) {
+            getPeripheralPlugin().onInitPeripheral(request);
+
+        } else if (method.equals("peripheralSetCharacteristicValue")) {
+            getPeripheralPlugin().onPeripheralSetCharacteristicValue(request);
+
+        } else if (method.equals("peripheralGetCharacteristicValue")) {
+            onPeripheralGetCharacteristicValue(request);
+        } else if (method.equals("peripheralNotifyCharacteristicValue")) {
+            onPeripheralNotifyCharacteristicValue(request);
+
+        } else if (method.equals("stopAdvertising")) {
+            Log.i(TAG, "stopAdvertising");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (getPeripheral() != null) {
+                    getPeripheral().stop();
+                }
+                request.sendSuccess();
+            } else {
+                sendError(request, errorUnsupported);
+            }
+
+        } else if (call.method.equals("remoteNewConnection")) {
+            getClientPlugin().onNewConnection(request);
+        } else if (call.method.equals("remoteConnect")) {
+            getClientPlugin().onConnect(request);
+        } else if (call.method.equals("remoteDiscoverServices")) {
+            getClientPlugin().onDiscoverServices(request);
+        } else if (call.method.equals("remoteGetServices")) {
+            getClientPlugin().onGetServices(request);
+        } else if (call.method.equals("remoteReadCharacteristic")) {
+            getClientPlugin().onReadCharacteristic(request);
+        } else if (call.method.equals("remoteDisconnect")) {
+            getClientPlugin().onDisconnect(request);
+        } else if (method.equals("startScan")) {
+            getClientPlugin().onStartScan(request);
+        } else if (method.equals("stopScan")) {
+            getClientPlugin().onStopScan(request);
+        } else if (method.equals("getInfo")) {
+            onGetInfo(request);
+        } else if (method.equals("getConnectedDevices")) {
+            onGetConnectedDevices(request);
+        } else if (method.equals("setOptions")) {
+            onSetOptions(request);
+        } else if (method.equals("checkCoarseLocationPermission")) {
+            onCheckCoarseLocationPermission(request);
+        } else {
+            Log.i(TAG, "Unhandled " + call.method);
+        }
+    }
+
+    private void onGetConnectedDevices(PluginRequest request) {
+        List<BluetoothDevice> devices = bluetoothManager.getConnectedDevices(BluetoothProfile.GATT);
+        List<Map<String, Object>> list = new ArrayList<>();
+        if (devices != null) {
+            for (BluetoothDevice androidBluetoothDevice : devices) {
+                list.add(new com.tekartik.bluetooth_flutter.client.BluetoothDevice(androidBluetoothDevice).toMap());
+            }
+        }
+        request.result.success(list);
+    }
+
+
+    private void onGetInfo(PluginRequest request) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("hasBluetooth", hasBluetooth());
+        if (hasBluetooth()) {
+            map.put("hasBluetoothBle", hasBluetoothBle());
+            boolean enabled = bluetoothAdapter.isEnabled();
+            map.put("isBluetoothEnabled", enabled);
+            if (enabled) {
+                map.put("isScanning", getClientPlugin().isScanning());
+            }
+        }
+        request.result.success(map);
+    }
+
+
+    private void onSetOptions(PluginRequest request) {
+        Integer logLevel = LogLevel.getLogLevel(request.call);
+        if (logLevel != null) {
+            this.logLevel = logLevel;
+        }
+        request.result.success(null);
+    }
+
+    private void onEnableBluetooth(PluginRequest request) {
+        if (!bluetoothAdapter.isEnabled()) {
+            Integer requestCode = request.call.argument("androidRequestCode");
+            if (requestCode != null) {
+                if (hasVerboseLevel()) {
+                    Log.i(TAG, "onEnableBluetooth(" + requestCode + ")");
+                }
+                enableBluetoothRequestCode = requestCode;
+                enableBluetoothResult = request.result;
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                getActivity().startActivityForResult(enableBtIntent, enableBluetoothRequestCode);
+            } else {
+                // Requires admin permission
+                if (hasVerboseLevel()) {
+                    Log.i(TAG, "onEnableBluetooth()");
+                }
+                try {
+                    bluetoothAdapter.enable();
+                    if (hasVerboseLevel()) {
+                        Log.i(TAG, "enable done");
+                    }
+                    request.result.success(null);
+                } catch (Exception e) {
+                    if (hasVerboseLevel()) {
+                        Log.i(TAG, "enable failed " + e);
+                    }
+                    request.result.error("enable_bluetooth", "failed " + e, null);
+                }
+            }
+        } else {
+            request.result.success(null);
+        }
+    }
+
+
+    private void onPeripheralGetCharacteristicValue(PluginRequest request) {
+        if (hasVerboseLevel()) {
+            Log.i(TAG, "peripheralGetCharacteristicValue");
+        }
+        if (getPeripheral() == null) {
+            sendError(request, errorCodeNoPeripheral);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            UUID serviceUuid = UUID.fromString((String) request.call.argument("service"));
+            UUID characteristicUuid = UUID.fromString((String) request.call.argument("characteristic"));
+
+            byte[] value = getPeripheral().getValue(serviceUuid, characteristicUuid);
+            request.sendSuccess(value);
+
+        } else {
+            sendError(request, errorUnsupported);
+        }
+    }
+
+    private void onPeripheralNotifyCharacteristicValue(PluginRequest request) {
+        if (hasVerboseLevel()) {
+            Log.i(TAG, "peripheralNotifyCharacteristicValue");
+        }
+        if (getPeripheral() == null) {
+            sendError(request, errorCodeNoPeripheral);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            UUID serviceUuid = UUID.fromString((String) request.call.argument("service"));
+            UUID characteristicUuid = UUID.fromString((String) request.call.argument("characteristic"));
+
+            if (getPeripheral().sendNotificationToDevices(serviceUuid, characteristicUuid)) {
+                request.sendSuccess();
+            } else {
+                sendError(request, errorOtherError);
+            }
+
+        } else {
+            sendError(request, errorUnsupported);
+        }
+    }
+
+    public void sendError(PluginRequest request, int errorCode) {
+        if (hasVerboseLevel()) {
+            Log.i(TAG, "sendError(" + errorCode + ")");
+        }
+        request.sendError(new BfluPluginError(errorCode));
+    }
+
+    public void sendSuccess(PluginRequest request, Object value) {
+        if (hasVerboseLevel()) {
+            Log.i(TAG, "sendSuccess(" + value + ")");
+        }
+        request.sendSuccess(value);
+    }
+
+
+    public void onCheckCoarseLocationPermission(PluginRequest request) {
+        Integer requestCode = request.call.argument("androidRequestCode");
+        if (requestCode != null) {
+            if (hasVerboseLevel()) {
+                Log.i(TAG, "onEnableBluetooth(" + requestCode + ")");
+            }
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                checkCoarseLocationPermissionRequestCode = requestCode;
+                checkCoarseLocationPermissionResult = request.result;
+                ActivityCompat.requestPermissions(
+                        getActivity(),
+                        new String[]{
+                                Manifest.permission.ACCESS_COARSE_LOCATION
+                        },
+                        checkCoarseLocationPermissionRequestCode);
+            } else {
+                request.result.success(true);
+            }
+        } else {
+            request.result.error("checkCoarseLocationPermission", "missing androidRequestCode", null);
+
+        }
+
+    }
+
+    @Override
+    public boolean onRequestPermissionsResult(
+            int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == checkCoarseLocationPermissionRequestCode) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                checkCoarseLocationPermissionResult.success(true);
+            } else {
+                checkCoarseLocationPermissionResult.error(
+                        "checkCoarseLocationPermission", "missing location permissions for scanning", null);
+
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == enableBluetoothRequestCode) {
+            if (requestCode == Activity.RESULT_OK) {
+                enableBluetoothResult.success(null);
+            } else {
+                enableBluetoothResult.error("enable_bluetooth", "failed " + resultCode, null);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public BluetoothAdapter getBluetoothAdapter() {
+        return bluetoothAdapter;
+    }
+
+    public boolean hasVerboseLevel() {
+        return LogLevel.hasVerboseLevel(logLevel);
+    }
+
+    public Handler getHandler() {
+        return handler;
+    }
+
+    public void bgInvokeMethod(final String method, final Object arguments) {
+        getHandler().post(new Runnable() {
+            @Override
+            public void run() {
+                invokeMethod(method, arguments);
+            }
+        });
+
+    }
+
+
+    public void invokeMethod(String method, Object arguments) {
+        if (hasVerboseLevel()) {
+            Log.i(TAG, "callback: " + method + " args " + arguments);
+        }
+        channel.invokeMethod(method, arguments);
+    }
+
+    public Peripheral getPeripheral() {
+        return peripheral;
+    }
+
+    public void setPeripheral(Peripheral peripheral) {
+        this.peripheral = peripheral;
+    }
+}

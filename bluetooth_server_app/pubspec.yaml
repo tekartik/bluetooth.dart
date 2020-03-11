@@ -37,12 +37,15 @@ dev_dependencies:
   process_run:
 
 dependency_overrides:
+  pedantic: '>=1.9.0'
   tekartik_bluetooth:
     path: ../bluetooth
   tekartik_bluetooth_test:
     path: ../bluetooth_test
   tekartik_bluetooth_server:
     path: ../bluetooth_server
+  tekartik_bluetooth_flutter_blue:
+    path: ../bluetooth_flutter_blue
   tekartik_bluetooth_flutter:
     path: ../bluetooth_flutter
 

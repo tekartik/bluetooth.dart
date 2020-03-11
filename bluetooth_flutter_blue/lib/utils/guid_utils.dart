@@ -1,5 +1,5 @@
 import 'package:tekartik_bluetooth/uuid.dart';
-import 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart';
+import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
 
 Guid guidFromUuid(Uuid128 uuid) {
   return Guid(uuid.toString());

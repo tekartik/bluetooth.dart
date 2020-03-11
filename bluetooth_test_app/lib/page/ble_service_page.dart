@@ -25,29 +25,29 @@ class _BleServicePageState extends State<BleServicePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Service'),
+        title: const Text('Service'),
       ),
       body: Builder(builder: (context) {
         var service = widget.appBleService?.bleService;
         var characteristics = service?.characteristics;
         if (characteristics?.isEmpty ?? true) {
           return ListView(children: <Widget>[
-            ListTile(title: Text('No characteristics found'))
+            const ListTile(title: Text('No characteristics found'))
           ]);
         }
         return ListView(
           children: [
             ListTile(
-                title: Text('Service'),
+                title: const Text('Service'),
                 subtitle: Text(uuidText(service?.uuid))),
             ...characteristics.map((characteristic) {
               return ListTile(
-                title: Text('Characteristic'),
+                title: const Text('Characteristic'),
                 subtitle:
                     Text(uuidText(characteristic.uuid, parent: service.uuid)),
                 onTap: () {
                   () async {
-                    Navigator.of(context).push<String>(MaterialPageRoute(
+                    await Navigator.of(context).push<String>(MaterialPageRoute(
                         builder: (_) => BleCharacteristicPage(
                             appBleCharacteristic: AppBleCharacteristic(
                                 connection: widget.appBleService.connection,
