@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:tekartik_bluetooth/bluetooth_manager.dart';
 import 'package:tekartik_bluetooth_server/bluetooth_context.dart';
 import 'package:tekartik_bluetooth_server/src/bluetooth_server_client.dart';
 import 'package:tekartik_bluetooth_server/src/common_public.dart';
@@ -17,9 +18,8 @@ int parseBluetoothServerUrlPort(String url, {int defaultValue}) {
 
 final bluetoothServerDefaultUrl = getBluetoothServerUrl();
 
-Future<BluetoothServerFlutterService>
-    initBluetoothServerFlutterService() async {
-  BluetoothServerFlutterService service;
+Future<BluetoothManager> initBluetoothClientService() async {
+  BluetoothManager service;
   var envUrl = const String.fromEnvironment(bluetoothServerUrlEnvKey);
   var envPort =
       parseInt(const String.fromEnvironment(bluetoothServerPortEnvKey));
@@ -28,7 +28,7 @@ Future<BluetoothServerFlutterService>
   url ??= getBluetoothServerUrl(port: envPort);
 
   try {
-    service = await BluetoothServerFlutterService.create(url);
+    service = await BluetoothServerService.create(url);
   } catch (e) {
     print(e);
   }

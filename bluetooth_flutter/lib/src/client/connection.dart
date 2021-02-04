@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:tekartik_bluetooth/ble.dart';
+import 'package:tekartik_bluetooth/bluetooth.dart';
 import 'package:tekartik_bluetooth/uuid.dart';
 import 'package:tekartik_bluetooth_flutter/src/constant.dart';
 import 'package:tekartik_bluetooth_flutter/src/exception.dart';
@@ -11,45 +12,10 @@ import 'package:tekartik_bluetooth_flutter/utils/model_utils.dart';
 import 'package:tekartik_common_utils/map_utils.dart';
 import 'package:tekartik_common_utils/model/model.dart';
 // abstract class BluetoothDeviceConnection {}
+export 'package:tekartik_bluetooth/src/device_connection.dart';
 
-abstract class BluetoothDeviceConnection {
-  Future discoverServices();
-
-  Future<List<BleBluetoothService>> getServices();
-
-  /// Connect
-  Stream<BluetoothDeviceConnectionState> get onConnectionState;
-
-  /// Return of throw
-  Future connect();
-
-  Future<BleBluetoothCharacteristicValue> readCharacteristic(
-      BluetoothDeviceConnection connection,
-      BleBluetoothCharacteristic characteristic);
-
-  Future disconnect();
-
-  /// Dispose everything
-  void close();
-}
-
-/// The profile is in disconnected state
-const int bluetoothDeviceConnectionStateDisconnected = 0;
-
-/// The profile is in connecting state
-const int bluetoothDeviceConnectionStateConnecting = 1;
-
-/// The profile is in connected state
-const int bluetoothDeviceConnectionStateConnected = 2;
-
-/// The profile is in disconnecting state
-const int bluetoothDeviceConnectionStateDisconnecting = 3;
-
-abstract class BluetoothDeviceConnectionState {
-  int get state;
-}
-
-class BluetoothDeviceConnectionImpl implements BluetoothDeviceConnection {
+class BluetoothDeviceConnectionFlutterImpl
+    implements BluetoothDeviceConnection {
   final lock = Lock();
   final BluetoothFlutterManagerMixin manager;
   final controller = StreamController<MethodCall>.broadcast();
@@ -61,7 +27,7 @@ class BluetoothDeviceConnectionImpl implements BluetoothDeviceConnection {
   /// set upon connection
   int connectionId;
 
-  BluetoothDeviceConnectionImpl({@required this.manager}) {
+  BluetoothDeviceConnectionFlutterImpl({@required this.manager}) {
     controller.stream.listen((call) {
       if (call.method == 'remoteConnectionState') {
         // devPrint(call.arguments);

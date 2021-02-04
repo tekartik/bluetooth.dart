@@ -3,7 +3,7 @@ import 'package:test/test.dart';
 
 // This test only works when the app is running
 Future main() async {
-  var service = await initBluetoothServerFlutterService();
+  var service = await initBluetoothClientService();
 
   tearDownAll(() async {
     await service?.close();

@@ -3,8 +3,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:json_rpc_2/json_rpc_2.dart' as json_rpc;
-import 'package:tekartik_bluetooth_flutter/src/manager.dart';
+import 'package:tekartik_bluetooth/bluetooth.dart';
 import 'package:tekartik_bluetooth_server/bluetooth_context.dart';
+import 'package:tekartik_bluetooth_server/bluetooth_server.dart';
 import 'package:tekartik_bluetooth_server/src/constant.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_web_socket/web_socket.dart';
@@ -80,8 +81,8 @@ class BluetoothServerChannel {
       var method = map[keyMethod] as String;
       var param = map[keyParam];
 
-      dynamic result = await flutterBluetoothServiceImpl.invokeMethod<dynamic>(
-          method, param);
+      dynamic result = await (serverBluetoothManager as BluetoothManagerImpl)
+          .invokeMethod<dynamic>(method, param);
       if (_notifyCallback != null) {
         _notifyCallback(true, methodBluetooth, result);
       }

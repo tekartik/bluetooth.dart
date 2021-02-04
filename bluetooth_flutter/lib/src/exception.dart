@@ -1,11 +1,1 @@
-/// Generic Bluetooth Exception
-class BluetoothException implements Exception {
-  BluetoothException(this.message, this.result);
-
-  final String message;
-  final dynamic result;
-
-  @override
-  String toString() =>
-      'BluetoothException($message${result == null ? '' : ' $result'})';
-}
+export 'package:tekartik_bluetooth/src/exception.dart';

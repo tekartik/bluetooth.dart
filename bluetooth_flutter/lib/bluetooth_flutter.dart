@@ -13,7 +13,7 @@ export 'package:tekartik_bluetooth_flutter/src/constant.dart'
     show bluetoothLogLevelNone, bluetoothLogLevelVerbose;
 export 'package:tekartik_bluetooth_flutter/src/options.dart'
     show
-        // ignore: deprecated_member_use_from_same_package
+        // ignore: deprecated_member_use_from_same_package, deprecated_member_use
         BluetoothOptions;
 
 // TODO: do not expose

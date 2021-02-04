@@ -1,42 +1,44 @@
-name: tekartik_bluetooth_server
-description: Bluetooth server component
+name: tekartik_bluetooth_server_flutter
+description: Flutter server implementation
 version: 0.2.1
 author:
 homepage:
 publish_to: none
 
 environment:
-  sdk: '>=2.10.0-0 <3.0.0'
+  sdk: ">=2.7.0 <3.0.0"
+  flutter: ">=1.17.0"
 
 dependencies:
-  tekartik_web_socket_io:
-    git:
-      url: git://github.com/tekartik/web_socket.dart
-      ref: dart2
-      path: web_socket_io
-    version: '>=0.2.0'
-  json_rpc_2:
-  tekartik_common_utils:
-    git:
-      url: git://github.com/tekartik/common_utils.dart
-      ref: dart2
-    version: '>=0.9.7+1'
-  tekartik_bluetooth:
+  flutter:
+    sdk: flutter
+  tekartik_bluetooth_flutter_blue:
     git:
       url: git://github.com/tekartik/bluetooth.dart
-      path: bluetooth
+      path: bluetooth_flutter_blue
+      ref: dart2
+    version: '>=0.2.1'
+  tekartik_bluetooth_server:
+    git:
+      url: git://github.com/tekartik/bluetooth.dart
+      path: bluetooth_server
       ref: dart2
     version: '>=0.2.1'
 
 dev_dependencies:
   test:
-  process_run:
+  flutter_test:
+    sdk: flutter
 
 dependency_overrides:
-  pedantic: '>=1.9.0'
   tekartik_bluetooth:
     path: ../bluetooth
-
+  tekartik_bluetooth_flutter_blue:
+    path: ../bluetooth_flutter_blue
+  tekartik_bluetooth_flutter:
+    path: ../bluetooth_flutter
+  tekartik_bluetooth_server:
+    path: ../bluetooth_server
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -45,8 +47,8 @@ flutter:
 
   # To add assets to your package, add an assets section, like this:
   # assets:
-  #  - images/a_dot_burr.jpeg
-  #  - images/a_dot_ham.jpeg
+  #   - images/a_dot_burr.jpeg
+  #   - images/a_dot_ham.jpeg
   #
   # For details regarding assets in packages, see
   # https://flutter.dev/assets-and-images/#from-packages

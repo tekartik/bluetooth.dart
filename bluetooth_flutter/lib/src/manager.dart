@@ -1,57 +1,20 @@
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:tekartik_bluetooth/bluetooth_state_service.dart';
+// ignore: implementation_imports
+import 'package:tekartik_bluetooth/src/mixin.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart';
-import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
+import 'package:tekartik_bluetooth_flutter/src/client/connection.dart';
 import 'package:tekartik_bluetooth_flutter/src/constant.dart';
 import 'package:tekartik_bluetooth_flutter/src/exception.dart';
 import 'package:tekartik_bluetooth_flutter/src/mixin.dart';
 import 'package:tekartik_bluetooth_flutter/src/plugin.dart';
-import 'package:tekartik_common_utils/bool_utils.dart';
-import 'package:tekartik_common_utils/model/model.dart';
 
 import 'import.dart';
 
-class BluetoothInfoImpl implements BluetoothInfo {
-  @override
-  bool hasBluetooth;
-
-  @override
-  bool hasBluetoothBle;
-
-  @override
-  bool isBluetoothEnabled;
-
-  @override
-  bool isScanning;
-
-  BluetoothInfoImpl(
-      {this.hasBluetooth, this.hasBluetoothBle, this.isBluetoothEnabled});
-
-  void fromMap(Map result) {
-    var model = Model(result);
-    hasBluetooth = parseBool(model['hasBluetooth']) ?? false;
-    hasBluetoothBle = parseBool(model['hasBluetoothBle']) ?? false;
-    isBluetoothEnabled = parseBool(model['isBluetoothEnabled']) ?? false;
-    isScanning = parseBool(model['isScanning']) ?? false;
-  }
-
-  @override
-  String toString() => toDebugMap().toString();
-  Model toDebugMap() {
-    var model = Model()
-      ..setValue('hasBluetooth', hasBluetooth)
-      ..setValue('hasBluetoothBle', hasBluetoothBle)
-      ..setValue('isBluetoothEnabled', isBluetoothEnabled)
-      ..setValue('isScanning', isScanning);
-    return model;
-  }
-}
-
 class BluetoothFlutterManagerImpl
-    with BluetoothFlutterManagerMixin
-    implements BluetoothStateService {
+    with BluetoothFlutterManagerMixin, BluetoothManagerMixin
+    implements BluetoothManager {
   final channel = bluetoothFlutterPlugin.methodChannel;
 
   BluetoothFlutterManagerImpl() {
@@ -59,7 +22,8 @@ class BluetoothFlutterManagerImpl
       // devPrint('received ${call.method} ${call.arguments}');
       var connectionId = call.arguments[connectionIdKey] as int;
       if (connectionId != null) {
-        var connection = connections[connectionId];
+        var connection =
+            connections[connectionId] as BluetoothDeviceConnectionFlutterImpl;
         if (connection == null) {
           print('cannot find connection $connectionId');
         } else {
@@ -74,6 +38,7 @@ class BluetoothFlutterManagerImpl
       }
     });
   }
+
   @override
   final bool supportsEnable = Platform.isAndroid;
 

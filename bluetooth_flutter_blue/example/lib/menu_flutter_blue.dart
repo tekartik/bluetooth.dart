@@ -1,4 +1,5 @@
-import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
+//import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
+import 'package:flutter_blue/flutter_blue.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_test_menu_flutter/test.dart';
 

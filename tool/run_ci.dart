@@ -6,6 +6,7 @@ Future main() async {
     'bluetooth',
     'bluetooth_flutter_blue',
     'bluetooth_server',
+    'bluetooth_server_flutter',
     'bluetooth_server_app',
     'bluetooth_test',
     'bluetooth_test_app',

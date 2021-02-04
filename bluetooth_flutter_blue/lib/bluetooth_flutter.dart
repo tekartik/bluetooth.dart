@@ -1,6 +1,6 @@
 import 'package:flutter_blue/flutter_blue.dart';
 
-export 'package:flutter_blue/flutter_blue.dart';
+//export 'package:flutter_blue/flutter_blue.dart';
 export 'package:tekartik_bluetooth/bluetooth.dart';
 export 'package:tekartik_bluetooth/bluetooth_state_service.dart';
 export 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart'

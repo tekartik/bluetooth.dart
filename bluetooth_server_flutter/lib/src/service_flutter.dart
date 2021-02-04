@@ -1,24 +1,25 @@
 // ignore_for_file: implementation_imports
-import 'package:tekartik_bluetooth/bluetooth_manager.dart';
-//import 'package:tekartik_bluetooth_flutter/src/mixin.dart';
+import 'package:tekartik_bluetooth/bluetooth.dart';
+import 'package:tekartik_bluetooth/src/mixin.dart';
+import 'package:tekartik_bluetooth_flutter/src/mixin.dart';
+import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
 import 'package:tekartik_bluetooth_server/bluetooth.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_web_socket/web_socket.dart';
-import 'package:tekartik_bluetooth/src/mixin.dart';
 
-class BluetoothServerService
-    with BluetoothManagerMixin
+class BluetoothServerFlutterService
+    with BluetoothFlutterManagerMixin, BluetoothManagerMixin
     implements BluetoothManager {
-  BluetoothServerService(this.context);
+  BluetoothServerFlutterService(this.context);
 
   final BluetoothServerContext context;
 
-  static Future<BluetoothServerService> create(String url,
+  static Future<BluetoothServerFlutterService> create(String url,
       {WebSocketChannelClientFactory webSocketChannelClientFactory}) async {
     var context = await BluetoothServerContext.connect(url,
         webSocketChannelClientFactory: webSocketChannelClientFactory);
     if (context != null) {
-      return BluetoothServerService(context);
+      return BluetoothServerFlutterService(context);
     }
     return null;
   }
@@ -32,11 +33,6 @@ class BluetoothServerService
   Future<T> invokeMethod<T>(String method, [dynamic arguments]) =>
       context.invoke<T>(method, arguments);
 
-  /*
-  @override
-  // TODO: implement state
-  Future<BluetoothState> get state => null;
-  */
   @override
   bool get isAndroid => context.isAndroid;
 
