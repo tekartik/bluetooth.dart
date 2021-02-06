@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
-import 'package:flutter/services.dart';
 import 'package:tekartik_bluetooth/ble.dart';
 import 'package:tekartik_bluetooth/bluetooth.dart';
+import 'package:tekartik_bluetooth/bluetooth_service.dart';
 import 'package:tekartik_bluetooth/uuid.dart';
 import 'package:tekartik_bluetooth_flutter/src/constant.dart';
 import 'package:tekartik_bluetooth_flutter/src/exception.dart';
@@ -11,6 +11,7 @@ import 'package:tekartik_bluetooth_flutter/src/mixin.dart';
 import 'package:tekartik_bluetooth_flutter/utils/model_utils.dart';
 import 'package:tekartik_common_utils/map_utils.dart';
 import 'package:tekartik_common_utils/model/model.dart';
+
 // abstract class BluetoothDeviceConnection {}
 export 'package:tekartik_bluetooth/src/device_connection.dart';
 

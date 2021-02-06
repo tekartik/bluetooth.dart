@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import 'package:flutter/services.dart';
+import 'package:tekartik_bluetooth/bluetooth_service.dart';
+
 // ignore: implementation_imports
 import 'package:tekartik_bluetooth/src/mixin.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart';

@@ -27,7 +27,7 @@ void main() {
                       BluetoothGattCharacteristic.propertyRead,
                   permissions: BluetoothGattCharacteristic.permissionRead)
             ])
-      ]);
+      ], plugin: null);
       expect(peripheral.toMap(), {
         'services': [
           {

@@ -125,7 +125,7 @@ void menuBle(
     StreamSubscription subscription;
     enter(() {
       subscription = BluetoothFlutter.onSlaveConnectionChanged()
-          .listen((BluetoothFlutterSlaveConnection connection) {
+          .listen((BluetoothSlaveConnection connection) {
         write('${connection.address} ${connection.connected}');
       });
     });
