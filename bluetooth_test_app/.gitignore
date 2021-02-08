@@ -78,3 +78,6 @@ lib/generated_plugin_registrant.dart
 # flutter_blue hack - ln -s ios/Pods Pods
 Pods
 /.flutter-plugins-dependencies
+
+# Project files
+linux/

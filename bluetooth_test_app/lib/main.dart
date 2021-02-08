@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:tekartik_bluetooth_test_app/ble/app_ble.dart';
 import 'package:tekartik_bluetooth_test_app/page/device_page.dart';
 import 'package:tekartik_bluetooth_test_app/page/scan_page.dart';
+import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
+import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
+import 'test_main.dart' as test_main;
 
-void main() => runApp(MyApp());
+Future<void> main() async {
+  initBluetoothManager = bluetoothManager;
+  deviceBluetoothManager = bluetoothManagerFlutterBlue;
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -60,31 +68,15 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Tap to view devices',
-            ),
-          ],
-        ),
+      body: ListView(
+        children: [
+          ListTile(
+            title: Text('Test menu'),
+            onTap: () {
+              test_main.main();
+            },
+          )
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

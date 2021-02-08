@@ -15,8 +15,33 @@ const int bluetoothDeviceConnectionStateConnected = 2;
 /// The profile is in disconnecting state
 const int bluetoothDeviceConnectionStateDisconnecting = 3;
 
-abstract class BluetoothDeviceConnectionState {
-  int get state;
+/// The profile is in unknown state
+const int bluetoothDeviceConnectionStateUnknown = 4;
+
+class BluetoothDeviceConnectionState {
+  final int state;
+  const BluetoothDeviceConnectionState(this.state);
+  static const disconnected = BluetoothDeviceConnectionState(
+      bluetoothDeviceConnectionStateDisconnected);
+  static const connecting =
+      BluetoothDeviceConnectionState(bluetoothDeviceConnectionStateConnecting);
+  static const connected =
+      BluetoothDeviceConnectionState(bluetoothDeviceConnectionStateConnected);
+  static const disconnecting = BluetoothDeviceConnectionState(
+      bluetoothDeviceConnectionStateDisconnecting);
+  static const unknown =
+      BluetoothDeviceConnectionState(bluetoothDeviceConnectionStateUnknown);
+
+  @override
+  int get hashCode => state;
+
+  @override
+  bool operator ==(Object other) {
+    if (other is BluetoothDeviceConnectionState) {
+      return other.state == state;
+    }
+    return false;
+  }
 }
 
 abstract class BluetoothDeviceConnection {
@@ -31,7 +56,6 @@ abstract class BluetoothDeviceConnection {
   Future connect();
 
   Future<BleBluetoothCharacteristicValue> readCharacteristic(
-      BluetoothDeviceConnection connection,
       BleBluetoothCharacteristic characteristic);
 
   Future disconnect();
@@ -82,7 +106,6 @@ class BluetoothDeviceConnectionImpl implements BluetoothDeviceConnection {
 
   @override
   Future<BleBluetoothCharacteristicValue> readCharacteristic(
-      BluetoothDeviceConnection connection,
       BleBluetoothCharacteristic characteristic) {
     // TODO: implement readCharacteristic
     throw UnimplementedError();

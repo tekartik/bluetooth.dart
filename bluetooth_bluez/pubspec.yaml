@@ -1,0 +1,23 @@
+name: tekartik_bluetooth_bluez
+description: Bluez abstraction
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: '>=2.10.0 <3.0.0'
+
+dependencies:
+  tekartik_bluetooth:
+    git:
+      url: git://github.com/tekartik/bluetooth.dart
+      path: bluetooth
+      ref: dart2
+    version: '>=0.2.1'
+  bluez:
+
+dependency_overrides:
+  tekartik_bluetooth:
+    path: ../bluetooth
+dev_dependencies:
+  pedantic: ^1.9.0
+  test: ^1.14.4

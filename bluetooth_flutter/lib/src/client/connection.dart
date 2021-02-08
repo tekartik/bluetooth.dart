@@ -56,7 +56,6 @@ class BluetoothDeviceConnectionFlutterImpl
 
   @override
   Future<BleBluetoothCharacteristicValue> readCharacteristic(
-      BluetoothDeviceConnection connection,
       BleBluetoothCharacteristic characteristic) async {
     var map = _baseMap();
 
@@ -195,6 +194,7 @@ class BluetoothDeviceConnectionFlutterImpl
             ?.toList(growable: false);
         return characteristic;
       })?.toList(growable: false);
+      // ignore: invalid_use_of_protected_member
       bleService.characteristics = characteristics;
       return bleService;
     })?.toList(growable: false);

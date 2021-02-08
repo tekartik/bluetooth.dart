@@ -35,6 +35,8 @@ dev_dependencies:
   test:
   tekartik_bluetooth_flutter_blue:
     path: ../bluetooth_flutter_blue
+  tekartik_bluetooth_bluez:
+    path: ../bluetooth_bluez
 
   tekartik_test_menu_flutter:
     git:
@@ -47,7 +49,12 @@ dependency_overrides:
   pedantic: '>=1.9.0'
   tekartik_bluetooth:
     path: ../bluetooth
-
+  tekartik_bluetooth_flutter_blue:
+    path: ../bluetooth_flutter_blue
+  tekartik_bluetooth_flutter:
+    path: ../bluetooth_flutter
+  tekartik_bluetooth_server:
+    path: ../bluetooth_server
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
