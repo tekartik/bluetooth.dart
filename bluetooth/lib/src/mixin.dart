@@ -5,6 +5,7 @@ import 'package:tekartik_bluetooth/src/options.dart';
 import 'package:tekartik_common_utils/map_utils.dart';
 import 'package:tekartik_common_utils/model/model.dart';
 
+import 'device_id.dart';
 import 'import.dart';
 
 class MixinTest with BluetoothManagerMixin {
@@ -157,9 +158,10 @@ mixin BluetoothManagerMixin implements BluetoothManager {
   }
 
   @override
-  Future<BluetoothDeviceConnection> newConnection(String deviceId) async {
+  Future<BluetoothDeviceConnection> newConnection(
+      BluetoothDeviceId deviceId) async {
     var map = Model();
-    map['deviceId'] = deviceId;
+    map['deviceId'] = (deviceId as BluetoothDeviceIdImpl).id;
     var result = await invokeMethod<dynamic>('remoteNewConnection', map);
     int connectionId;
     if (result is int) {

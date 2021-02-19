@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart' as fbl;
+import 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart';
 import 'package:tekartik_bluetooth_test_app/ble/app_ble.dart';
 import 'package:tekartik_bluetooth_test_app/src/ble_setup.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
@@ -7,8 +8,8 @@ import 'package:tekartik_test_menu_flutter/demo/demo.dart';
 import 'package:tekartik_test_menu_flutter/demo/demo_test_menu_flutter.dart'
     as demo;
 import 'package:tekartik_test_menu_flutter/test.dart';
+
 import 'main.dart' as app_main;
-import 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart';
 
 void main() {
   mainMenu(() {

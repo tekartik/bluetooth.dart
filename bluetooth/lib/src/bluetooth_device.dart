@@ -1,16 +1,18 @@
+import 'package:tekartik_bluetooth/bluetooth_device.dart';
+import 'package:tekartik_bluetooth/src/device_id.dart';
 import 'package:tekartik_common_utils/model/model.dart';
 
 abstract class BluetoothDevice {
   String get name;
   String get address;
 
-  String get id;
+  BluetoothDeviceId get id;
 }
 
 class BluetoothDeviceImpl implements BluetoothDevice {
   // On Android it is the address
   @override
-  String id;
+  BluetoothDeviceId id;
 
   @override
   String address;
@@ -22,7 +24,7 @@ class BluetoothDeviceImpl implements BluetoothDevice {
     var model = Model(map);
     // only on android
     address = model['address']?.toString();
-    id = address;
+    id = BluetoothDeviceIdImpl(address);
     name = model['name']?.toString();
   }
 

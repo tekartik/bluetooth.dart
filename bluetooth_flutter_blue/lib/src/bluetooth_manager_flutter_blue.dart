@@ -7,6 +7,7 @@ import 'package:tekartik_bluetooth/bluetooth_device.dart';
 
 // ignore: implementation_imports
 import 'package:tekartik_bluetooth/src/options.dart';
+import 'package:tekartik_bluetooth_flutter_blue/src/bluetooth_device_connection_flutter_blue.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
 import 'bluetooth_device_flutter_blue.dart';
@@ -28,7 +29,27 @@ class ScanResultFlutter implements ScanResult {
   String toString() => nativeImpl.toString();
 }
 
+class _ScanCacheDevice {
+  final DateTime timestamp;
+  final BluetoothDeviceFlutterBlue device;
+
+  _ScanCacheDevice(this.timestamp, this.device);
+}
+
+class _ScanCache {
+  final map = <BluetoothDeviceId, _ScanCacheDevice>{};
+
+  BluetoothDeviceFlutterBlue getDevice(BluetoothDeviceId deviceId) =>
+      map[deviceId]?.device;
+
+  void addDevice(BluetoothDeviceFlutterBlue device) {
+    map[device.id] = _ScanCacheDevice(DateTime.now(), device);
+  }
+}
+
 class BluetoothManagerFlutterBlue implements BluetoothManager {
+  final _scanCache = _ScanCache();
+
   @override
   Future<bool> checkCoarseLocationPermission({int androidRequestCode}) {
     throw UnimplementedError();
@@ -58,7 +79,13 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
   @override
   Future<List<BluetoothDevice>> getConnectedDevices() async {
     var devices = await native.FlutterBlue.instance.connectedDevices;
-    return devices.map((native) => BluetoothDeviceFlutterBlue(native)).toList();
+    var blueDevices =
+        devices.map((native) => BluetoothDeviceFlutterBlue(native)).toList();
+    // cache
+    blueDevices.forEach((device) {
+      _scanCache.addDevice(device);
+    });
+    return blueDevices;
   }
 
   @override
@@ -78,9 +105,13 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
   bool get isIOS => Platform.isIOS;
 
   @override
-  Future<BluetoothDeviceConnection> newConnection(String deviceId) {
-    // TODO: implement newConnection
-    throw UnimplementedError();
+  Future<BluetoothDeviceConnection> newConnection(
+      BluetoothDeviceId deviceId) async {
+    var device = _scanCache.getDevice(deviceId);
+    if (device == null) {
+      throw StateError('Scan first before connecting to $deviceId');
+    }
+    return BluetoothDeviceConnectionFlutterBlue(device);
   }
 
   StreamSubscription scannerSubscription;
@@ -92,8 +123,13 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
     StreamController<ScanResult> ctlr;
     ctlr = StreamController<ScanResult>(onListen: () {
       scannerSubscription ??=
-          native.FlutterBlue.instance.scan().listen((event) {
-        ctlr.add(ScanResultFlutter(event));
+          native.FlutterBlue.instance.scan().listen((nativeResult) {
+        var scanResult = ScanResultFlutter(nativeResult);
+
+        // cache
+        _scanCache.addDevice(scanResult.device as BluetoothDeviceFlutterBlue);
+
+        ctlr.add(scanResult);
       });
     }, onCancel: () {
       native.FlutterBlue.instance.stopScan();

@@ -35,8 +35,6 @@ dev_dependencies:
   test:
   tekartik_bluetooth_flutter_blue:
     path: ../bluetooth_flutter_blue
-  tekartik_bluetooth_bluez:
-    path: ../bluetooth_bluez
 
   tekartik_test_menu_flutter:
     git:

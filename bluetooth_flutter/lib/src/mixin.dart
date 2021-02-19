@@ -1,4 +1,5 @@
 import 'package:tekartik_bluetooth/bluetooth.dart';
+import 'package:tekartik_bluetooth/bluetooth_device.dart';
 // ignore: implementation_imports
 import 'package:tekartik_bluetooth/src/mixin.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
@@ -22,7 +23,8 @@ class MixinTest with BluetoothFlutterManagerMixin, BluetoothManagerMixin {
 mixin BluetoothFlutterManagerMixin
     implements BluetoothFlutterManager, BluetoothManagerMixin {
   @override
-  Future<BluetoothDeviceConnection> newConnection(String deviceId) async {
+  Future<BluetoothDeviceConnection> newConnection(
+      BluetoothDeviceId deviceId) async {
     var connection = BluetoothDeviceConnectionFlutterImpl(manager: this);
 
     var map = Model();

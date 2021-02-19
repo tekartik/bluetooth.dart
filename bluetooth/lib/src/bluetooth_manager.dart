@@ -1,3 +1,4 @@
+import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/bluetooth_state_service.dart';
 import 'package:tekartik_bluetooth/src/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/src/device_connection.dart';
@@ -36,7 +37,7 @@ abstract class BluetoothManager extends BluetoothStateService {
   Future<List<BluetoothDevice>> getConnectedDevices();
 
   /// Connect
-  Future<BluetoothDeviceConnection> newConnection(String deviceId);
+  Future<BluetoothDeviceConnection> newConnection(BluetoothDeviceId deviceId);
 
   /// For server side only
   Future<void> close();

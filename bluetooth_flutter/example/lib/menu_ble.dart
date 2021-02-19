@@ -6,6 +6,7 @@ import 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart'
     show BluetoothFlutter;
 import 'package:tekartik_bluetooth_flutter/bluetooth_flutter_peripheral.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
+import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth_flutter_example/ble_utils.dart';
 import 'package:tekartik_bluetooth_flutter_example/constant.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
@@ -188,8 +189,8 @@ void menuBle(
   });
 
   menu('ble_connect', () {
-    List<String> deviceIds = [];
-    Map<String, BluetoothDevice> _devices = {};
+    List<BluetoothDeviceId> deviceIds = [];
+    Map<BluetoothDeviceId, BluetoothDevice> _devices = {};
     void _menu(String name) {
       StreamSubscription scanSubscription;
       BluetoothDeviceConnection deviceConnection;

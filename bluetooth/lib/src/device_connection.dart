@@ -42,6 +42,26 @@ class BluetoothDeviceConnectionState {
     }
     return false;
   }
+
+  @override
+  String toString() {
+    switch (state) {
+      case bluetoothDeviceConnectionStateDisconnected:
+        return 'State.disconnected';
+      case bluetoothDeviceConnectionStateDisconnecting:
+        return 'State.disconnecting';
+      case bluetoothDeviceConnectionStateConnected:
+        return 'State.connected';
+      case bluetoothDeviceConnectionStateConnecting:
+        return 'State.connecting';
+      case bluetoothDeviceConnectionStateUnknown:
+        return 'State.unknown';
+      default:
+        return 'State.other';
+    }
+    // TODO: implement toString
+    return super.toString();
+  }
 }
 
 abstract class BluetoothDeviceConnection {

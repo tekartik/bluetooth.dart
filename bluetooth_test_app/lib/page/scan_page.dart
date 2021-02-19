@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
+import 'package:tekartik_bluetooth_test_app/ble/app_ble.dart';
+//import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
+import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth_test_app/constant.dart';
 import 'package:tekartik_bluetooth_test_app/import/common_import.dart';
 
@@ -64,8 +66,8 @@ class _ScanPageState extends State<ScanPage> {
                     var deviceId = item?.device?.id;
                     return ListTile(
                       title: Text(
-                          item.device.name ?? deviceId ?? 'Unknown device'),
-                      subtitle: Text(deviceId ?? ''),
+                          item.device.name ?? deviceId.id ?? 'Unknown device'),
+                      subtitle: Text(deviceId.id ?? ''),
                       onTap: deviceId == null
                           ? null
                           : () {
@@ -115,8 +117,9 @@ class _ScanPageState extends State<ScanPage> {
   }
 
   Future startScan(BuildContext context) async {
+    print('stopScanning');
     stopScan();
-    var info = await bluetoothManager.getInfo();
+    var info = await initBluetoothManager.getInfo();
     // devPrint('info: $info');
     if (!info.hasBluetoothBle) {
       final snackBar =
@@ -124,10 +127,10 @@ class _ScanPageState extends State<ScanPage> {
       Scaffold.of(context).showSnackBar(snackBar);
       return;
     } else if (!info.isBluetoothEnabled) {
-      if (bluetoothManager.supportsEnable) {
-        await bluetoothManager.enable(
+      if (initBluetoothManager.supportsEnable) {
+        await initBluetoothManager.enable(
             androidRequestCode: androidEnableBluetoothRequestCode);
-        info = await bluetoothManager.getInfo();
+        info = await initBluetoothManager.getInfo();
       }
     }
     if (!info.isBluetoothEnabled) {
@@ -137,8 +140,8 @@ class _ScanPageState extends State<ScanPage> {
       return;
     }
 
-    if (bluetoothManager.isAndroid) {
-      if (!await bluetoothManager.checkCoarseLocationPermission(
+    if (initBluetoothManager.isAndroid) {
+      if (!await initBluetoothManager.checkCoarseLocationPermission(
           androidRequestCode: androidCheckCoarseLocationPermission)) {
         final snackBar = const SnackBar(
             content: Text(
@@ -146,8 +149,8 @@ class _ScanPageState extends State<ScanPage> {
         Scaffold.of(context).showSnackBar(snackBar);
       }
     }
-    // devPrint('scanning...');
-    scanSubscription = bluetoothManager.scan().listen((data) {
+    print('scanning...');
+    scanSubscription = deviceBluetoothManager.scan().listen((data) {
       // devPrint('$data');
       var scanResults = results.value;
       var list = scanResults?.list;

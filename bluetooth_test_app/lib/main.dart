@@ -3,6 +3,7 @@ import 'package:tekartik_bluetooth_test_app/ble/app_ble.dart';
 import 'package:tekartik_bluetooth_test_app/page/device_page.dart';
 import 'package:tekartik_bluetooth_test_app/page/scan_page.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
+import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
 import 'test_main.dart' as test_main;
 
@@ -81,8 +82,8 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           () async {
-            var deviceId = await Navigator.of(context)
-                .push<String>(MaterialPageRoute(builder: (_) => ScanPage()));
+            var deviceId = await Navigator.of(context).push<BluetoothDeviceId>(
+                MaterialPageRoute(builder: (_) => ScanPage()));
             if (deviceId != null) {
               await Navigator.of(context).push<String>(MaterialPageRoute(
                   builder: (_) => DevicePage(deviceId: deviceId)));

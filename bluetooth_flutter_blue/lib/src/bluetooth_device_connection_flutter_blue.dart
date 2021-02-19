@@ -34,7 +34,10 @@ class BluetoothDeviceConnectionFlutterBlue
   @override
   Future connect() async {
     var nativeImpl = device.nativeImpl;
-    await nativeImpl.connect();
+
+    /// Auto connect GATT does not work when working with BLE simulation
+    /// on Android
+    await nativeImpl.connect(autoConnect: false);
   }
 
   @override

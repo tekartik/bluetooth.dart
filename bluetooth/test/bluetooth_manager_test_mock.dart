@@ -1,4 +1,5 @@
 import 'package:tekartik_bluetooth/bluetooth.dart';
+import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/src/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/src/options.dart';
 import 'package:tekartik_bluetooth/src/scan_result.dart';
@@ -66,7 +67,7 @@ mixin BluetoothManagerMixin implements BluetoothManager {
   bool get isIOS => throw UnimplementedError();
 
   @override
-  Future<BluetoothDeviceConnection> newConnection(String deviceId) {
+  Future<BluetoothDeviceConnection> newConnection(BluetoothDeviceId deviceId) {
     // TODO: implement newConnection
     throw UnimplementedError();
   }
