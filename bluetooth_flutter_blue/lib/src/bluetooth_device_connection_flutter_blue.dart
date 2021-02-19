@@ -22,6 +22,38 @@ BluetoothDeviceConnectionState connectionStateFromBluetoothDeviceState(
   return BluetoothDeviceConnectionState.unknown;
 }
 
+extension CharacteristicPropertiesFlutterBlueExt
+    on native.CharacteristicProperties {
+  int getValue() {
+    var value = 0;
+    if (broadcast) {
+      value |= blePropertyBroadcast;
+    }
+    if (read) {
+      value |= blePropertyRead;
+    }
+    if (writeWithoutResponse) {
+      value |= blePropertyWriteNoResponse;
+    }
+    if (write) {
+      value |= blePropertyWrite;
+    }
+    if (notify) {
+      value |= blePropertyNotify;
+    }
+    if (indicate) {
+      value |= blePropertyIndicate;
+    }
+    if (authenticatedSignedWrites) {
+      value |= blePropertySignedWrite;
+    }
+    if (extendedProperties) {
+      value |= blePropertyExtendedProps;
+    }
+    return value;
+  }
+}
+
 class BluetoothDeviceConnectionFlutterBlue
     implements BluetoothDeviceConnection {
   final BluetoothDeviceFlutterBlue device;
@@ -54,6 +86,7 @@ class BluetoothDeviceConnectionFlutterBlue
       var bleCharacteristics = <BleBluetoothCharacteristic>[];
       for (var nativeCharacteristic in native.characteristics) {
         var bleCharacteristic = BleBluetoothCharacteristic(
+            properties: nativeCharacteristic.properties.getValue(),
             service: bleService,
             uuid: uuidFromGuid((nativeCharacteristic.uuid)));
         bleCharacteristics.add(bleCharacteristic);
