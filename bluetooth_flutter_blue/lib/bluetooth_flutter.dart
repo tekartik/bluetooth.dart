@@ -1,6 +1,6 @@
 import 'package:flutter_blue/flutter_blue.dart';
 
-export 'package:flutter_blue/flutter_blue.dart';
+//export 'package:flutter_blue/flutter_blue.dart';
 export 'package:tekartik_bluetooth/bluetooth.dart';
 export 'package:tekartik_bluetooth/bluetooth_state_service.dart';
 export 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart'
@@ -9,6 +9,8 @@ export 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart'
         bluetoothLogLevelVerbose,
         // ignore: deprecated_member_use
         BluetoothOptions;
+export 'src/bluetooth_manager_flutter_blue.dart'
+    show BluetoothManagerFlutterBlue, bluetoothManagerFlutterBlue;
 
 class BluetoothFlutterBlue {
   static bool _isSupported;

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tekartik_bluetooth/ble.dart';
-import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
+import 'package:tekartik_bluetooth/bluetooth_device.dart';
+import 'package:tekartik_bluetooth_test_app/ble/app_ble.dart';
 import 'package:tekartik_bluetooth_test_app/import/common_import.dart';
 import 'package:tekartik_bluetooth_test_app/page/ble_service_page.dart';
 
 class DevicePage extends StatefulWidget {
-  final String deviceId;
+  final BluetoothDeviceId deviceId;
 
   const DevicePage({Key key, @required this.deviceId}) : super(key: key);
 
@@ -149,22 +150,26 @@ class _DevicePageState extends State<DevicePage> {
   }
 
   Future _disconnect() async {
-    await connection?.disconnect();
-    connection?.close();
-    connection = null;
+    if (connection != null) {
+      print('Disconnecting');
+      await connection?.disconnect();
+      connection?.close();
+      connection = null;
+    }
   }
 
   StreamSubscription stateSubscription;
   Future _connect() async {
     _deviceServices.add(null);
+
     await _disconnect();
     // Created only once
-
-    connection = await bluetoothManager.newConnection(widget.deviceId);
+    print('Connecting');
+    connection = await deviceBluetoothManager.newConnection(widget.deviceId);
 
     unawaited(stateSubscription?.cancel());
     stateSubscription = connection.onConnectionState.listen((state) {
-      // devPrint('got state: $state');
+      print('onConnectionState: $state');
       connectionState
           .add(connectionState.value?.clone(deviceConnectionState: state));
     });
@@ -172,7 +177,7 @@ class _DevicePageState extends State<DevicePage> {
     try {
       connectionState
           .add(connectionState.value?.clone(discoveringServices: true));
-      // devPrint('Discovering services');
+      print('Discovering services');
       await connection.discoverServices();
       // devPrint('getting services');
       var services = await connection.getServices();
@@ -191,6 +196,7 @@ class _DevicePageState extends State<DevicePage> {
 
   @override
   void dispose() {
+    _disconnect();
     stateSubscription?.cancel();
     connection?.close();
     connectionState.close();

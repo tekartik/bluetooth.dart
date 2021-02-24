@@ -6,7 +6,7 @@ homepage:
 publish_to: none
 
 environment:
-  sdk: ">=2.5.0-dev <3.0.0"
+  sdk: '>=2.10.0-0 <3.0.0'
 
 dependencies:
   flutter:
@@ -28,7 +28,7 @@ dependencies:
     version: '>=0.2.1'
 
 dependency_overrides:
-  pedantic: '>=1.9.0'
+  # pedantic: '>=1.9.0'
   tekartik_bluetooth:
     path: ../bluetooth
   tekartik_bluetooth_flutter:

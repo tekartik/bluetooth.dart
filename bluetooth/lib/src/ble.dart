@@ -7,9 +7,20 @@ import 'package:tekartik_common_utils/hex_utils.dart';
 /// A ble bluetooth service
 class BleBluetoothService {
   final Uuid128 uuid;
-  List<BleBluetoothCharacteristic> characteristics;
 
-  BleBluetoothService({@required this.uuid, this.characteristics});
+  List<BleBluetoothCharacteristic> _characteristics;
+
+  /// Modifiable
+  List<BleBluetoothCharacteristic> get characteristics => _characteristics;
+
+  /// Deprecate for safety only
+  @protected
+  set characteristics(List<BleBluetoothCharacteristic> characteristics) =>
+      _characteristics = characteristics;
+
+  BleBluetoothService(
+      {@required this.uuid, List<BleBluetoothCharacteristic> characteristics})
+      : _characteristics = characteristics;
 
   @override
   int get hashCode => uuid.hashCode;

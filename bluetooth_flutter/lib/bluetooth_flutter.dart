@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:synchronized/synchronized.dart';
+import 'package:tekartik_bluetooth/bluetooth_service.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_flutter_peripheral.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
 import 'package:tekartik_bluetooth_flutter/src/plugin.dart';
@@ -13,8 +13,10 @@ export 'package:tekartik_bluetooth_flutter/src/constant.dart'
     show bluetoothLogLevelNone, bluetoothLogLevelVerbose;
 export 'package:tekartik_bluetooth_flutter/src/options.dart'
     show
-        // ignore: deprecated_member_use_from_same_package
+        // ignore: deprecated_member_use_from_same_package, deprecated_member_use
         BluetoothOptions;
+
+export 'src/plugin.dart';
 
 // TODO: do not expose
 class BluetoothFlutter {
@@ -60,9 +62,10 @@ class BluetoothFlutter {
   }
 
   /// Occurs when the bluetooth state has changed
-  static Stream<BluetoothFlutterSlaveConnection> onSlaveConnectionChanged() {
-    return _connectionChannel.receiveBroadcastStream().map(
-        (buffer) => BluetoothFlutterSlaveConnection()..fromMap(buffer as Map));
+  static Stream<BluetoothSlaveConnection> onSlaveConnectionChanged() {
+    return _connectionChannel
+        .receiveBroadcastStream()
+        .map((buffer) => BluetoothSlaveConnection()..fromMap(buffer as Map));
   }
 
   static Future startAdvertising({AdvertiseData advertiseData}) async {
@@ -107,8 +110,10 @@ class BluetoothFlutter {
     _isSupported ??= await _isSupportedReady;
     assert(_isSupported, 'call bluetoothStatus first');
 
-    var peripheral =
-        BluetoothPeripheral(services: services, deviceName: deviceName);
+    var peripheral = BluetoothPeripheral(
+        services: services,
+        deviceName: deviceName,
+        plugin: bluetoothFlutterPlugin);
 
     await _channel.invokeMethod('peripheralInit', peripheral.toMap());
     return peripheral;

@@ -1,14 +1,16 @@
 # bluetooth_server
 
-Bluetooth service component
+Base for a bluetooth server (not flutter specific)
 
-## Getting Started
+# Setup
 
-This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
+```yaml
+dependencies:
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+  tekartik_bluetooth_server:
+    git:
+      url: git://git@github.com/tekartik/bluetooth.dart
+      path: bluetooth_server
+      ref: dart2
+    version: '>=0.2.1'
+```

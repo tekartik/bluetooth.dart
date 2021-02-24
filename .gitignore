@@ -8,3 +8,6 @@ build/
 .idea/
 .vscode/
 *.iml
+
+# local
+.local/

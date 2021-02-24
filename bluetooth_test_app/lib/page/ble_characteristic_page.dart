@@ -97,7 +97,6 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage> {
                           () async {
                             try {
                               var bcv = await connection.readCharacteristic(
-                                  widget.appBleCharacteristic.connection,
                                   widget.appBleCharacteristic.characteristic);
                               valueSubject
                                   .add(_ValueState()..value = bcv.value);

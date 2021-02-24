@@ -6,18 +6,20 @@ version: 0.2.1
 publish_to: none
 
 environment:
-  sdk: '>=2.5.0-dev <3.0.0'
+  sdk: '>=2.10.0-0 <3.0.0'
 
 dependencies:
-  uuid:
+  # Temp pre-nnbd
+  uuid: '<=3.0.0'
   tekartik_common_utils:
     git:
       url: git://github.com/tekartik/common_utils.dart
       ref: dart2
     version: '>=0.10.7+1'
+  rxdart:
 
 dependency_overrides:
-  pedantic: '>=1.9.0'
+  # pedantic: '>=1.9.0'
 
 dev_dependencies:
   test: ^1.0.0

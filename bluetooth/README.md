@@ -6,10 +6,9 @@ Bluetooth common
 
 ```yaml
 dependencies:
-
   tekartik_bluetooth:
     git:
-      url: git://git@github.com/tekartik/bluetooth.dart
+      url: git://github.com/tekartik/bluetooth.dart
       path: bluetooth
       ref: dart2
     version: '>=0.2.1'

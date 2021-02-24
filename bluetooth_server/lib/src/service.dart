@@ -1,27 +1,29 @@
 // ignore_for_file: implementation_imports
-import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
-import 'package:tekartik_bluetooth_flutter/src/mixin.dart';
+import 'package:tekartik_bluetooth/bluetooth_manager.dart';
+//import 'package:tekartik_bluetooth_flutter/src/mixin.dart';
 import 'package:tekartik_bluetooth_server/bluetooth.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_web_socket/web_socket.dart';
+import 'package:tekartik_bluetooth/src/mixin.dart';
 
-class BluetoothServerFlutterService
-    with BluetoothFlutterManagerMixin
-    implements BluetoothFlutterManager {
-  BluetoothServerFlutterService(this.context);
+class BluetoothServerService
+    with BluetoothManagerMixin
+    implements BluetoothManager {
+  BluetoothServerService(this.context);
 
   final BluetoothServerContext context;
 
-  static Future<BluetoothServerFlutterService> create(String url,
+  static Future<BluetoothServerService> create(String url,
       {WebSocketChannelClientFactory webSocketChannelClientFactory}) async {
     var context = await BluetoothServerContext.connect(url,
         webSocketChannelClientFactory: webSocketChannelClientFactory);
     if (context != null) {
-      return BluetoothServerFlutterService(context);
+      return BluetoothServerService(context);
     }
     return null;
   }
 
+  @override
   Future close() async {
     await context.close();
   }

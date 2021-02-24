@@ -1,16 +1,14 @@
 name: tekartik_bluetooth_server
 description: Bluetooth server component
-version: 0.0.1
+version: 0.2.1
 author:
 homepage:
 publish_to: none
 
 environment:
-  sdk: ">=2.5.0 <3.0.0"
+  sdk: '>=2.10.0-0 <3.0.0'
 
 dependencies:
-  flutter:
-    sdk: flutter
   tekartik_web_socket_io:
     git:
       url: git://github.com/tekartik/web_socket.dart
@@ -23,27 +21,21 @@ dependencies:
       url: git://github.com/tekartik/common_utils.dart
       ref: dart2
     version: '>=0.9.7+1'
-  tekartik_bluetooth_flutter_blue:
+  tekartik_bluetooth:
     git:
       url: git://github.com/tekartik/bluetooth.dart
-      path: bluetooth_flutter_blue
+      path: bluetooth
       ref: dart2
     version: '>=0.2.1'
 
 dev_dependencies:
   test:
-  flutter_test:
-    sdk: flutter
   process_run:
 
 dependency_overrides:
-  pedantic: '>=1.9.0'
+  # pedantic: '>=1.9.0'
   tekartik_bluetooth:
     path: ../bluetooth
-  tekartik_bluetooth_flutter_blue:
-    path: ../bluetooth_flutter_blue
-  tekartik_bluetooth_flutter:
-    path: ../bluetooth_flutter
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

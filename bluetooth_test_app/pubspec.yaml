@@ -12,9 +12,10 @@ description: Simple bluetooth test app
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 version: 1.0.0+1
+publish_to: none
 
 environment:
-  sdk: ">=2.5.0-dev <3.0.0"
+  sdk: '>=2.10.0-0 <3.0.0'
 
 dependencies:
   flutter:
@@ -43,10 +44,15 @@ dev_dependencies:
     version: '>=0.2.5'
 
 dependency_overrides:
-  pedantic: '>=1.9.0'
+  # pedantic: '>=1.9.0'
   tekartik_bluetooth:
     path: ../bluetooth
-
+  tekartik_bluetooth_flutter_blue:
+    path: ../bluetooth_flutter_blue
+  tekartik_bluetooth_flutter:
+    path: ../bluetooth_flutter
+  tekartik_bluetooth_server:
+    path: ../bluetooth_server
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
