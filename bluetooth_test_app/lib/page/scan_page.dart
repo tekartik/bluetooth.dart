@@ -124,7 +124,7 @@ class _ScanPageState extends State<ScanPage> {
     if (!info.hasBluetoothBle) {
       final snackBar =
           const SnackBar(content: Text('Bluetooth BLE not supported'));
-      Scaffold.of(context).showSnackBar(snackBar);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
     } else if (!info.isBluetoothEnabled) {
       if (initBluetoothManager.supportsEnable) {
@@ -136,7 +136,7 @@ class _ScanPageState extends State<ScanPage> {
     if (!info.isBluetoothEnabled) {
       final snackBar = const SnackBar(
           content: Text('Please enable Bluetooth on your device'));
-      Scaffold.of(context).showSnackBar(snackBar);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
     }
 
@@ -146,7 +146,7 @@ class _ScanPageState extends State<ScanPage> {
         final snackBar = const SnackBar(
             content: Text(
                 'Please enable location services to scan for nearby devices'));
-        Scaffold.of(context).showSnackBar(snackBar);
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     }
     print('scanning...');

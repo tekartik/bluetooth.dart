@@ -72,12 +72,12 @@ class Uuid128 {
   String _text;
 
   Uuid128.from({Uint8List bytes, String text})
-      : _value = bytes ?? Uint8List.fromList(Uuid().parse(text)),
+      : _value = bytes ?? Uint8List.fromList(Uuid.parse(text)),
         _text = text;
 
   Uuid128(String text)
       : _text = text,
-        _value = Uint8List.fromList(Uuid().parse(text));
+        _value = Uint8List.fromList(Uuid.parse(text));
 
   Uint8List get bytes => _value;
 
@@ -108,7 +108,7 @@ class Uuid128 {
   Uuid16 get serviceUuid32 => longNumberUuid32;
 
   @override
-  String toString() => _text ??= Uuid().unparse(_value);
+  String toString() => _text ??= Uuid.unparse(_value);
 
   @override
   int get hashCode => _value[2] + _value[3];
