@@ -91,8 +91,7 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage> {
                 builder: (context, snapshot) {
                   var state = snapshot.data;
                   return ListTile(
-                      leading: RaisedButton(
-                        child: const Text('READ'),
+                      leading: ElevatedButton(
                         onPressed: () {
                           () async {
                             try {
@@ -105,6 +104,7 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage> {
                             }
                           }();
                         },
+                        child: const Text('READ'),
                       ),
                       subtitle: state == null
                           ? null

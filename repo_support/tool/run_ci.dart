@@ -1,4 +1,5 @@
 import 'package:dev_test/package.dart';
+import 'package:path/path.dart';
 
 Future main() async {
   for (var dir in [
@@ -11,6 +12,6 @@ Future main() async {
     'bluetooth_test',
     'bluetooth_test_app',
   ]) {
-    await packageRunCi(dir);
+    await packageRunCi(join('..', dir));
   }
 }

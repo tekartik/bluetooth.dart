@@ -83,39 +83,39 @@ class _MyAppState extends State<MyApp> {
         body: Center(
           child: Column(children: <Widget>[
             Text('on: $_statusDate\nBluetooth status $_bluetoothState'),
-            RaisedButton(
+            ElevatedButton(
                 child: Text('enable'),
                 onPressed: () async {
                   BluetoothFlutter.enableBluetooth(requestCode: 1);
                   await getStatus();
                 }),
-            RaisedButton(
+            ElevatedButton(
               child: Text('enable admin'),
               onPressed: () async {
                 BluetoothFlutter.enableBluetooth();
                 await getStatus();
               },
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text('disable'),
               onPressed: () async {
                 BluetoothFlutter.disableBluetooth();
                 await getStatus();
               },
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text('getStatus'),
               onPressed: () async {
                 await getStatus();
               },
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text('startAdvertising'),
               onPressed: () async {
                 await BluetoothFlutter.startAdvertising();
               },
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text('stopAdvertising'),
               onPressed: () async {
                 await BluetoothFlutter.stopAdvertising();

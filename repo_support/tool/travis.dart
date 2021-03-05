@@ -1,11 +1,12 @@
 import 'package:process_run/shell.dart';
+import 'package:path/path.dart';
 
 Future main() async {
   var shell = Shell();
 
   // Regular dart package
   for (var dir in ['bluetooth']) {
-    shell = shell.pushd(dir);
+    shell = shell.pushd(join('..', dir));
     await shell.run('''
 
 pub get
@@ -24,7 +25,7 @@ dart tool/travis.dart
     'bluetooth_test',
     'bluetooth_test_app'
   ]) {
-    shell = shell.pushd(dir);
+    shell = shell.pushd(join('..', dir));
     await shell.run('''
 
 flutter packages get

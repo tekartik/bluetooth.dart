@@ -182,7 +182,7 @@ class BluetoothPeripheralWriteCharacteristicEvent {
 
   @override
   String toString() =>
-      '$serviceUuid ${characteristicUuid} ${value != null ? toHexString(value) : null}';
+      '$serviceUuid $characteristicUuid ${value != null ? toHexString(value) : null}';
 }
 
 class BluetoothPeripheral {

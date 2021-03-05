@@ -96,8 +96,9 @@ class _BluetoothServerHomePageState extends State<BluetoothServerHomePage> {
                         keyboardType: TextInputType.number,
                       )),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      RaisedButton(
+                      ElevatedButton(
                         onPressed: () async {
                           if (!app.bluetoothServerStarted) {
                             await startServer();
@@ -109,7 +110,6 @@ class _BluetoothServerHomePageState extends State<BluetoothServerHomePage> {
                             Text(app.bluetoothServerStarted ? 'STOP' : 'START'),
                       ),
                     ],
-                    mainAxisAlignment: MainAxisAlignment.center,
                   )
                 ];
                 /*

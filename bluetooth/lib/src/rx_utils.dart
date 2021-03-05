@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:rxdart/subjects.dart';
+import 'package:rxdart/rxdart.dart';
 
 abstract class SubjectStreamInterface<T> {
   Stream<T> get stream;

@@ -35,6 +35,10 @@ dependency_overrides:
   tekartik_bluetooth:
     path: ../../bluetooth
 
+  # Temp nnbd
+  uuid: '>=3.0.0-0'
+  # Temp nnbd
+  crypto:
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
 

@@ -59,8 +59,6 @@ class BluetoothDeviceConnectionState {
       default:
         return 'State.other';
     }
-    // TODO: implement toString
-    return super.toString();
   }
 }
 

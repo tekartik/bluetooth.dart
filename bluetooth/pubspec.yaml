@@ -10,7 +10,8 @@ environment:
 
 dependencies:
   # Temp pre-nnbd
-  uuid: '<=3.0.0'
+  # uuid: '<=3.0.0-0'
+  uuid:
   tekartik_common_utils:
     git:
       url: git://github.com/tekartik/common_utils.dart

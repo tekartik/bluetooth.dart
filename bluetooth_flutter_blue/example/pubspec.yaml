@@ -32,6 +32,10 @@ dev_dependencies:
     version: '>=0.2.5'
 
 dependency_overrides:
+  # temp nnbd
+  crypto:
+  # temp nnbd
+  uuid: '>=3.0.0-0'
   tekartik_bluetooth:
     path: ../../bluetooth
   tekartik_bluetooth_flutter:

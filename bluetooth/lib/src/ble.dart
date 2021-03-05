@@ -111,7 +111,7 @@ mixin BleBluetoothCharacteristicMixin implements BleBluetoothCharacteristic {
 
   @override
   String toString() {
-    return '${uuid}';
+    return '$uuid';
   }
 
   @override
@@ -140,7 +140,7 @@ mixin BleBluetoothCharacteristicValueMixin
 
   @override
   String toString() {
-    return '${uuid} value ${value == null ? value : toHexString(value)}';
+    return '$uuid value ${value == null ? value : toHexString(value)}';
   }
 }
 
