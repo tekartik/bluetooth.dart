@@ -11,13 +11,14 @@ import 'import.dart';
 
 class MixinTest with BluetoothFlutterManagerMixin, BluetoothManagerMixin {
   @override
-  Future<T> invokeMethod<T>(String method, [arguments]) => null;
+  Future<T> invokeMethod<T>(String method, [arguments]) =>
+      throw UnimplementedError();
 
   @override
-  bool get isAndroid => null;
+  bool? get isAndroid => null;
 
   @override
-  bool get isIOS => null;
+  bool? get isIOS => null;
 }
 
 mixin BluetoothFlutterManagerMixin
@@ -30,12 +31,12 @@ mixin BluetoothFlutterManagerMixin
     var map = Model();
     map['deviceId'] = deviceId;
     var result = await invokeMethod<dynamic>('remoteNewConnection', map);
-    int connectionId;
+    int? connectionId;
     if (result is int) {
       connectionId = result;
     } else if (result is Map) {
       // ? 2019-09-23 not used on Android
-      connectionId = result[connectionIdKey] as int;
+      connectionId = result[connectionIdKey] as int?;
     }
     connection.connectionId = connectionId;
     print('newConnection success $connectionId');

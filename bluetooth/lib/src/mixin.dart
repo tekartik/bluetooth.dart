@@ -10,7 +10,8 @@ import 'import.dart';
 
 class MixinTest with BluetoothManagerMixin {
   @override
-  Future<T>? invokeMethod<T>(String method, [arguments]) => null;
+  Future<T> invokeMethod<T>(String method, [arguments]) =>
+      throw UnimplementedError();
 
   @override
   bool? get isAndroid => null;
@@ -22,14 +23,14 @@ class MixinTest with BluetoothManagerMixin {
 mixin BluetoothManagerMixin implements BluetoothManager {
   final connections = <int?, BluetoothDeviceConnection>{};
 
-  Future<T>? invokeMethod<T>(String method, [dynamic arguments]);
+  Future<T> invokeMethod<T>(String method, [dynamic arguments]);
 
   @override
   bool? get supportsEnable => isAndroid;
 
   @override
   Future<BluetoothInfo?> getInfo() async {
-    var result = await invokeMethod<Map>('getInfo')!;
+    var result = await invokeMethod<Map>('getInfo');
     if (result is Map) {
       var info = BluetoothInfoImpl()..fromMap(result);
       return info;
@@ -90,7 +91,7 @@ mixin BluetoothManagerMixin implements BluetoothManager {
 
   @override
   Future<List<BluetoothDevice>?> getConnectedDevices() async {
-    var result = await invokeMethod<Iterable>('getConnectedDevices')!;
+    var result = await invokeMethod<Iterable>('getConnectedDevices');
     if (result is Iterable) {
       return result
           .map((item) => asMap(item))
@@ -113,7 +114,7 @@ mixin BluetoothManagerMixin implements BluetoothManager {
   @override
   Future<bool> checkCoarseLocationPermission({int? androidRequestCode}) async {
     return await invokeMethod<bool>('checkCoarseLocationPermission',
-        <String, dynamic>{'androidRequestCode': androidRequestCode})!;
+        <String, dynamic>{'androidRequestCode': androidRequestCode});
   }
 
   @override
