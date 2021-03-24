@@ -9,21 +9,21 @@ import 'package:tekartik_bluetooth_test_app/page/ble_service_page.dart';
 class DevicePage extends StatefulWidget {
   final BluetoothDeviceId deviceId;
 
-  const DevicePage({Key key, @required this.deviceId}) : super(key: key);
+  const DevicePage({Key? key, required this.deviceId}) : super(key: key);
 
   @override
   _DevicePageState createState() => _DevicePageState();
 }
 
 class _DeviceState {
-  final BluetoothDeviceConnectionState deviceConnectionState;
-  final bool discoveringServices;
+  final BluetoothDeviceConnectionState? deviceConnectionState;
+  final bool? discoveringServices;
 
   _DeviceState({this.deviceConnectionState, this.discoveringServices});
 
   _DeviceState clone(
-      {bool discoveringServices,
-      BluetoothDeviceConnectionState deviceConnectionState}) {
+      {bool? discoveringServices,
+      BluetoothDeviceConnectionState? deviceConnectionState}) {
     return _DeviceState(
         deviceConnectionState:
             deviceConnectionState ?? this.deviceConnectionState,
@@ -38,12 +38,12 @@ class _DeviceState {
 }
 
 class _DevicePageState extends State<DevicePage> {
-  final connectionState = BehaviorSubject<_DeviceState>.seeded(_DeviceState());
-  final _deviceServices = BehaviorSubject<List<BleBluetoothService>>();
+  final connectionState = BehaviorSubject<_DeviceState?>.seeded(_DeviceState());
+  final _deviceServices = BehaviorSubject<List<BleBluetoothService>?>();
 
   // true when initial connection is started
   bool _inited = false;
-  BluetoothDeviceConnection connection;
+  BluetoothDeviceConnection? connection;
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +85,7 @@ class _DevicePageState extends State<DevicePage> {
         }
         return ListView(
           children: <Widget>[
-            StreamBuilder<_DeviceState>(
+            StreamBuilder<_DeviceState?>(
                 stream: connectionState,
                 initialData: connectionState.value,
                 builder: (context, snapshot) {
@@ -107,7 +107,7 @@ class _DevicePageState extends State<DevicePage> {
                   }
                   var discoveringServices =
                       snapshot?.data?.discoveringServices ?? false;
-                  String subtitle;
+                  String? subtitle;
                   if (discoveringServices) {
                     subtitle = 'Discovering services...';
                   }
@@ -116,7 +116,7 @@ class _DevicePageState extends State<DevicePage> {
                     subtitle: subtitle == null ? null : Text(subtitle),
                   );
                 }),
-            StreamBuilder<List<BleBluetoothService>>(
+            StreamBuilder<List<BleBluetoothService>?>(
                 stream: _deviceServices,
                 initialData: _deviceServices.value,
                 builder: (context, snapshot) {
@@ -125,7 +125,7 @@ class _DevicePageState extends State<DevicePage> {
                     return Container();
                   }
                   return Column(
-                      children: list
+                      children: list!
                           .map((service) => ListTile(
                                 title: const Text('Service'),
                                 subtitle:
@@ -158,7 +158,7 @@ class _DevicePageState extends State<DevicePage> {
     }
   }
 
-  StreamSubscription stateSubscription;
+  StreamSubscription? stateSubscription;
   Future _connect() async {
     _deviceServices.add(null);
 
@@ -168,19 +168,19 @@ class _DevicePageState extends State<DevicePage> {
     connection = await deviceBluetoothManager.newConnection(widget.deviceId);
 
     unawaited(stateSubscription?.cancel());
-    stateSubscription = connection.onConnectionState.listen((state) {
+    stateSubscription = connection!.onConnectionState.listen((state) {
       print('onConnectionState: $state');
       connectionState
           .add(connectionState.value?.clone(deviceConnectionState: state));
     });
-    await connection.connect();
+    await connection!.connect();
     try {
       connectionState
           .add(connectionState.value?.clone(discoveringServices: true));
       print('Discovering services');
-      await connection.discoverServices();
+      await connection!.discoverServices();
       // devPrint('getting services');
-      var services = await connection.getServices();
+      var services = await connection!.getServices();
       _deviceServices.add(services);
     } catch (e) {
       print(e);

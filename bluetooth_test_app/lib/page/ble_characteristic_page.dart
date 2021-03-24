@@ -9,22 +9,22 @@ import 'package:tekartik_bluetooth_test_app/utils/app_uuid_utils.dart';
 import 'package:tekartik_common_utils/hex_utils.dart';
 
 class AppBleCharacteristic {
-  final BluetoothDeviceConnection connection;
+  final BluetoothDeviceConnection? connection;
   final BleBluetoothCharacteristic characteristic;
 
   AppBleCharacteristic(
-      {@required this.connection, @required this.characteristic});
+      {required this.connection, required this.characteristic});
 }
 
 class _ValueState {
   dynamic exception;
-  Uint8List value;
+  Uint8List? value;
 }
 
 class BleCharacteristicPage extends StatefulWidget {
-  final AppBleCharacteristic appBleCharacteristic;
+  final AppBleCharacteristic? appBleCharacteristic;
 
-  const BleCharacteristicPage({Key key, this.appBleCharacteristic})
+  const BleCharacteristicPage({Key? key, this.appBleCharacteristic})
       : super(key: key);
 
   @override
@@ -36,7 +36,7 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage> {
 
   @override
   Widget build(BuildContext context) {
-    var connection = widget.appBleCharacteristic.connection;
+    var connection = widget.appBleCharacteristic!.connection;
     var descriptors = widget?.appBleCharacteristic?.characteristic?.descriptors;
     var characteristic = widget?.appBleCharacteristic?.characteristic;
 
@@ -95,8 +95,8 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage> {
                         onPressed: () {
                           () async {
                             try {
-                              var bcv = await connection.readCharacteristic(
-                                  widget.appBleCharacteristic.characteristic);
+                              var bcv = await connection!.readCharacteristic(
+                                  widget.appBleCharacteristic!.characteristic);
                               valueSubject
                                   .add(_ValueState()..value = bcv.value);
                             } catch (e) {

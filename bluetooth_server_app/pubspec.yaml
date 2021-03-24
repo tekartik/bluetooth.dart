@@ -28,7 +28,7 @@ dependencies:
   tekartik_test_menu_flutter:
     git:
       url: git://github.com/tekartik/test_menu_flutter
-      ref: null_safety
+      ref: dart2
       path: test_menu_flutter
     version: '>=0.2.4'
 
@@ -38,19 +38,20 @@ dev_dependencies:
   process_run:
 
 dependency_overrides:
-  # pedantic: '>=1.9.0'
-  tekartik_bluetooth:
-    path: ../bluetooth
-  tekartik_bluetooth_test:
-    path: ../bluetooth_test
+  # temp no nnbd yet
+  # tekartik_bluetooth:
+  #  path: ../bluetooth
+  # tekartik_bluetooth_test:
+  #  path: ../bluetooth_test
+  # tekartik_bluetooth_flutter_blue:
+  #  path: ../bluetooth_flutter_blue
+  # tekartik_bluetooth_flutter:
+  #  path: ../bluetooth_flutter
   tekartik_bluetooth_server:
     path: ../bluetooth_server
   tekartik_bluetooth_server_flutter:
     path: ../bluetooth_server_flutter
-  tekartik_bluetooth_flutter_blue:
-    path: ../bluetooth_flutter_blue
-  tekartik_bluetooth_flutter:
-    path: ../bluetooth_flutter
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

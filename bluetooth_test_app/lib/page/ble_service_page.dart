@@ -5,16 +5,16 @@ import 'package:tekartik_bluetooth_test_app/page/ble_characteristic_page.dart';
 import 'package:tekartik_bluetooth_test_app/utils/app_uuid_utils.dart';
 
 class AppBleService {
-  final BluetoothDeviceConnection connection;
+  final BluetoothDeviceConnection? connection;
   final BleBluetoothService bleService;
 
-  AppBleService({@required this.connection, @required this.bleService});
+  AppBleService({required this.connection, required this.bleService});
 }
 
 class BleServicePage extends StatefulWidget {
   final AppBleService appBleService;
 
-  const BleServicePage({Key key, @required this.appBleService})
+  const BleServicePage({Key? key, required this.appBleService})
       : super(key: key);
   @override
   _BleServicePageState createState() => _BleServicePageState();
@@ -40,7 +40,7 @@ class _BleServicePageState extends State<BleServicePage> {
             ListTile(
                 title: const Text('Service'),
                 subtitle: Text(uuidText(service?.uuid))),
-            ...characteristics.map((characteristic) {
+            ...characteristics!.map((characteristic) {
               return ListTile(
                 title: const Text('Characteristic'),
                 subtitle:

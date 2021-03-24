@@ -12,20 +12,20 @@ dependencies:
   tekartik_web_socket_io:
     git:
       url: git://github.com/tekartik/web_socket.dart
-      ref: null_safety
+      ref: dart2
       path: web_socket_io
     version: '>=0.2.0'
   json_rpc_2:
   tekartik_common_utils:
     git:
       url: git://github.com/tekartik/common_utils.dart
-      ref: null_safety
+      ref: dart2
     version: '>=0.9.7+1'
   tekartik_bluetooth:
     git:
       url: git://github.com/tekartik/bluetooth.dart
       path: bluetooth
-      ref: null_safety
+      ref: dart2
     version: '>=0.2.1'
 
 dev_dependencies:
@@ -33,9 +33,9 @@ dev_dependencies:
   process_run:
 
 dependency_overrides:
-  # pedantic: '>=1.9.0'
-  tekartik_bluetooth:
-    path: ../bluetooth
+  # temp no nnbd yet
+  # tekartik_bluetooth:
+  #  path: ../bluetooth
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

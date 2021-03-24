@@ -59,12 +59,12 @@ void main() {
     });
 
     menu('Scan', () {
-      StreamSubscription subscription;
+      StreamSubscription? subscription;
 
       item('startScan', () {
         subscription?.cancel();
         subscription = deviceBluetoothManager.scan().listen((result) {
-          write('${result.device.id} $result');
+          write('${result.device!.id} $result');
         });
       });
       item('stopScan', () {
@@ -111,7 +111,7 @@ void main() {
       write('after sleep 2000');
     });
     item('navigate', () {
-      Navigator.push(buildContext,
+      Navigator.push(buildContext!,
           MaterialPageRoute(builder: (BuildContext context) {
         return Scaffold(
             appBar: AppBar(title: const Text('test')),

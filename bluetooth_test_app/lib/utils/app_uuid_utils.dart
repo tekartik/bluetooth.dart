@@ -1,6 +1,6 @@
 import 'package:tekartik_bluetooth/uuid.dart';
 
-String uuidText(Uuid128 uuid, {Uuid128 parent}) {
+String uuidText(Uuid128? uuid, {Uuid128? parent}) {
   if (uuid == null) {
     return 'no uuid';
   }
