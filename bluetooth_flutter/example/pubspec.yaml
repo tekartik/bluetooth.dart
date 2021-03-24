@@ -17,8 +17,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_driver:
-    sdk: flutter
   process_run: '>0.10.2'
   test:
   tekartik_bluetooth_flutter:
