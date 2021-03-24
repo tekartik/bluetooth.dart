@@ -4,18 +4,18 @@ import 'package:tekartik_common_utils/model/model.dart';
 import 'bluetooth_device.dart';
 
 abstract class ScanResult {
-  BluetoothDevice get device;
-  int get rssi;
+  BluetoothDevice? get device;
+  int? get rssi;
 }
 
 class ScanResultImpl implements ScanResult {
   @override
-  BluetoothDevice get device => deviceImpl;
+  BluetoothDevice? get device => deviceImpl;
 
-  BluetoothDeviceImpl deviceImpl;
+  BluetoothDeviceImpl? deviceImpl;
 
   @override
-  int rssi;
+  int? rssi;
   void fromMap(Map map) {
     rssi = parseInt(map['rssi']);
     var deviceMap = map['device'];

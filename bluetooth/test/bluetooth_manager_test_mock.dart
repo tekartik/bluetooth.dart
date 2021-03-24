@@ -10,7 +10,7 @@ class BluetoothManagerTestMock
 
 mixin BluetoothManagerMixin implements BluetoothManager {
   @override
-  Future<bool> checkCoarseLocationPermission({int androidRequestCode}) {
+  Future<bool> checkCoarseLocationPermission({int? androidRequestCode}) {
     // TODO: implement checkCoarseLocationPermission
     throw UnimplementedError();
   }
@@ -35,7 +35,7 @@ mixin BluetoothManagerMixin implements BluetoothManager {
   }
 
   @override
-  Future enable({int requestCode, int androidRequestCode}) {
+  Future enable({int? requestCode, int? androidRequestCode}) {
     // TODO: implement enable
     throw UnimplementedError();
   }

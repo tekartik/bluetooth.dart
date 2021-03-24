@@ -8,7 +8,7 @@ import 'package:uuid/uuid.dart';
 
 class Uuid16 {
   final Uint8List bytes;
-  String _text;
+  String? _text;
 
   Uuid16.fromText(String text)
       : _text = text,
@@ -19,8 +19,8 @@ class Uuid16 {
   Uuid16.fromValue(int value) : bytes = uint16GetBytes(value);
 
   @deprecated
-  Uuid16.from({Uint8List bytes, int value})
-      : bytes = bytes ?? uint16GetBytes(value);
+  Uuid16.from({Uint8List? bytes, int? value})
+      : bytes = bytes ?? uint16GetBytes(value!);
 
   @deprecated
   Uuid16(String text)
@@ -45,34 +45,34 @@ class Uuid16 {
   }
 
   @override
-  String toString() => _text ??= toHexString(bytes).toLowerCase();
+  String toString() => _text ??= toHexString(bytes)!.toLowerCase();
 }
 
 // 16 bit uuid
 class Uuid32 {
-  final Uint8List bytes;
-  String _text;
+  final Uint8List? bytes;
+  String? _text;
 
-  Uuid32.fromBytes({Uint8List bytes}) : bytes = bytes;
+  Uuid32.fromBytes({Uint8List? bytes}) : bytes = bytes;
 
   @deprecated
-  Uuid32.from({Uint8List bytes}) : bytes = bytes;
+  Uuid32.from({Uint8List? bytes}) : bytes = bytes;
 
   Uuid32(String text)
       : _text = text,
         bytes = Uint8List.fromList(parseHexString(text));
 
   @override
-  String toString() => _text ??= toHexString(bytes).toLowerCase();
+  String toString() => _text ??= toHexString(bytes)!.toLowerCase();
 }
 
 // 128 bit uuid
 class Uuid128 {
   final Uint8List _value;
-  String _text;
+  String? _text;
 
-  Uuid128.from({Uint8List bytes, String text})
-      : _value = bytes ?? Uint8List.fromList(Uuid.parse(text)),
+  Uuid128.from({Uint8List? bytes, String? text})
+      : _value = bytes ?? Uint8List.fromList(Uuid.parse(text!)),
         _text = text;
 
   Uuid128(String text)
@@ -91,7 +91,7 @@ class Uuid128 {
   Uuid128 withUuid32(Uuid32 uuid32) {
     var list = Uint8List.fromList(_value);
     for (var i = 0; i < 4; i++) {
-      list[i] = uuid32.bytes[i];
+      list[i] = uuid32.bytes![i];
     }
     return Uuid128.from(bytes: list);
   }

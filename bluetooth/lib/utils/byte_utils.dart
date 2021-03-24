@@ -29,5 +29,5 @@ int bytesGetUint32(Uint8List bytes) {
 String uint16GetString(int value) => toLowerHexString(uint16GetBytes(value));
 
 String toLowerHexString(List<int> data) {
-  return toHexString(data).toLowerCase();
+  return toHexString(data)!.toLowerCase();
 }

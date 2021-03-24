@@ -8,19 +8,19 @@ import 'package:tekartik_bluetooth/src/scan_mode.dart';
 import 'package:tekartik_bluetooth/src/scan_result.dart';
 
 abstract class BluetoothManager extends BluetoothStateService {
-  bool get isIOS;
+  bool? get isIOS;
 
-  bool get isAndroid;
+  bool? get isAndroid;
 
   /// deprecated on purpose to remove from code.
   @deprecated
   Future<void> devSetOptions(BluetoothOptions options);
 
   /// Get the info
-  Future<BluetoothInfo> getInfo();
+  Future<BluetoothInfo?> getInfo();
 
   // Android only
-  Future<bool> checkCoarseLocationPermission({int androidRequestCode});
+  Future<bool> checkCoarseLocationPermission({int? androidRequestCode});
 
   Stream<ScanResult> scan({ScanMode scanMode = ScanMode.lowLatency});
 
@@ -34,7 +34,7 @@ abstract class BluetoothManager extends BluetoothStateService {
   /// It will cancel any scan and device connection
   Future stop();
 
-  Future<List<BluetoothDevice>> getConnectedDevices();
+  Future<List<BluetoothDevice>?> getConnectedDevices();
 
   /// Connect
   Future<BluetoothDeviceConnection> newConnection(BluetoothDeviceId deviceId);

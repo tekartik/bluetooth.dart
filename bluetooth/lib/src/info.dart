@@ -2,28 +2,28 @@ import 'package:tekartik_common_utils/bool_utils.dart';
 import 'package:tekartik_common_utils/model/model.dart';
 
 abstract class BluetoothInfo {
-  bool get hasBluetooth;
+  bool? get hasBluetooth;
 
-  bool get hasBluetoothBle;
+  bool? get hasBluetoothBle;
 
-  bool get isBluetoothEnabled;
+  bool? get isBluetoothEnabled;
 
   /// To handle Hot restart
-  bool get isScanning;
+  bool? get isScanning;
 }
 
 class BluetoothInfoImpl implements BluetoothInfo {
   @override
-  bool hasBluetooth;
+  bool? hasBluetooth;
 
   @override
-  bool hasBluetoothBle;
+  bool? hasBluetoothBle;
 
   @override
-  bool isBluetoothEnabled;
+  bool? isBluetoothEnabled;
 
   @override
-  bool isScanning;
+  bool? isScanning;
 
   BluetoothInfoImpl(
       {this.hasBluetooth, this.hasBluetoothBle, this.isBluetoothEnabled});

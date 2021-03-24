@@ -24,16 +24,16 @@ abstract class BehaviorSubjectInterface<T>
 
 /// Default to distinct for the stream
 /// To use to dispatch distinct values
-class BehaviorSubjectWrapper<T> extends _SubjectWrapper<T>
-    implements BehaviorSubjectInterface<T> {
-  BehaviorSubjectWrapper({T seedValue})
-      : super(BehaviorSubject<T>.seeded(seedValue));
+class BehaviorSubjectWrapper<T> extends _SubjectWrapper<T?>
+    implements BehaviorSubjectInterface<T?> {
+  BehaviorSubjectWrapper({T? seedValue})
+      : super(BehaviorSubject<T?>.seeded(seedValue));
 
   @override
-  T get value => (_subject as BehaviorSubject<T>).value;
+  T? get value => (_subject as BehaviorSubject<T?>).value;
 
   @override
-  Stream<T> get stream => _subject.distinct();
+  Stream<T?> get stream => _subject.distinct();
 
   @override
   Future close() {

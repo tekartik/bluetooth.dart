@@ -27,7 +27,7 @@ final Uuid128 lumiServicePingCharacteristicUuid128 =
     lumiServiceUuid128.withUuid16(lumiServicePingCharacteristicUuid16);
 
 class BatteryRemoteDevice {
-  BluetoothPeripheral bluetoothPeripheral;
+  BluetoothPeripheral? bluetoothPeripheral;
 
   static const namePrefix = 'MockRemote ';
 
@@ -66,7 +66,7 @@ class BatteryRemoteDevice {
   */
   bool hasCharacteristic(Uuid128 uuid) {
     for (var service in gattServices) {
-      for (var bs in service.characteristics) {
+      for (var bs in service.characteristics!) {
         if (bs.uuid == uuid) {
           return true;
         }
@@ -293,8 +293,8 @@ class BatteryRemoteDevice {
    */
 
   Future setCharacteristicValue(BleBluetoothCharacteristicValue bcv) async {
-    await bluetoothPeripheral.setCharacteristicValue(
-        serviceUuid: bcv.service.uuid,
+    await bluetoothPeripheral!.setCharacteristicValue(
+        serviceUuid: bcv.service!.uuid,
         characteristicUuid: bcv.uuid,
         value: bcv.value);
   }
@@ -306,16 +306,16 @@ class BatteryRemoteDevice {
   }
 
   Future notifyCharacteristicValue(BleBluetoothCharacteristicValue bcv) async {
-    await bluetoothPeripheral.notifyCharacteristicValue(
-      serviceUuid: bcv.service.uuid,
+    await bluetoothPeripheral!.notifyCharacteristicValue(
+      serviceUuid: bcv.service!.uuid,
       characteristicUuid: bcv.uuid,
     );
   }
 
-  Future<BleBluetoothCharacteristicValue> getCharacteristicValue(
+  Future<BleBluetoothCharacteristicValue?> getCharacteristicValue(
       BleBluetoothCharacteristic bc) async {
-    var value = await bluetoothPeripheral.getCharacteristicValue(
-        serviceUuid: bc.service.uuid, characteristicUuid: bc.uuid);
+    var value = await bluetoothPeripheral!.getCharacteristicValue(
+        serviceUuid: bc.service!.uuid, characteristicUuid: bc.uuid);
     return BleBluetoothCharacteristicValue(bc: bc, value: value);
   }
 
@@ -447,11 +447,11 @@ class BatteryRemoteDevice {
       // AdvertiseDataService(uuid: discoverableServiceUuid),
       // AdvertiseDataService(uuid: deviceSpecificDiscoverableServiceUuid)
     ]);
-    await bluetoothPeripheral.startAdvertising(advertiseData: advertiseData);
+    await bluetoothPeripheral!.startAdvertising(advertiseData: advertiseData);
   }
 
   Future stop() async {
-    await bluetoothPeripheral.stopAdvertising();
+    await bluetoothPeripheral!.stopAdvertising();
   }
 
   /*
