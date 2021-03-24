@@ -26,8 +26,8 @@ class DiscoveredServiceFlutterBlue {
     }
   }
 
-  BluetoothCharacteristicFlutterBlue getCharacteristic(Uuid128 uuid) =>
-      _map[uuid];
+  BluetoothCharacteristicFlutterBlue? getCharacteristic(Uuid128? uuid) =>
+      _map[uuid!];
 //BleBluetoothService service;
 
 }

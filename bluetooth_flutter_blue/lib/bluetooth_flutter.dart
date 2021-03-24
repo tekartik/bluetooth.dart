@@ -13,7 +13,7 @@ export 'src/bluetooth_manager_flutter_blue.dart'
     show BluetoothManagerFlutterBlue, bluetoothManagerFlutterBlue;
 
 class BluetoothFlutterBlue {
-  static bool _isSupported;
+  static bool? _isSupported;
 
   static Future<bool> get _isSupportedReady async {
     return _isSupported ??= await FlutterBlue.instance.isAvailable;
@@ -21,7 +21,7 @@ class BluetoothFlutterBlue {
 
   static Future<BluetoothState> get bluetoothState async {
     _isSupported ??= await _isSupportedReady;
-    if (_isSupported) {
+    if (_isSupported!) {
       return await FlutterBlue.instance.state.first;
     } else {
       return BluetoothState.unavailable;

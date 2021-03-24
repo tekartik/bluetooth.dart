@@ -19,7 +19,6 @@ BluetoothDeviceConnectionState connectionStateFromBluetoothDeviceState(
     case native.BluetoothDeviceState.disconnecting:
       return BluetoothDeviceConnectionState.disconnecting;
   }
-  return BluetoothDeviceConnectionState.unknown;
 }
 
 extension CharacteristicPropertiesFlutterBlueExt
@@ -101,7 +100,7 @@ class BluetoothDeviceConnectionFlutterBlue
 
   List<BleBluetoothService> get _discoveredServices =>
       _discoverMap.keys.toList();
-  Map<BleBluetoothService, DiscoveredServiceFlutterBlue> _discoverMap;
+  late Map<BleBluetoothService, DiscoveredServiceFlutterBlue> _discoverMap;
 
   @override
   Future discoverServices() async {
@@ -121,9 +120,9 @@ class BluetoothDeviceConnectionFlutterBlue
         .map((native) => connectionStateFromBluetoothDeviceState(native));
   }
 
-  BluetoothCharacteristicFlutterBlue findCharacteristic(
+  BluetoothCharacteristicFlutterBlue? findCharacteristic(
       BleBluetoothCharacteristic bc) {
-    var service = _discoverMap[bc.service];
+    var service = _discoverMap[bc.service!];
     if (service != null) {
       return service.getCharacteristic(bc.uuid);
     }
@@ -140,12 +139,9 @@ class BluetoothDeviceConnectionFlutterBlue
       throw StateError('read characteristic $bc not found');
     }
     var value = await characteristic.read().timeout(readCharacteristicTimeout);
-    if (value != null) {
-      var bcv = BleBluetoothCharacteristicValue(
-          bc: bc, value: Uint8List.fromList(value));
-      return bcv;
-    } else {
-      throw StateError('read characteristic $bc no value');
-    }
+
+    var bcv = BleBluetoothCharacteristicValue(
+        bc: bc, value: Uint8List.fromList(value));
+    return bcv;
   }
 }

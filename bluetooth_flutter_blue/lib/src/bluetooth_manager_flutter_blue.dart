@@ -14,7 +14,7 @@ import 'bluetooth_device_flutter_blue.dart';
 
 class ScanResultFlutter implements ScanResult {
   final native.ScanResult nativeImpl;
-  BluetoothDeviceFlutterBlue _device;
+  BluetoothDeviceFlutterBlue? _device;
 
   ScanResultFlutter(this.nativeImpl);
 
@@ -39,7 +39,7 @@ class _ScanCacheDevice {
 class _ScanCache {
   final map = <BluetoothDeviceId, _ScanCacheDevice>{};
 
-  BluetoothDeviceFlutterBlue getDevice(BluetoothDeviceId deviceId) =>
+  BluetoothDeviceFlutterBlue? getDevice(BluetoothDeviceId deviceId) =>
       map[deviceId]?.device;
 
   void addDevice(BluetoothDeviceFlutterBlue device) {
@@ -51,7 +51,7 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
   final _scanCache = _ScanCache();
 
   @override
-  Future<bool> checkCoarseLocationPermission({int androidRequestCode}) {
+  Future<bool> checkCoarseLocationPermission({int? androidRequestCode}) {
     throw UnimplementedError();
   }
 
@@ -72,7 +72,7 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
   }
 
   @override
-  Future enable({int requestCode, int androidRequestCode}) {
+  Future enable({int? requestCode, int? androidRequestCode}) {
     throw UnimplementedError();
   }
 
@@ -114,13 +114,13 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
     return BluetoothDeviceConnectionFlutterBlue(device);
   }
 
-  StreamSubscription scannerSubscription;
+  StreamSubscription? scannerSubscription;
 
   @override
   Stream<ScanResult> scan({ScanMode scanMode = ScanMode.lowLatency}) {
     scannerSubscription?.cancel();
     scannerSubscription = null;
-    StreamController<ScanResult> ctlr;
+    StreamController<ScanResult>? ctlr;
     ctlr = StreamController<ScanResult>(onListen: () {
       scannerSubscription ??=
           native.FlutterBlue.instance.scan().listen((nativeResult) {
@@ -129,7 +129,7 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
         // cache
         _scanCache.addDevice(scanResult.device as BluetoothDeviceFlutterBlue);
 
-        ctlr.add(scanResult);
+        ctlr!.add(scanResult);
       });
     }, onCancel: () {
       native.FlutterBlue.instance.stopScan();
