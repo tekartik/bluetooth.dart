@@ -1,6 +1,5 @@
 language: dart
 sudo: required
-dist: trusty
 dart:
   - stable
   - beta
@@ -11,7 +10,7 @@ before_script:
   - dart pub run tekartik_travis_ci_flutter:install
   - source $(dart pub run tekartik_travis_ci_flutter:env)
 script:
-  - dart tool/travis.dart
+  - dart tool/run_ci.dart
 matrix:
   allow_failures:
     - dart: dev
