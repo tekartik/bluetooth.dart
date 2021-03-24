@@ -28,8 +28,8 @@ class _BleServicePageState extends State<BleServicePage> {
         title: const Text('Service'),
       ),
       body: Builder(builder: (context) {
-        var service = widget.appBleService?.bleService;
-        var characteristics = service?.characteristics;
+        var service = widget.appBleService.bleService;
+        var characteristics = service.characteristics;
         if (characteristics?.isEmpty ?? true) {
           return ListView(children: <Widget>[
             const ListTile(title: Text('No characteristics found'))
@@ -39,7 +39,7 @@ class _BleServicePageState extends State<BleServicePage> {
           children: [
             ListTile(
                 title: const Text('Service'),
-                subtitle: Text(uuidText(service?.uuid))),
+                subtitle: Text(uuidText(service.uuid))),
             ...characteristics!.map((characteristic) {
               return ListTile(
                 title: const Text('Characteristic'),

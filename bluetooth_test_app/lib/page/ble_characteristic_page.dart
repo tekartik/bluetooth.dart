@@ -37,14 +37,14 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage> {
   @override
   Widget build(BuildContext context) {
     var connection = widget.appBleCharacteristic!.connection;
-    var descriptors = widget?.appBleCharacteristic?.characteristic?.descriptors;
-    var characteristic = widget?.appBleCharacteristic?.characteristic;
+    var descriptors = widget.appBleCharacteristic?.characteristic.descriptors;
+    var characteristic = widget.appBleCharacteristic?.characteristic;
 
-    var canRead = ((characteristic?.properties ?? 0) & blePropertyRead) != null;
+    var canRead = ((characteristic?.properties ?? 0) & blePropertyRead) != 0;
 
     var propertySb = StringBuffer();
     void _addPropertyText(String text, bool test) {
-      if (test ?? false) {
+      if (test) {
         if (propertySb.isNotEmpty) {
           propertySb.write(', ');
         }
@@ -67,19 +67,19 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage> {
               subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(widget.appBleCharacteristic?.characteristic?.properties
+                    Text(widget.appBleCharacteristic?.characteristic.properties
                             ?.toRadixString(2) ??
                         'no properties'),
                     if (propertySb.isNotEmpty) Text(propertySb.toString())
                   ])),
           if (descriptors?.isNotEmpty ?? false)
-            ...descriptors?.map((descriptor) {
+            ...descriptors!.map((descriptor) {
               return ListTile(
                   title: const Text('Descriptor'),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(uuidText(descriptor?.uuid,
+                      Text(uuidText(descriptor.uuid,
                           parent: characteristic?.uuid))
                     ],
                   ));

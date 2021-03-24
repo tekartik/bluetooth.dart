@@ -91,7 +91,7 @@ class _DevicePageState extends State<DevicePage> {
                 builder: (context, snapshot) {
                   // devPrint('builder ${snapshot.data}');
                   var stateText = 'Unknown';
-                  switch (snapshot?.data?.deviceConnectionState?.state ?? -1) {
+                  switch (snapshot.data?.deviceConnectionState?.state ?? -1) {
                     case bluetoothDeviceConnectionStateConnecting:
                       stateText = 'Connecting';
                       break;
@@ -106,7 +106,7 @@ class _DevicePageState extends State<DevicePage> {
                       break;
                   }
                   var discoveringServices =
-                      snapshot?.data?.discoveringServices ?? false;
+                      snapshot.data?.discoveringServices ?? false;
                   String? subtitle;
                   if (discoveringServices) {
                     subtitle = 'Discovering services...';
@@ -128,8 +128,7 @@ class _DevicePageState extends State<DevicePage> {
                       children: list!
                           .map((service) => ListTile(
                                 title: const Text('Service'),
-                                subtitle:
-                                    Text(service.uuid.toString() ?? 'no uuid'),
+                                subtitle: Text(service.uuid.toString()),
                                 onTap: () {
                                   () async {
                                     await Navigator.of(context).push<String>(

@@ -54,7 +54,7 @@ class _ScanPageState extends State<ScanPage> {
                   )
                 ]);
               }
-              var result = snapshot?.data;
+              var result = snapshot.data;
               var list = result?.list;
               if (list?.isEmpty ?? true) {
                 return const Center(child: CircularProgressIndicator());
@@ -63,16 +63,14 @@ class _ScanPageState extends State<ScanPage> {
                   itemCount: list!.length,
                   itemBuilder: (builder, index) {
                     var item = list[index];
-                    BluetoothDeviceId deviceId = item?.device?.id!;
+                    var deviceId = item.device!.id!;
                     return ListTile(
                       title: Text(
                           item.device!.name ?? deviceId.id ?? 'Unknown device'),
                       subtitle: Text(deviceId.id ?? ''),
-                      onTap: deviceId == null
-                          ? null
-                          : () {
-                              Navigator.of(context).pop(deviceId);
-                            },
+                      onTap: () {
+                        Navigator.of(context).pop(deviceId);
+                      },
                     );
                   });
             });
@@ -119,7 +117,8 @@ class _ScanPageState extends State<ScanPage> {
   Future startScan(BuildContext context) async {
     print('stopScanning');
     stopScan();
-    var info = await (initBluetoothManager.getInfo() as FutureOr<BluetoothInfo>);
+    var info =
+        await (initBluetoothManager.getInfo() as FutureOr<BluetoothInfo>);
     // devPrint('info: $info');
     if (!info.hasBluetoothBle!) {
       final snackBar =
@@ -130,7 +129,8 @@ class _ScanPageState extends State<ScanPage> {
       if (initBluetoothManager.supportsEnable!) {
         await initBluetoothManager.enable(
             androidRequestCode: androidEnableBluetoothRequestCode);
-        info = await (initBluetoothManager.getInfo() as FutureOr<BluetoothInfo>);
+        info =
+            await (initBluetoothManager.getInfo() as FutureOr<BluetoothInfo>);
       }
     }
     if (!info.isBluetoothEnabled!) {
