@@ -64,7 +64,7 @@ void main() {
       item('startScan', () {
         subscription?.cancel();
         subscription = deviceBluetoothManager.scan().listen((result) {
-          write('${result.device!.id} $result');
+          write('${result.device.id} $result');
         });
       });
       item('stopScan', () {

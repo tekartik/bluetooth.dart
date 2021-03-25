@@ -63,11 +63,10 @@ class _ScanPageState extends State<ScanPage> {
                   itemCount: list!.length,
                   itemBuilder: (builder, index) {
                     var item = list[index];
-                    var deviceId = item.device!.id!;
+                    var deviceId = item.device.id;
                     return ListTile(
-                      title: Text(
-                          item.device!.name ?? deviceId.id ?? 'Unknown device'),
-                      subtitle: Text(deviceId.id ?? ''),
+                      title: Text(item.device.name ?? deviceId.id),
+                      subtitle: Text(deviceId.id),
                       onTap: () {
                         Navigator.of(context).pop(deviceId);
                       },
@@ -156,7 +155,7 @@ class _ScanPageState extends State<ScanPage> {
       var list = scanResults?.list;
       list = (list == null) ? <ScanResult>[] : List<ScanResult>.from(list);
       var index =
-          list.indexWhere((result) => result.device!.id == data.device!.id);
+          list.indexWhere((result) => result.device.id == data.device.id);
       if (index < 0) {
         list.add(data);
       } else {

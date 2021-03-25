@@ -66,7 +66,7 @@ class BatteryRemoteDevice {
   */
   bool hasCharacteristic(Uuid128 uuid) {
     for (var service in gattServices) {
-      for (var bs in service.characteristics!) {
+      for (var bs in service.characteristics) {
         if (bs.uuid == uuid) {
           return true;
         }
@@ -294,7 +294,7 @@ class BatteryRemoteDevice {
 
   Future setCharacteristicValue(BleBluetoothCharacteristicValue bcv) async {
     await bluetoothPeripheral!.setCharacteristicValue(
-        serviceUuid: bcv.service!.uuid,
+        serviceUuid: bcv.service.uuid,
         characteristicUuid: bcv.uuid,
         value: bcv.value);
   }
@@ -307,7 +307,7 @@ class BatteryRemoteDevice {
 
   Future notifyCharacteristicValue(BleBluetoothCharacteristicValue bcv) async {
     await bluetoothPeripheral!.notifyCharacteristicValue(
-      serviceUuid: bcv.service!.uuid,
+      serviceUuid: bcv.service.uuid,
       characteristicUuid: bcv.uuid,
     );
   }
@@ -315,7 +315,7 @@ class BatteryRemoteDevice {
   Future<BleBluetoothCharacteristicValue?> getCharacteristicValue(
       BleBluetoothCharacteristic bc) async {
     var value = await bluetoothPeripheral!.getCharacteristicValue(
-        serviceUuid: bc.service!.uuid, characteristicUuid: bc.uuid);
+        serviceUuid: bc.service.uuid, characteristicUuid: bc.uuid);
     return BleBluetoothCharacteristicValue(bc: bc, value: value);
   }
 

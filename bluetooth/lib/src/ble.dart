@@ -36,17 +36,20 @@ class BleBluetoothService {
   int get shortNumber => uuid.shortNumberUuid16.value;
 }
 
+/// Ble characteristic
 abstract class BleBluetoothCharacteristic {
-  BleBluetoothService? get service;
+  BleBluetoothService get service;
 
-  Uuid128? get uuid;
-  int? get properties;
-  List<BleBluetoothDescriptor>? get descriptors;
+  Uuid128 get uuid;
+  int get properties;
+  List<BleBluetoothDescriptor> get descriptors;
 
   factory BleBluetoothCharacteristic(
-          {required BleBluetoothService? service,
-          required Uuid128? uuid,
-          int? properties,
+          {required BleBluetoothService service,
+          required Uuid128 uuid,
+
+          /// No properties by default
+          int properties = 0x0,
           List<BleBluetoothDescriptor>? descriptors}) =>
       BleBluetoothCharacteristicImpl(
           service: service, uuid: uuid, properties: properties);
@@ -58,45 +61,60 @@ abstract class BleBluetoothCharacteristic {
 
 /// Descriptor definition
 class BleBluetoothDescriptor {
-  final BleBluetoothCharacteristic? characteristic;
-  final Uuid128? uuid;
+  final BleBluetoothCharacteristic characteristic;
+  final Uuid128 uuid;
 
-  BleBluetoothDescriptor({this.characteristic, this.uuid});
+  BleBluetoothDescriptor({required this.characteristic, required this.uuid});
 }
 
 abstract class BleBluetoothCharacteristicValue {
-  BleBluetoothService? get service;
+  BleBluetoothService get service;
 
-  Uuid128? get uuid;
-  Uint8List? get value;
+  Uuid128 get uuid;
+  Uint8List get value;
 
-  BleBluetoothCharacteristic? get bc;
+  BleBluetoothCharacteristic get bc;
 
   /// Best usage is to use [bc] and [value]
   factory BleBluetoothCharacteristicValue(
-          {BleBluetoothService? service,
-          Uuid128? uuid,
-          BleBluetoothCharacteristic? bc,
-          required Uint8List value}) =>
-      BleBluetoothCharacteristicValueImpl(
-          bc: bc ?? BleBluetoothCharacteristic(service: service, uuid: uuid),
-          value: value);
+      {
+
+      /// Needed if bc is null
+      BleBluetoothService? service,
+
+      /// Needed if bc is null
+      Uuid128? uuid,
+      BleBluetoothCharacteristic? bc,
+      required Uint8List value}) {
+    if (bc == null) {
+      if (service == null) {
+        throw ArgumentError.notNull('service');
+      }
+      if (uuid == null) {
+        throw ArgumentError.notNull('uuid');
+      }
+    }
+    return BleBluetoothCharacteristicValueImpl(
+        bc: bc ?? BleBluetoothCharacteristic(service: service!, uuid: uuid!),
+        value: value);
+  }
 }
 
 mixin BleBluetoothCharacteristicMixin implements BleBluetoothCharacteristic {
-  BleBluetoothService? _service;
-  Uuid128? _uuid;
-  int? _properties;
-  @override
-  List<BleBluetoothDescriptor>? descriptors;
+  late BleBluetoothService _service;
+  late Uuid128 _uuid;
+  late int _properties;
 
   @override
-  BleBluetoothService? get service => _service;
-  @override
-  Uuid128? get uuid => _uuid;
+  late List<BleBluetoothDescriptor> descriptors;
 
   @override
-  int? get properties => _properties;
+  BleBluetoothService get service => _service;
+  @override
+  Uuid128 get uuid => _uuid;
+
+  @override
+  int get properties => _properties;
 
   @override
   int get hashCode => uuid.hashCode;
@@ -119,28 +137,28 @@ mixin BleBluetoothCharacteristicMixin implements BleBluetoothCharacteristic {
       BleBluetoothCharacteristicValue(bc: this, value: value);
 
   @override
-  int get shortNumber => uuid!.shortNumberUuid16.value;
+  int get shortNumber => uuid.shortNumberUuid16.value;
 }
 
 mixin BleBluetoothCharacteristicValueMixin
     implements BleBluetoothCharacteristicValue {
-  BleBluetoothCharacteristic? _bc;
-  Uint8List? _value;
+  late BleBluetoothCharacteristic _bc;
+  late Uint8List _value;
   @override
-  Uint8List? get value => _value;
+  Uint8List get value => _value;
 
   @override
-  BleBluetoothCharacteristic? get bc => _bc;
+  BleBluetoothCharacteristic get bc => _bc;
 
   @override
-  BleBluetoothService? get service => bc!.service;
+  BleBluetoothService get service => bc.service;
 
   @override
-  Uuid128? get uuid => bc!.uuid;
+  Uuid128 get uuid => bc.uuid;
 
   @override
   String toString() {
-    return '$uuid value ${value == null ? value : toHexString(value)}';
+    return '$uuid value ${toHexString(value)}';
   }
 }
 
@@ -148,7 +166,10 @@ class BleBluetoothCharacteristicImpl
     with BleBluetoothCharacteristicMixin
     implements BleBluetoothCharacteristic {
   BleBluetoothCharacteristicImpl(
-      {BleBluetoothService? service, Uuid128? uuid, int? properties}) {
+      {required BleBluetoothService service,
+      required Uuid128 uuid,
+      required int properties,
+      List<BleBluetoothDescriptor>? descriptors}) {
     _service = service;
     _uuid = uuid;
     _properties = properties;
@@ -159,7 +180,7 @@ class BleBluetoothCharacteristicValueImpl
     with BleBluetoothCharacteristicValueMixin
     implements BleBluetoothCharacteristicValue {
   BleBluetoothCharacteristicValueImpl(
-      {BleBluetoothCharacteristic? bc, Uint8List? value}) {
+      {required BleBluetoothCharacteristic bc, required Uint8List value}) {
     _bc = bc;
     _value = value;
   }

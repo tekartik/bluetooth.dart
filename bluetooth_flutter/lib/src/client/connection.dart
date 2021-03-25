@@ -59,7 +59,7 @@ class BluetoothDeviceConnectionFlutterImpl
       BleBluetoothCharacteristic characteristic) async {
     var map = _baseMap();
 
-    var serviceUuid = characteristic.service!.uuid.toString();
+    var serviceUuid = characteristic.service.uuid.toString();
     var characteristicUuid = characteristic.uuid.toString();
     map[serviceUuidKey] = serviceUuid;
     map[characteristicUuidKey] = characteristicUuid;
@@ -181,17 +181,18 @@ class BluetoothDeviceConnectionFlutterImpl
         var map = item as Map;
         var uuidText = map[uuidKey] as String?;
         // devPrint('properties ${map[propertiesKey]}');
-        var properties = map[propertiesKey] as int?;
+        var properties = (map[propertiesKey] as int?) ?? 0x00;
         var descriptorMapList = (map[descriptorsKey] as List?)?.cast<Map>();
 
         var characteristic = BleBluetoothCharacteristicImpl(
             service: bleService,
             uuid: Uuid128.from(text: uuidText),
             properties: properties);
-        characteristic.descriptors = descriptorMapList
+        var descriptors = descriptorMapList
             ?.map((map) =>
                 descriptorFromMap(characteristic: characteristic, map: map))
-            .toList(growable: false) as List<BleBluetoothDescriptor>?;
+            .toList(growable: false);
+        characteristic.descriptors = <BleBluetoothDescriptor>[...?descriptors];
         return characteristic;
       }).toList(growable: false);
       // ignore: invalid_use_of_protected_member

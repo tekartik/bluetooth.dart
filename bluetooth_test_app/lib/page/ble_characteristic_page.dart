@@ -68,7 +68,7 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(widget.appBleCharacteristic?.characteristic.properties
-                            ?.toRadixString(2) ??
+                            .toRadixString(2) ??
                         'no properties'),
                     if (propertySb.isNotEmpty) Text(propertySb.toString())
                   ])),

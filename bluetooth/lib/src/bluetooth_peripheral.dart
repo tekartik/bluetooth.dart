@@ -111,6 +111,11 @@ class BluetoothGattCharacteristic {
     };
     return map;
   }
+
+  @override
+  String toString() {
+    return '$uuid 0x${hexUint8(properties)} 0x${hexUint8(permissions)} $description';
+  }
 }
 
 class BluetoothSlaveConnection {
@@ -126,18 +131,23 @@ class BluetoothSlaveConnection {
 class BluetoothGattService {
   final Uuid128 uuid;
 
-  final List<BluetoothGattCharacteristic>? characteristics;
+  final List<BluetoothGattCharacteristic> characteristics;
 
-  BluetoothGattService({required this.uuid, this.characteristics});
+  BluetoothGattService({required this.uuid, required this.characteristics});
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{'uuid': uuid.toString()};
-    if (characteristics != null) {
-      map['characteristics'] = characteristics!
-          .map((characteristic) => characteristic.toMap())
-          .toList(growable: false);
-    }
+
+    map['characteristics'] = characteristics
+        .map((characteristic) => characteristic.toMap())
+        .toList(growable: false);
+
     return map;
+  }
+
+  @override
+  String toString() {
+    return '$uuid';
   }
 }
 

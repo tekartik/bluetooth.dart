@@ -122,7 +122,7 @@ class BluetoothDeviceConnectionFlutterBlue
 
   BluetoothCharacteristicFlutterBlue? findCharacteristic(
       BleBluetoothCharacteristic bc) {
-    var service = _discoverMap[bc.service!];
+    var service = _discoverMap[bc.service];
     if (service != null) {
       return service.getCharacteristic(bc.uuid);
     }
