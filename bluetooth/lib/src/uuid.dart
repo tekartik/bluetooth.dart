@@ -14,7 +14,7 @@ class Uuid16 {
       : _text = text,
         bytes = Uint8List.fromList(parseHexString(text));
 
-  Uuid16.fromBytes(Uint8List bytes) : bytes = bytes;
+  Uuid16.fromBytes(this.bytes);
 
   Uuid16.fromValue(int value) : bytes = uint16GetBytes(value);
 
@@ -50,13 +50,13 @@ class Uuid16 {
 
 // 16 bit uuid
 class Uuid32 {
-  final Uint8List? bytes;
+  final Uint8List bytes;
   String? _text;
 
-  Uuid32.fromBytes({Uint8List? bytes}) : bytes = bytes;
+  Uuid32.fromBytes({required this.bytes});
 
   @deprecated
-  Uuid32.from({Uint8List? bytes}) : bytes = bytes;
+  Uuid32.from({required this.bytes});
 
   Uuid32(String text)
       : _text = text,
@@ -91,7 +91,7 @@ class Uuid128 {
   Uuid128 withUuid32(Uuid32 uuid32) {
     var list = Uint8List.fromList(_value);
     for (var i = 0; i < 4; i++) {
-      list[i] = uuid32.bytes![i];
+      list[i] = uuid32.bytes[i];
     }
     return Uuid128.from(bytes: list);
   }

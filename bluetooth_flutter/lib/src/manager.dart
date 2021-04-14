@@ -21,7 +21,8 @@ class BluetoothFlutterManagerImpl
   BluetoothFlutterManagerImpl() {
     channel.setMethodCallHandler((MethodCall call) async {
       // devPrint('received ${call.method} ${call.arguments}');
-      var connectionId = call.arguments[connectionIdKey] as int?;
+      var argumentsMap = call.arguments as Map;
+      var connectionId = argumentsMap[connectionIdKey] as int?;
       if (connectionId != null) {
         var connection =
             connections[connectionId] as BluetoothDeviceConnectionFlutterImpl?;
