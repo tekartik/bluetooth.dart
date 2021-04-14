@@ -7,12 +7,12 @@ import 'battery_device.dart';
 
 class CharacteristicMock {
   // Stale value
-  BleBluetoothCharacteristicValue bcv;
+  BleBluetoothCharacteristicValue? bcv;
 
   // For notification
   final _subject = BehaviorSubjectWrapper<BleBluetoothCharacteristicValue>();
 
-  SubjectInterface<BleBluetoothCharacteristicValue> get subject => _subject;
+  SubjectInterface<BleBluetoothCharacteristicValue?> get subject => _subject;
 
   void dispose() {
     unawaited(_subject.close());
@@ -39,7 +39,7 @@ class BatteryRemoteDeviceMock extends BatteryRemoteDevice {
   */
 
   final characteristicValueMap =
-      <BleBluetoothCharacteristic, CharacteristicMock>{};
+      <BleBluetoothCharacteristic?, CharacteristicMock>{};
 
   @override
   Future setCharacteristicValue(BleBluetoothCharacteristicValue bcv) async {
@@ -49,7 +49,7 @@ class BatteryRemoteDeviceMock extends BatteryRemoteDevice {
   }
 
   @override
-  Future<BleBluetoothCharacteristicValue> getCharacteristicValue(
+  Future<BleBluetoothCharacteristicValue?> getCharacteristicValue(
       BleBluetoothCharacteristic bc) async {
     var mock = characteristicValueMap[bc];
     return mock?.bcv;

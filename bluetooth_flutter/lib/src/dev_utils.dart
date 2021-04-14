@@ -17,7 +17,7 @@ void devPrint(Object object) {
 @deprecated
 T devWarning<T>(T value) => value;
 
-void _devError([Object object]) {
+void _devError([Object? object]) {
   // one day remove the print however sometimes the error thrown is hidden
   try {
     throw UnsupportedError('$object');
@@ -34,7 +34,7 @@ void _devError([Object object]) {
 ///
 /// Will call the action on debug only
 @deprecated
-T devDebugOnly<T>(T Function() action, {String message}) {
+T? devDebugOnly<T>(T Function() action, {String? message}) {
   if (isDebug) {
     print(
         '[DEBUG_ONLY]${message != null ? ' $message' : ' debug only behavior'}');
@@ -45,4 +45,4 @@ T devDebugOnly<T>(T Function() action, {String message}) {
 }
 
 @deprecated
-void devError([Object object]) => _devError(object);
+void devError([Object? object]) => _devError(object);

@@ -6,7 +6,7 @@ import 'package:tekartik_common_utils/common_utils_import.dart';
 class MethodCall {
   /// Creates a [MethodCall] representing the invocation of [method] with the
   /// specified [arguments].
-  const MethodCall(this.method, [this.arguments]) : assert(method != null);
+  const MethodCall(this.method, [this.arguments]);
 
   /// The name of the method to be called.
   final String method;
@@ -72,7 +72,7 @@ class MethodChannel {
   /// similarly to what happens if no method call handler has been set.
   /// Any other exception results in an error envelope being sent.
   void setMethodCallHandler(
-      Future<dynamic> Function(MethodCall call) /*?*/ handler) {
+      Future<dynamic> Function(MethodCall call)? handler) {
     throw UnsupportedError('Unsupported');
   }
 }
@@ -87,5 +87,5 @@ mixin MethodChannelMixin implements MethodChannel {
   String get name => throw UnimplementedError();
 
   @override
-  void setMethodCallHandler(Future Function(MethodCall call) handler) {}
+  void setMethodCallHandler(Future Function(MethodCall call)? handler) {}
 }

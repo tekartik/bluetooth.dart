@@ -304,11 +304,13 @@ public class BleClientPlugin {
         for (int i = 0; i < serviceUuids.size(); i++) {
             uuids[i] = UUID.fromString(serviceUuids.get(i));
         }
+        @SuppressWarnings("deprecation")
         boolean success = getBluetoothAdapter().startLeScan(uuids, getScanCallback18());
         if (!success)
             throw new IllegalStateException("getBluetoothLeScanner() is null. Is the Adapter on?");
     }
 
+    @SuppressWarnings("deprecation")
     private void stopScan18() {
         getBluetoothAdapter().stopLeScan(getScanCallback18());
     }

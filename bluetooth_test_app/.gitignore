@@ -81,3 +81,8 @@ Pods
 
 # Project files
 linux/
+windows/
+macos/
+web/
+android/
+ios/

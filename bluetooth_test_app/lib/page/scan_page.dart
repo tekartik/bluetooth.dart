@@ -14,14 +14,14 @@ class ScanPage extends StatefulWidget {
 }
 
 class ScanResults {
-  List<ScanResult> list;
+  List<ScanResult>? list;
 }
 
 class _ScanPageState extends State<ScanPage> {
-  StreamSubscription scanSubscription;
+  StreamSubscription? scanSubscription;
   bool _inited = false;
   bool _initialScanStartDone = false;
-  final results = BehaviorSubject<ScanResults>();
+  final results = BehaviorSubject<ScanResults?>();
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class _ScanPageState extends State<ScanPage> {
             }
           }();
         }
-        return StreamBuilder<ScanResults>(
+        return StreamBuilder<ScanResults?>(
             initialData: results.value,
             stream: results,
             builder: (context, snapshot) {
@@ -54,25 +54,22 @@ class _ScanPageState extends State<ScanPage> {
                   )
                 ]);
               }
-              var result = snapshot?.data;
+              var result = snapshot.data;
               var list = result?.list;
               if (list?.isEmpty ?? true) {
                 return const Center(child: CircularProgressIndicator());
               }
               return ListView.builder(
-                  itemCount: list.length,
+                  itemCount: list!.length,
                   itemBuilder: (builder, index) {
                     var item = list[index];
-                    var deviceId = item?.device?.id;
+                    var deviceId = item.device.id;
                     return ListTile(
-                      title: Text(
-                          item.device.name ?? deviceId.id ?? 'Unknown device'),
-                      subtitle: Text(deviceId.id ?? ''),
-                      onTap: deviceId == null
-                          ? null
-                          : () {
-                              Navigator.of(context).pop(deviceId);
-                            },
+                      title: Text(item.device.name ?? deviceId.id),
+                      subtitle: Text(deviceId.id),
+                      onTap: () {
+                        Navigator.of(context).pop(deviceId);
+                      },
                     );
                   });
             });
@@ -119,28 +116,30 @@ class _ScanPageState extends State<ScanPage> {
   Future startScan(BuildContext context) async {
     print('stopScanning');
     stopScan();
-    var info = await initBluetoothManager.getInfo();
+    var info =
+        await (initBluetoothManager.getInfo() as FutureOr<BluetoothInfo>);
     // devPrint('info: $info');
-    if (!info.hasBluetoothBle) {
+    if (!info.hasBluetoothBle!) {
       final snackBar =
           const SnackBar(content: Text('Bluetooth BLE not supported'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
-    } else if (!info.isBluetoothEnabled) {
-      if (initBluetoothManager.supportsEnable) {
+    } else if (!info.isBluetoothEnabled!) {
+      if (initBluetoothManager.supportsEnable!) {
         await initBluetoothManager.enable(
             androidRequestCode: androidEnableBluetoothRequestCode);
-        info = await initBluetoothManager.getInfo();
+        info =
+            await (initBluetoothManager.getInfo() as FutureOr<BluetoothInfo>);
       }
     }
-    if (!info.isBluetoothEnabled) {
+    if (!info.isBluetoothEnabled!) {
       final snackBar = const SnackBar(
           content: Text('Please enable Bluetooth on your device'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
     }
 
-    if (initBluetoothManager.isAndroid) {
+    if (initBluetoothManager.isAndroid!) {
       if (!await initBluetoothManager.checkCoarseLocationPermission(
           androidRequestCode: androidCheckCoarseLocationPermission)) {
         final snackBar = const SnackBar(

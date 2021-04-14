@@ -84,6 +84,14 @@ void main() {
 
       expect(uuid128WithUuid32.shortNumberUuid16.toString(), 'abcd');
       expect(uuid128WithUuid32.longNumberUuid32.toString(), '1234abcd');
+
+      //var uuid = Uuid128('49535343-5d82-6099-9348-7aac4d5fbc51');
+      Uuid128('36c9159b-6cc6-43b3-b198-ac03cc44949e');
+      try {
+        Uuid128('49535343-5d82-6099-9348-7aac4d5fbc51');
+      } catch (e) {
+        print(e);
+      }
     });
   });
 }

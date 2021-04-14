@@ -26,12 +26,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
+import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 import static com.tekartik.bluetooth_flutter.BfluPluginError.errorCodeNoPeripheral;
 import static com.tekartik.bluetooth_flutter.BfluPluginError.errorOtherError;
@@ -40,8 +43,7 @@ import static com.tekartik.bluetooth_flutter.BfluPluginError.errorUnsupported;
 /**
  * BluetoothFlutterPlugin
  */
-public class BluetoothFlutterPlugin extends Plugin implements PluginRegistry.RequestPermissionsResultListener {
-
+public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, MethodChannel.MethodCallHandler, PluginRegistry.RequestPermissionsResultListener, PluginRegistry.ActivityResultListener {
 
     public static final String TAG = "BfluPlugin";
     public static BluetoothFlutterPlugin instance;
@@ -62,14 +64,16 @@ public class BluetoothFlutterPlugin extends Plugin implements PluginRegistry.Req
     private Peripheral peripheral;
     public int logLevel = LogLevel.none;
 
-    public final MethodChannel channel;
-    public final EventChannel connectionChannel;
-    public final EventChannel callbackChannel;
-    public final EventChannel writeCharacteristicChannel;
+    public MethodChannel channel;
+    public EventChannel connectionChannel;
+    public EventChannel callbackChannel;
+    public EventChannel writeCharacteristicChannel;
     private Boolean mHasBluetooth;
     private Boolean mHasBluetoothBle;
     private Context mApplicationContext;
-    final Handler handler;
+    private Handler handler;
+    private ActivityPluginBinding activityBinding;
+    FlutterPluginBinding pluginBinding;
 
     private BleClientPlugin getClientPlugin() {
         if (clientPlugin == null) {
@@ -86,11 +90,102 @@ public class BluetoothFlutterPlugin extends Plugin implements PluginRegistry.Req
     }
 
 
+    //
+    // Plugin registration.
+    //
+    @SuppressWarnings("deprecation")
+    public static void registerWith(io.flutter.plugin.common.PluginRegistry.Registrar registrar) {
+        BluetoothFlutterPlugin sqflitePlugin = new BluetoothFlutterPlugin();
+        sqflitePlugin.onAttachedToEngine(registrar.context(), registrar.messenger());
+
+        registrar.addRequestPermissionsResultListener(sqflitePlugin);
+    }
+
+    @Override
+    public void onAttachedToEngine(FlutterPluginBinding binding) {
+        Log.d(TAG, "onAttachedToEngine");
+        pluginBinding = binding;
+        onAttachedToEngine(binding.getApplicationContext(), binding.getBinaryMessenger());
+    }
+
+    @SuppressWarnings("deprecation")
+    private void createHandler() {
+        handler = new Handler();
+    }
+    private void onAttachedToEngine(Context applicationContext, BinaryMessenger messenger) {
+        this.mApplicationContext = applicationContext;
+
+        instance = this;
+        createHandler();
+
+
+        channel = new MethodChannel(messenger, "tekartik_bluetooth_flutter");
+        channel.setMethodCallHandler(this);
+
+
+        callbackChannel = new EventChannel(messenger, NAMESPACE + "/callback");
+        callbackChannel.setStreamHandler(callbackHandler);
+        // TODO needed? can we reuse callbackChannel?
+        connectionChannel = new EventChannel(messenger, NAMESPACE + "/connection");
+        connectionChannel.setStreamHandler(stateHandler);
+        writeCharacteristicChannel = new EventChannel(messenger, NAMESPACE + "/writeCharacteristic");
+        writeCharacteristicChannel.setStreamHandler(writeCharacteristicHandler);
+
+
+    }
+
+    @Override
+    public void onAttachedToActivity(ActivityPluginBinding binding) {
+        Log.d(TAG, "onAttachedToActivity");
+        activityBinding = binding;
+        //onAttachedToEngine(binding.getActivity(), pluginBinding.getBinaryMessenger());
+        activityBinding.addActivityResultListener(this);
+    }
+
+    @Override
+    public void onDetachedFromActivity() {
+        Log.d(TAG, "onDetachedFromActivity");
+        if (activityBinding != null) {
+            try {
+                activityBinding.removeActivityResultListener(this);
+                activityBinding.removeRequestPermissionsResultListener(this);
+            } catch (Exception ignore) {
+
+            }
+            activityBinding = null;
+        }
+        //tearDown();
+    }
+
+    @Override
+    public void onDetachedFromEngine(FlutterPluginBinding binding) {
+        Log.d(TAG, "onDetachedFromEngine");
+        pluginBinding = binding;
+        mApplicationContext = null;
+        channel.setMethodCallHandler(null);
+        channel = null;
+        callbackChannel.setStreamHandler(null);
+        callbackChannel = null;
+        bluetoothAdapter = null;
+        bluetoothManager = null;
+    }
+
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+        onDetachedFromActivity();
+    }
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(ActivityPluginBinding binding) {
+        onAttachedToActivity(binding);
+    }
+
     private boolean hasBluetooth() {
         if (mHasBluetooth == null) {
             // Use this check to determine whether BLE is supported on the device. Then
             // you can selectively disable BLE-related features.
-            this.bluetoothManager = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
+            this.bluetoothManager = (BluetoothManager) mApplicationContext.getSystemService(Context.BLUETOOTH_SERVICE);
             if (bluetoothManager != null) {
                 bluetoothAdapter = bluetoothManager.getAdapter();
                 if (bluetoothAdapter != null) {
@@ -113,29 +208,11 @@ public class BluetoothFlutterPlugin extends Plugin implements PluginRegistry.Req
         return mHasBluetoothBle;
     }
 
-    public BluetoothFlutterPlugin(Registrar registrar) {
-        // activity required here
-        super(registrar);
-        assert (instance == null);
-        instance = this;
-        handler = new Handler();
-        mApplicationContext = registrar.context().getApplicationContext();
-
-        channel = new MethodChannel(registrar.messenger(), "tekartik_bluetooth_flutter");
-        channel.setMethodCallHandler(this);
-
-
-        callbackChannel = new EventChannel(registrar.messenger(), NAMESPACE + "/callback");
-        callbackChannel.setStreamHandler(callbackHandler);
-        // TODO needed? can we reuse callbackChannel?
-        connectionChannel = new EventChannel(registrar.messenger(), NAMESPACE + "/connection");
-        connectionChannel.setStreamHandler(stateHandler);
-        writeCharacteristicChannel = new EventChannel(registrar.messenger(), NAMESPACE + "/writeCharacteristic");
-        writeCharacteristicChannel.setStreamHandler(writeCharacteristicHandler);
-
-        registrar.addRequestPermissionsResultListener(this);
-
+    // Need public constructor
+    public BluetoothFlutterPlugin() {
+        Log.d(TAG, "BluetoothFlutterPlugin()");
     }
+
 
     public EventChannel.EventSink connectionSink;
     private final EventChannel.StreamHandler stateHandler = new EventChannel.StreamHandler() {
@@ -176,14 +253,6 @@ public class BluetoothFlutterPlugin extends Plugin implements PluginRegistry.Req
         }
     };
 
-    /**
-     * Plugin registration.
-     */
-    public static void registerWith(Registrar registrar) {
-        BluetoothFlutterPlugin plugin = new BluetoothFlutterPlugin(registrar);
-        registrar.addActivityResultListener(plugin);
-    }
-
     //@SuppressLint("MissingPermission")
     @Override
     public void onMethodCall(MethodCall call, Result result) {
@@ -196,12 +265,12 @@ public class BluetoothFlutterPlugin extends Plugin implements PluginRegistry.Req
 
     public void onRequest(PluginRequest request) {
         if (hasVerboseLevel()) {
-            Log.d(TAG, "onRequest(" + request.call.method + ", " + request.call.arguments +")");
+            Log.d(TAG, "onRequest(" + request.call.method + ", " + request.call.arguments + ")");
         }
         MethodCall call = request.call;
         Result result = request.result;
         String method = call.method;
-        this.bluetoothManager = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
+        this.bluetoothManager = (BluetoothManager) mApplicationContext.getSystemService(Context.BLUETOOTH_SERVICE);
         if (bluetoothManager != null) {
             bluetoothAdapter = bluetoothManager.getAdapter();
         }
@@ -314,7 +383,7 @@ public class BluetoothFlutterPlugin extends Plugin implements PluginRegistry.Req
                 enableBluetoothRequestCode = requestCode;
                 enableBluetoothResult = request.result;
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                getActivity().startActivityForResult(enableBtIntent, enableBluetoothRequestCode);
+                activityBinding.getActivity().startActivityForResult(enableBtIntent, enableBluetoothRequestCode);
             } else {
                 // Requires admin permission
                 if (hasVerboseLevel()) {
@@ -401,12 +470,12 @@ public class BluetoothFlutterPlugin extends Plugin implements PluginRegistry.Req
             if (hasVerboseLevel()) {
                 Log.i(TAG, "onEnableBluetooth(" + requestCode + ")");
             }
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
+            if (ContextCompat.checkSelfPermission(activityBinding.getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED) {
                 checkCoarseLocationPermissionRequestCode = requestCode;
                 checkCoarseLocationPermissionResult = request.result;
                 ActivityCompat.requestPermissions(
-                        getActivity(),
+                        activityBinding.getActivity(),
                         new String[]{
                                 Manifest.permission.ACCESS_COARSE_LOCATION
                         },
@@ -486,5 +555,13 @@ public class BluetoothFlutterPlugin extends Plugin implements PluginRegistry.Req
 
     public void setPeripheral(Peripheral peripheral) {
         this.peripheral = peripheral;
+    }
+
+    public Activity getActivity() {
+        return activityBinding.getActivity();
+    }
+
+    public Context getContext() {
+        return mApplicationContext;
     }
 }

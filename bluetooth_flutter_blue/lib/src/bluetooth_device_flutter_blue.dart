@@ -17,7 +17,7 @@ class BluetoothDeviceFlutterBlue implements BluetoothDevice {
 
   BluetoothDeviceFlutterBlue(this.nativeImpl);
   @override
-  String get address => nativeImpl.id?.id;
+  String get address => nativeImpl.id.id;
 
   @override
   BluetoothDeviceId get id => BluetoothDeviceIdFlutterBlue(nativeImpl.id);

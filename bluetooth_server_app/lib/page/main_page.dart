@@ -198,8 +198,9 @@ class _BluetoothServerHomePageState extends State<BluetoothServerHomePage> {
           notifyCallback: (bool response, String method, dynamic param) {
         if (response == false) {
           if (method == methodBluetooth) {
-            var bluetoothMethod = param['method'] as String;
-            dynamic bluetoothParam = param['param'];
+            var paramsMap = param as Map;
+            var bluetoothMethod = paramsMap['method'] as String;
+            dynamic bluetoothParam = paramsMap['param'];
             log('method $bluetoothMethod param $bluetoothParam');
             /*
             if (sqfliteMethod == methodOpenDatabase) {

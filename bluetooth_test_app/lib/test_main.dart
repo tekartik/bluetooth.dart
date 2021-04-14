@@ -59,7 +59,7 @@ void main() {
     });
 
     menu('Scan', () {
-      StreamSubscription subscription;
+      StreamSubscription? subscription;
 
       item('startScan', () {
         subscription?.cancel();
@@ -111,7 +111,7 @@ void main() {
       write('after sleep 2000');
     });
     item('navigate', () {
-      Navigator.push(buildContext,
+      Navigator.push(buildContext!,
           MaterialPageRoute(builder: (BuildContext context) {
         return Scaffold(
             appBar: AppBar(title: const Text('test')),

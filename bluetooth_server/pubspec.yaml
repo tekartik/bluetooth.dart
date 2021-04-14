@@ -33,9 +33,9 @@ dev_dependencies:
   process_run:
 
 dependency_overrides:
-  # pedantic: '>=1.9.0'
-  tekartik_bluetooth:
-    path: ../bluetooth
+  # temp no nnbd yet
+  # tekartik_bluetooth:
+  #  path: ../bluetooth
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

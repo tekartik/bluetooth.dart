@@ -23,16 +23,16 @@ class BluetoothDeviceConnectionFlutterImpl
   final connectionStateController =
       StreamController<BluetoothDeviceConnectionState>.broadcast();
 
-  BluetoothDeviceConnectionState connectionState;
+  BluetoothDeviceConnectionState? connectionState;
 
   /// set upon connection
-  int connectionId;
+  int? connectionId;
 
-  BluetoothDeviceConnectionFlutterImpl({@required this.manager}) {
+  BluetoothDeviceConnectionFlutterImpl({required this.manager}) {
     controller.stream.listen((call) {
       if (call.method == 'remoteConnectionState') {
         // devPrint(call.arguments);
-        onConnectionStateChanged(call.arguments as Map);
+        onConnectionStateChanged(call.arguments as Map?);
       }
     }, onDone: () {
       () async {
@@ -69,8 +69,8 @@ class BluetoothDeviceConnectionFlutterImpl
         .where((call) => call.method == 'remoteReadCharacteristicResult')
         .map((call) => Model(asMap(call.arguments)))
         .listen((map) {
-      var readServiceUuid = map[serviceUuidKey] as String;
-      var readCharacteristicUuid = map[characteristicUuidKey] as String;
+      var readServiceUuid = map[serviceUuidKey] as String?;
+      var readCharacteristicUuid = map[characteristicUuidKey] as String?;
       if (readServiceUuid == serviceUuid &&
           readCharacteristicUuid == characteristicUuid) {
         var status = map[statusKey];
@@ -91,7 +91,7 @@ class BluetoothDeviceConnectionFlutterImpl
 
       return await completer.future.timeout(bleReadCharacteristicTimeout);
     } finally {
-      unawaited(subscription?.cancel());
+      unawaited(subscription.cancel());
     }
   }
 
@@ -107,7 +107,7 @@ class BluetoothDeviceConnectionFlutterImpl
         return;
       }
       var subscription = connectionStateController.stream.listen((state) {
-        if (state?.state == androidBleConnectionStateDisconnected) {
+        if (state.state == androidBleConnectionStateDisconnected) {
           if (!completer.isCompleted) {
             completer.complete();
           }
@@ -164,40 +164,41 @@ class BluetoothDeviceConnectionFlutterImpl
 
       return await completer.future.timeout(bleDiscoverServicesTimeout);
     } finally {
-      unawaited(subscription?.cancel());
+      unawaited(subscription.cancel());
     }
   }
 
   @override
   Future<List<BleBluetoothService>> getServices() async {
     var map = _baseMap();
-    var list = (await invokeMethod('remoteGetServices', map)) as List;
-    return list?.map((item) {
+    var list = await invokeMethod<List>('remoteGetServices', map);
+    return list.map((item) {
       var map = item as Map;
-      var uuidText = map[uuidKey] as String;
+      var uuidText = map[uuidKey] as String?;
       var bleService = BleBluetoothService(uuid: Uuid128.from(text: uuidText));
-      var characteristicsMapList = map[characteristicsKey] as List;
+      var characteristicsMapList = map[characteristicsKey] as List?;
       var characteristics = characteristicsMapList?.map((item) {
         var map = item as Map;
-        var uuidText = map[uuidKey] as String;
+        var uuidText = map[uuidKey] as String?;
         // devPrint('properties ${map[propertiesKey]}');
-        var properties = map[propertiesKey] as int;
-        var descriptorMapList = (map[descriptorsKey] as List)?.cast<Map>();
+        var properties = (map[propertiesKey] as int?) ?? 0x00;
+        var descriptorMapList = (map[descriptorsKey] as List?)?.cast<Map>();
 
         var characteristic = BleBluetoothCharacteristicImpl(
             service: bleService,
             uuid: Uuid128.from(text: uuidText),
             properties: properties);
-        characteristic.descriptors = descriptorMapList
+        var descriptors = descriptorMapList
             ?.map((map) =>
                 descriptorFromMap(characteristic: characteristic, map: map))
-            ?.toList(growable: false);
+            .toList(growable: false);
+        characteristic.descriptors = <BleBluetoothDescriptor>[...?descriptors];
         return characteristic;
-      })?.toList(growable: false);
+      }).toList(growable: false);
       // ignore: invalid_use_of_protected_member
       bleService.characteristics = characteristics;
       return bleService;
-    })?.toList(growable: false);
+    }).toList(growable: false);
   }
 
   @override
@@ -217,7 +218,7 @@ class BluetoothDeviceConnectionFlutterImpl
       }
 
       var subscription = connectionStateController.stream.listen((state) {
-        if (state?.state == androidBleConnectionStateConnected) {
+        if (state.state == androidBleConnectionStateConnected) {
           if (!completer.isCompleted) {
             completer.complete();
           }
@@ -234,11 +235,11 @@ class BluetoothDeviceConnectionFlutterImpl
     });
   }
 
-  void onConnectionStateChanged(Map map) {
+  void onConnectionStateChanged(Map? map) {
     // devPrint('map $map in $connections');
 
     if (!connectionStateController.isClosed) {
-      var state = map['state'] as int;
+      var state = map!['state'] as int;
       connectionStateController.add(BluetoothDeviceConnectionStateImpl(state));
     } else {
       // devPrint('controller closed');

@@ -21,10 +21,11 @@ class BluetoothFlutterManagerImpl
   BluetoothFlutterManagerImpl() {
     channel.setMethodCallHandler((MethodCall call) async {
       // devPrint('received ${call.method} ${call.arguments}');
-      var connectionId = call.arguments[connectionIdKey] as int;
+      var argumentsMap = call.arguments as Map;
+      var connectionId = argumentsMap[connectionIdKey] as int?;
       if (connectionId != null) {
         var connection =
-            connections[connectionId] as BluetoothDeviceConnectionFlutterImpl;
+            connections[connectionId] as BluetoothDeviceConnectionFlutterImpl?;
         if (connection == null) {
           print('cannot find connection $connectionId');
         } else {
@@ -62,4 +63,4 @@ class BluetoothFlutterManagerImpl
 final BluetoothFlutterManagerImpl flutterBluetoothServiceImpl =
     BluetoothFlutterManagerImpl();
 
-BluetoothException test;
+BluetoothException? test;

@@ -84,10 +84,10 @@ abstract class BluetoothDeviceConnection {
 
 class BluetoothDeviceConnectionImpl implements BluetoothDeviceConnection {
   final BluetoothManager manager;
-  final int connectionId;
+  final int? connectionId;
 
   BluetoothDeviceConnectionImpl(
-      {@required this.manager, @required this.connectionId});
+      {required this.manager, required this.connectionId});
   @override
   void close() {
     // TODO: implement close

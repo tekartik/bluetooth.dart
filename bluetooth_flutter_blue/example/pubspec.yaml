@@ -17,8 +17,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_driver:
-    sdk: flutter
   process_run: '>0.10.2'
   test:
   tekartik_bluetooth_flutter_blue:
@@ -27,7 +25,7 @@ dev_dependencies:
   tekartik_test_menu_flutter:
     git:
       url: git://github.com/tekartik/test_menu_flutter
-      ref: dart2
+      ref: null_safety
       path: test_menu_flutter
     version: '>=0.2.5'
 

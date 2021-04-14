@@ -9,22 +9,22 @@ import 'package:tekartik_bluetooth_test_app/utils/app_uuid_utils.dart';
 import 'package:tekartik_common_utils/hex_utils.dart';
 
 class AppBleCharacteristic {
-  final BluetoothDeviceConnection connection;
+  final BluetoothDeviceConnection? connection;
   final BleBluetoothCharacteristic characteristic;
 
   AppBleCharacteristic(
-      {@required this.connection, @required this.characteristic});
+      {required this.connection, required this.characteristic});
 }
 
 class _ValueState {
   dynamic exception;
-  Uint8List value;
+  Uint8List? value;
 }
 
 class BleCharacteristicPage extends StatefulWidget {
-  final AppBleCharacteristic appBleCharacteristic;
+  final AppBleCharacteristic? appBleCharacteristic;
 
-  const BleCharacteristicPage({Key key, this.appBleCharacteristic})
+  const BleCharacteristicPage({Key? key, this.appBleCharacteristic})
       : super(key: key);
 
   @override
@@ -36,15 +36,15 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage> {
 
   @override
   Widget build(BuildContext context) {
-    var connection = widget.appBleCharacteristic.connection;
-    var descriptors = widget?.appBleCharacteristic?.characteristic?.descriptors;
-    var characteristic = widget?.appBleCharacteristic?.characteristic;
+    var connection = widget.appBleCharacteristic!.connection;
+    var descriptors = widget.appBleCharacteristic?.characteristic.descriptors;
+    var characteristic = widget.appBleCharacteristic?.characteristic;
 
-    var canRead = ((characteristic?.properties ?? 0) & blePropertyRead) != null;
+    var canRead = ((characteristic?.properties ?? 0) & blePropertyRead) != 0;
 
     var propertySb = StringBuffer();
     void _addPropertyText(String text, bool test) {
-      if (test ?? false) {
+      if (test) {
         if (propertySb.isNotEmpty) {
           propertySb.write(', ');
         }
@@ -67,19 +67,19 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage> {
               subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(widget.appBleCharacteristic?.characteristic?.properties
-                            ?.toRadixString(2) ??
+                    Text(widget.appBleCharacteristic?.characteristic.properties
+                            .toRadixString(2) ??
                         'no properties'),
                     if (propertySb.isNotEmpty) Text(propertySb.toString())
                   ])),
           if (descriptors?.isNotEmpty ?? false)
-            ...descriptors?.map((descriptor) {
+            ...descriptors!.map((descriptor) {
               return ListTile(
                   title: const Text('Descriptor'),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(uuidText(descriptor?.uuid,
+                      Text(uuidText(descriptor.uuid,
                           parent: characteristic?.uuid))
                     ],
                   ));
@@ -95,8 +95,8 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage> {
                         onPressed: () {
                           () async {
                             try {
-                              var bcv = await connection.readCharacteristic(
-                                  widget.appBleCharacteristic.characteristic);
+                              var bcv = await connection!.readCharacteristic(
+                                  widget.appBleCharacteristic!.characteristic);
                               valueSubject
                                   .add(_ValueState()..value = bcv.value);
                             } catch (e) {

@@ -3,7 +3,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('BluetoothStateService', () {
-    BluetoothStateService bluetoothService;
+    BluetoothStateService? bluetoothService;
 
     setUp(() {});
 
