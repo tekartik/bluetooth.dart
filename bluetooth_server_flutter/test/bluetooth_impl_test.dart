@@ -12,19 +12,19 @@ void main() {
     const channel = MethodChannel('com.tekartik.bluetooth');
 
     final log = <MethodCall>[];
-    String response;
+    String? response;
 
     channel.setMockMethodCallHandler((MethodCall methodCall) async {
       log.add(methodCall);
       return response;
     });
 
-    BluetoothManager service;
-    BluetoothServer server;
+    BluetoothManager? service;
+    late BluetoothServer server;
 
     setUpAll(() async {
       WebSocketChannelFactory factory = webSocketChannelFactoryMemory;
-      var server = await BluetoothServer.serve(
+      server = await BluetoothServer.serve(
           webSocketChannelServerFactory: factory.server);
       service = await BluetoothServerFlutterService.create(server.url,
           webSocketChannelClientFactory: factory.client);
@@ -33,11 +33,11 @@ void main() {
     test('port', () {
       expect(server.port, isNotNull);
       if (service != null) {
-        expect(service.isIOS, isNotNull);
+        expect(service!.isIOS, isNotNull);
       }
     });
     tearDownAll(() async {
-      await server?.close();
+      await server.close();
     });
 
     tearDown(() {

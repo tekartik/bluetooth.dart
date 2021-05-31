@@ -13,8 +13,8 @@ import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_test_menu_flutter/test.dart';
 
 void menuBle(
-    {int androidEnableRequestCode,
-    int androidCheckCoarseLocationPermissionRequestCode}) {
+    {int? androidEnableRequestCode,
+    int? androidCheckCoarseLocationPermissionRequestCode}) {
   androidEnableRequestCode ??= 1;
   androidCheckCoarseLocationPermissionRequestCode ??=
       androidEnableRequestCode + 1;
@@ -45,13 +45,13 @@ void menuBle(
       write(info.toString());
     });
     item('get_connected_devices', () async {
-      var devices = await bluetoothManager.getConnectedDevices();
+      var devices = await (bluetoothManager.getConnectedDevices() as FutureOr<List<BluetoothDevice>>);
       devices.forEach((device) {
         write(device.toString());
       });
     });
     item('bt_on', () async {
-      var bluetoothStateService = await getBluetoothStateService();
+      var bluetoothStateService = await (getBluetoothStateService() as FutureOr<BluetoothStateService>);
       write('support enable: ${bluetoothStateService.supportsEnable}');
       await bluetoothStateService.enable().then((_) {
         write('enable done');
@@ -61,7 +61,7 @@ void menuBle(
       });
     });
     item('bt_on_request', () async {
-      var bluetoothStateService = await getBluetoothStateService();
+      var bluetoothStateService = await (getBluetoothStateService() as FutureOr<BluetoothStateService>);
       write('support enable: ${bluetoothStateService.supportsEnable}');
       await bluetoothStateService
           .enable(androidRequestCode: enableBluetoothRequestCode)
@@ -80,7 +80,7 @@ void menuBle(
       write(info.toString());
     });
     item('bt_off', () async {
-      var bluetoothStateService = await getBluetoothStateService();
+      var bluetoothStateService = await (getBluetoothStateService() as FutureOr<BluetoothStateService>);
       write('support enable: ${bluetoothStateService.supportsEnable}');
       bluetoothStateService.disable().then((_) {
         write('disable done');
@@ -93,7 +93,7 @@ void menuBle(
 
   menu('ble_scan', () {
     void _menu(String name) {
-      StreamSubscription scanSubscription;
+      StreamSubscription? scanSubscription;
       void _cancelSubscription() {
         scanSubscription?.cancel();
         scanSubscription = null;
@@ -122,8 +122,8 @@ void menuBle(
   menu('ble_peripheral', () {
     var serviceUuid = Uuid128('0000f001-0000-1000-8000-00805f9b34fb');
     var characteristicUuid = Uuid128('0000f002-0000-1000-8000-00805f9b34fb');
-    BluetoothPeripheral peripheral;
-    StreamSubscription subscription;
+    late BluetoothPeripheral peripheral;
+    StreamSubscription? subscription;
     enter(() {
       subscription = BluetoothFlutter.onSlaveConnectionChanged()
           .listen((BluetoothSlaveConnection connection) {
@@ -148,7 +148,7 @@ void menuBle(
             ])
       ];
       peripheral = await BluetoothFlutter.initPeripheral(services: services);
-      write(jsonPretty(peripheral.toMap()));
+      write(jsonPretty(peripheral.toMap())!);
       write('starting');
       var advertiseData = AdvertiseData(services: [
         AdvertiseDataService(uuid: Uuid128(demoAdvertiseDataServiceUuid))
@@ -192,9 +192,9 @@ void menuBle(
     List<BluetoothDeviceId> deviceIds = [];
     Map<BluetoothDeviceId, BluetoothDevice> _devices = {};
     void _menu(String name) {
-      StreamSubscription scanSubscription;
-      BluetoothDeviceConnection deviceConnection;
-      StreamSubscription stateChangeSubscription;
+      StreamSubscription? scanSubscription;
+      BluetoothDeviceConnection? deviceConnection;
+      StreamSubscription? stateChangeSubscription;
 
       void _cancelScanSubscription() {
         scanSubscription?.cancel();
@@ -219,10 +219,10 @@ void menuBle(
         });
 
         for (int i = 0; i < deviceIds.length; i++) {
-          var device = _devices[deviceIds[i]];
+          var device = _devices[deviceIds[i]]!;
           write('[$i]: ${device.id} ${device?.name}');
         }
-        int index = parseInt(await prompt('Enter connect_$name index'));
+        int? index = parseInt(await prompt('Enter connect_$name index'));
         if (index != null) {
           var deviceId = deviceIds[index];
 
@@ -248,7 +248,7 @@ void menuBle(
            */
           // device.connect(autoConnect: true, timeout: Duration(seconds: 30));
           deviceConnection = await bluetoothManager.newConnection(deviceId);
-          deviceConnection.onConnectionState.listen((state) {
+          deviceConnection!.onConnectionState.listen((state) {
             write('connect state: $state');
           });
         }
@@ -256,7 +256,7 @@ void menuBle(
 
       item('disconnect_$name', () async {
         _cancelScanSubscription();
-        deviceConnection.disconnect();
+        deviceConnection!.disconnect();
       });
 
       item('close $name', () async {

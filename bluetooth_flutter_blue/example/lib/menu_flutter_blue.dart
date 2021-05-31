@@ -8,9 +8,9 @@ void menuFlutterBlue() {
     List<String> deviceIds = [];
     Map<String, BluetoothDevice> _devices = {};
     void _menu(String name) {
-      StreamSubscription scanSubscription;
-      StreamSubscription connectSubscription;
-      StreamSubscription stateChangeSubscription;
+      StreamSubscription? scanSubscription;
+      StreamSubscription? connectSubscription;
+      StreamSubscription? stateChangeSubscription;
       void _cancelScanSubscription() {
         scanSubscription?.cancel();
         scanSubscription = null;
@@ -36,13 +36,13 @@ void menuFlutterBlue() {
         });
 
         for (int i = 0; i < deviceIds.length; i++) {
-          var device = _devices[deviceIds[i]];
+          var device = _devices[deviceIds[i]]!;
           write('[$i]: ${device.id} ${device?.name}');
         }
-        int index = parseInt(await prompt('Enter connect_$name index'));
+        int? index = parseInt(await prompt('Enter connect_$name index'));
         if (index != null) {
           var deviceId = deviceIds[index];
-          var device = _devices[deviceId];
+          var device = _devices[deviceId]!;
           _cancelScanSubscription();
           stateChangeSubscription?.cancel();
           stateChangeSubscription = device.state.listen((state) {
@@ -78,7 +78,7 @@ void menuFlutterBlue() {
     _menu("2");
   });
   menu('flutter_blue_scan', () {
-    StreamSubscription stateSubscription;
+    StreamSubscription? stateSubscription;
     item('get_bt_state', () async {
       write('get_state: ${await FlutterBlue.instance.state.first}');
     });
@@ -98,7 +98,7 @@ void menuFlutterBlue() {
     });
 
     void _menu(String name) {
-      StreamSubscription scanSubscription;
+      StreamSubscription? scanSubscription;
       void _cancelSubscription() {
         scanSubscription?.cancel();
         scanSubscription = null;

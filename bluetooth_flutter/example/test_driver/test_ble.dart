@@ -19,15 +19,15 @@ void main() {
   // final factory = databaseFactory as impl.SqfliteDatabaseFactoryMixin;
   group('impl', () {
     test('info', () async {
-      var info = await manager.getInfo();
+      var info = await (manager.getInfo() as FutureOr<BluetoothInfo>);
       print('info $info');
-      if (info.hasBluetoothBle && info.isBluetoothEnabled) {
-        StreamSubscription scanSubscription;
+      if (info.hasBluetoothBle! && info.isBluetoothEnabled!) {
+        StreamSubscription? scanSubscription;
         try {
           scanSubscription = manager.scan().listen((scanResult) {
             print('scan: $scanResult');
           });
-          info = await manager.getInfo();
+          info = await (manager.getInfo() as FutureOr<BluetoothInfo>);
           print('info $info');
           await Future.delayed(Duration(milliseconds: 5000));
         } catch (e) {
@@ -36,7 +36,7 @@ void main() {
           scanSubscription?.cancel();
         }
       }
-      info = await manager.getInfo();
+      info = await (manager.getInfo() as FutureOr<BluetoothInfo>);
       print('info $info');
     });
   });

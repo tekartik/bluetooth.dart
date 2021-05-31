@@ -10,11 +10,11 @@ void main() {
     // dumpSetPrint(write);
     menu('run', () {
       item('go home', () {
-        Navigator.of(buildContext).push<dynamic>(homePageRoute);
+        Navigator.of(buildContext!).push<dynamic>(homePageRoute);
       });
       item('go home (restart app)', () async {
         await clearApp();
-        await Navigator.of(buildContext).push<dynamic>(homePageRoute);
+        await Navigator.of(buildContext!).push<dynamic>(homePageRoute);
       });
       item('app', () {
         run();

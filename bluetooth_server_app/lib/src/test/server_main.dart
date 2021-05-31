@@ -4,7 +4,7 @@ import 'package:tekartik_test_menu/test.dart';
 int defaultPort = bluetoothServerDefaultPort;
 void main() {
   menu('server', () {
-    BluetoothServer server;
+    BluetoothServer? server;
     item('start', () async {
       server ??= await BluetoothServer.serve(port: defaultPort);
     });

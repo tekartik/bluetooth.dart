@@ -6,13 +6,13 @@ import 'package:synchronized/synchronized.dart';
 import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
 
-BluetoothStateService _bluetoothStateService;
+BluetoothStateService? _bluetoothStateService;
 final _lock = Lock();
 
-Future<BluetoothStateService> getBluetoothStateService() async {
+Future<BluetoothStateService?> getBluetoothStateService() async {
   if (_bluetoothStateService == null) {
     BluetoothStateService bluetoothStateService;
-    var deviceInfo = await getDeviceInfo();
+    var deviceInfo = await (getDeviceInfo() as FutureOr<DeviceInfo>);
     if (deviceInfo.isPhysicalDevice) {
       bluetoothStateService = bluetoothManager;
     } else {
@@ -29,16 +29,16 @@ class DeviceInfo {
   bool get isAndroid => android != null;
 
   bool get isIOS => android != null;
-  AndroidDeviceInfo android;
-  IosDeviceInfo ios;
+  AndroidDeviceInfo? android;
+  IosDeviceInfo? ios;
 
   bool get isPhysicalDevice =>
       (android?.isPhysicalDevice ?? ios?.isPhysicalDevice) == true;
 }
 
-DeviceInfo _deviceInfo;
+DeviceInfo? _deviceInfo;
 
-Future<DeviceInfo> getDeviceInfo() async {
+Future<DeviceInfo?> getDeviceInfo() async {
   if (_deviceInfo != null) {
     return _deviceInfo;
   } else {
@@ -91,5 +91,5 @@ class BluetoothStateServiceMock implements BluetoothStateService {
   bool get supportsEnable => false;
 
   @override
-  Future enable({int requestCode, int androidRequestCode}) async {}
+  Future enable({int? requestCode, int? androidRequestCode}) async {}
 }
