@@ -34,8 +34,12 @@ class BluetoothFlutter {
   }
 
   static Future<bool> get _isSupportedReady async {
-    return _isSupported ??=
-        (await bluetoothManager.getInfo())!.hasBluetoothBle ?? false;
+    try {
+      return _isSupported ??=
+          (await bluetoothManager.getInfo()).hasBluetoothBle ?? false;
+    } catch (_) {
+      return false;
+    }
   }
 
   /*

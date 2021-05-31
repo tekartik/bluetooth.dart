@@ -14,12 +14,12 @@ class App {
 
   Version get version => _appVersion;
 
-  Future<BluetoothServer?> startServer(int? port,
+  Future<BluetoothServer> startServer(int? port,
       {BluetoothServerNotifyCallback? notifyCallback}) async {
     await _closeServer();
     _bluetoothServer =
         await BluetoothServer.serve(port: port, notifyCallback: notifyCallback);
-    return _bluetoothServer;
+    return _bluetoothServer!;
   }
 
   Future stopServer() => _closeServer();

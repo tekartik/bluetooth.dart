@@ -21,8 +21,8 @@ void menuFlutterBlue() {
         scanSubscription = FlutterBlue.instance
             .scan(timeout: Duration(seconds: 30))
             .listen((result) {
-          var id = result.device?.id?.id;
-          if (id != null && !deviceIds.contains(id)) {
+          var id = result.device.id.id;
+          if (!deviceIds.contains(id)) {
             write(
                 '[${_devices.length}] scan_$name: ${result.device.id} ${result.device.name} ${result.rssi}');
             deviceIds.add(id);
@@ -37,7 +37,7 @@ void menuFlutterBlue() {
 
         for (int i = 0; i < deviceIds.length; i++) {
           var device = _devices[deviceIds[i]]!;
-          write('[$i]: ${device.id} ${device?.name}');
+          write('[$i]: ${device.id} ${device.name}');
         }
         int? index = parseInt(await prompt('Enter connect_$name index'));
         if (index != null) {

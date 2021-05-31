@@ -29,13 +29,13 @@ mixin BluetoothManagerMixin implements BluetoothManager {
   bool? get supportsEnable => isAndroid;
 
   @override
-  Future<BluetoothInfo?> getInfo() async {
+  Future<BluetoothInfo> getInfo() async {
     var result = await invokeMethod<Map>('getInfo');
     if (result is Map) {
       var info = BluetoothInfoImpl()..fromMap(result);
       return info;
     }
-    return null;
+    throw UnsupportedError('no info available');
   }
 
   @override
@@ -43,9 +43,9 @@ mixin BluetoothManagerMixin implements BluetoothManager {
     BluetoothInfo? info;
     try {
       info = await getInfo();
-      if (info!.isScanning!) {
+      if (info.isScanning!) {
         await invokeStopScan();
-        info = await (getInfo() as FutureOr<BluetoothInfo>);
+        info = await getInfo();
         // devPrint(info);
       }
       var connectedDevices = await getConnectedDevices();
@@ -62,14 +62,14 @@ mixin BluetoothManagerMixin implements BluetoothManager {
     BluetoothInfo? info;
     try {
       info = await getInfo();
-      if (info!.isScanning!) {
+      if (info.isScanning!) {
         try {
           await invokeStopScan();
         } catch (e) {
           print('invokeStopScan failed $e');
         }
         try {
-          info = await (getInfo() as FutureOr<BluetoothInfo>);
+          info = await getInfo();
           // devPrint(info);
         } catch (e) {
           print('getInfo failed $e');
@@ -90,16 +90,13 @@ mixin BluetoothManagerMixin implements BluetoothManager {
   }
 
   @override
-  Future<List<BluetoothDevice>?> getConnectedDevices() async {
+  Future<List<BluetoothDevice>> getConnectedDevices() async {
     var result = await invokeMethod<Iterable>('getConnectedDevices');
-    if (result is Iterable) {
-      return result
-          .map((item) => asMap(item))
-          .where((map) => map != null)
-          .map((map) => BluetoothDeviceImpl()..fromMap(map))
-          .toList(growable: false);
-    }
-    return null;
+    return result
+        .map((item) => asMap(item))
+        .where((map) => map != null)
+        .map((map) => BluetoothDeviceImpl()..fromMap(map))
+        .toList(growable: false);
   }
 
   @override

@@ -12,7 +12,7 @@ final _lock = Lock();
 Future<BluetoothStateService?> getBluetoothStateService() async {
   if (_bluetoothStateService == null) {
     BluetoothStateService bluetoothStateService;
-    var deviceInfo = await (getDeviceInfo() as FutureOr<DeviceInfo>);
+    var deviceInfo = await getDeviceInfo();
     if (deviceInfo.isPhysicalDevice) {
       bluetoothStateService = bluetoothManager;
     } else {
@@ -38,9 +38,9 @@ class DeviceInfo {
 
 DeviceInfo? _deviceInfo;
 
-Future<DeviceInfo?> getDeviceInfo() async {
+Future<DeviceInfo> getDeviceInfo() async {
   if (_deviceInfo != null) {
-    return _deviceInfo;
+    return _deviceInfo!;
   } else {
     return _lock.synchronized(() async {
       if (_deviceInfo == null) {
@@ -53,7 +53,7 @@ Future<DeviceInfo?> getDeviceInfo() async {
         }
         _deviceInfo = deviceInfo;
       }
-      return _deviceInfo;
+      return _deviceInfo!;
     });
   }
 }
@@ -68,12 +68,7 @@ enum RssiStrength { great, ok, bad, unusable }
 // -80 dBm	Not Good	Minimum signal strength for basic connectivity. Packet delivery may be unreliable.	N/A
 // -90 dBm	Unusable	Approaching or drowning in the noise floor. Any functionality is highly unlikely.
 RssiStrength getIconDataFromRssi(int rssi) {
-  // devPrint(rssi);
-  if (rssi == null) {
-    return null; //MdiIcons.signalCellularOutline;
-    //} else if (rssi >= -30) {
-    //  return Icons.signal_cellular_4_bar;
-  } else if (rssi >= -67) {
+  if (rssi >= -67) {
     return RssiStrength.great;
   } else if (rssi >= -70) {
     return RssiStrength.ok;

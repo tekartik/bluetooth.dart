@@ -45,13 +45,13 @@ void menuBle(
       write(info.toString());
     });
     item('get_connected_devices', () async {
-      var devices = await (bluetoothManager.getConnectedDevices() as FutureOr<List<BluetoothDevice>>);
+      var devices = await bluetoothManager.getConnectedDevices();
       devices.forEach((device) {
         write(device.toString());
       });
     });
     item('bt_on', () async {
-      var bluetoothStateService = await (getBluetoothStateService() as FutureOr<BluetoothStateService>);
+      var bluetoothStateService = await getBluetoothStateService();
       write('support enable: ${bluetoothStateService.supportsEnable}');
       await bluetoothStateService.enable().then((_) {
         write('enable done');
@@ -61,7 +61,7 @@ void menuBle(
       });
     });
     item('bt_on_request', () async {
-      var bluetoothStateService = await (getBluetoothStateService() as FutureOr<BluetoothStateService>);
+      var bluetoothStateService = await getBluetoothStateService();
       write('support enable: ${bluetoothStateService.supportsEnable}');
       await bluetoothStateService
           .enable(androidRequestCode: enableBluetoothRequestCode)
@@ -80,7 +80,7 @@ void menuBle(
       write(info.toString());
     });
     item('bt_off', () async {
-      var bluetoothStateService = await (getBluetoothStateService() as FutureOr<BluetoothStateService>);
+      var bluetoothStateService = await getBluetoothStateService();
       write('support enable: ${bluetoothStateService.supportsEnable}');
       bluetoothStateService.disable().then((_) {
         write('disable done');
@@ -204,8 +204,8 @@ void menuBle(
       item('connect_$name', () async {
         scanSubscription?.cancel();
         scanSubscription = bluetoothManager.scan().listen((result) {
-          var id = result.device?.id;
-          if (id != null && !deviceIds.contains(id)) {
+          var id = result.device.id;
+          if (!deviceIds.contains(id)) {
             write(
                 '[${_devices.length}] scan_$name: ${result.device.id} ${result.device.name} ${result.rssi}');
             deviceIds.add(id);
@@ -220,7 +220,7 @@ void menuBle(
 
         for (int i = 0; i < deviceIds.length; i++) {
           var device = _devices[deviceIds[i]]!;
-          write('[$i]: ${device.id} ${device?.name}');
+          write('[$i]: ${device.id} ${device.name}');
         }
         int? index = parseInt(await prompt('Enter connect_$name index'));
         if (index != null) {

@@ -116,8 +116,7 @@ class _ScanPageState extends State<ScanPage> {
   Future startScan(BuildContext context) async {
     print('stopScanning');
     stopScan();
-    var info =
-        await (initBluetoothManager.getInfo() as FutureOr<BluetoothInfo>);
+    var info = await initBluetoothManager.getInfo();
     // devPrint('info: $info');
     if (!info.hasBluetoothBle!) {
       final snackBar =
@@ -128,8 +127,7 @@ class _ScanPageState extends State<ScanPage> {
       if (initBluetoothManager.supportsEnable!) {
         await initBluetoothManager.enable(
             androidRequestCode: androidEnableBluetoothRequestCode);
-        info =
-            await (initBluetoothManager.getInfo() as FutureOr<BluetoothInfo>);
+        info = await initBluetoothManager.getInfo();
       }
     }
     if (!info.isBluetoothEnabled!) {

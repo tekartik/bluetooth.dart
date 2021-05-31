@@ -5,7 +5,7 @@ void main() {
   mainMenu(() {
     //devPrint('MAIN_');
     item('getInfo', () async {
-      write((await bluetoothManager.getInfo())!);
+      write(await bluetoothManager.getInfo());
     });
   }, showConsole: true);
 }

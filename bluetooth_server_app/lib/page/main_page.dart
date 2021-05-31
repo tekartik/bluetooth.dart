@@ -194,7 +194,7 @@ class _BluetoothServerHomePageState extends State<BluetoothServerHomePage> {
       _startPending = true;
     });
     try {
-      var server = await (app.startServer(port,
+      var server = await app.startServer(port,
           notifyCallback: (bool response, String method, dynamic param) {
         if (response == false) {
           if (method == methodBluetooth) {
@@ -222,7 +222,7 @@ class _BluetoothServerHomePageState extends State<BluetoothServerHomePage> {
         }
         // print('$response $method $param');
         // log('$response $method $param');
-      }) as FutureOr<BluetoothServer>);
+      });
       // Save port in prefs upon success
       await app.prefs!.setPort(port);
       await app.prefs!.setAutoStart(true);

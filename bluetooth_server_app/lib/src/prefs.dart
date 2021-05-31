@@ -21,7 +21,7 @@ class Prefs {
 
   Database? _db;
 
-  Future<Database?> get db async {
+  Future<Database> get db async {
     if (_db == null) {
       return await _openLock.synchronized(() async {
         if (_db == null) {
@@ -35,14 +35,14 @@ class Prefs {
                         'CREATE TABLE Pref (name TEXT PRIMARY KEY, textValue TEXT, intValue INTEGER)');
                   }));
         }
-        return _db;
+        return _db!;
       });
     }
-    return _db;
+    return _db!;
   }
 
   Future<List<Map<String, dynamic>>> load() async {
-    var db = await (this.db as FutureOr<Database>);
+    var db = await this.db;
     var list =
         await db.query('Pref', columns: ['name', 'textValue', 'intValue']);
     //devPrint(list);
