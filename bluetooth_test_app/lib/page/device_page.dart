@@ -158,6 +158,7 @@ class _DevicePageState extends State<DevicePage> {
   }
 
   StreamSubscription? stateSubscription;
+
   Future _connect() async {
     _deviceServices.add(null);
 

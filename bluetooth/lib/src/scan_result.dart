@@ -5,6 +5,7 @@ import 'bluetooth_device.dart';
 
 abstract class ScanResult {
   BluetoothDevice get device;
+
   int get rssi;
 }
 
@@ -16,6 +17,7 @@ class ScanResultImpl implements ScanResult {
 
   @override
   late final int rssi;
+
   void fromMap(Map map) {
     rssi = parseInt(map['rssi'])!;
     var deviceMap = map['device'];

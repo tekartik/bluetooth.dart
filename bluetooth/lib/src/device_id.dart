@@ -22,5 +22,6 @@ class BluetoothDeviceIdImpl
     implements BluetoothDeviceId {
   @override
   final String id;
+
   const BluetoothDeviceIdImpl(this.id);
 }

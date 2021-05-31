@@ -20,7 +20,9 @@ const int bluetoothDeviceConnectionStateUnknown = 4;
 
 class BluetoothDeviceConnectionState {
   final int state;
+
   const BluetoothDeviceConnectionState(this.state);
+
   static const disconnected = BluetoothDeviceConnectionState(
       bluetoothDeviceConnectionStateDisconnected);
   static const connecting =
@@ -88,6 +90,7 @@ class BluetoothDeviceConnectionImpl implements BluetoothDeviceConnection {
 
   BluetoothDeviceConnectionImpl(
       {required this.manager, required this.connectionId});
+
   @override
   void close() {
     // TODO: implement close

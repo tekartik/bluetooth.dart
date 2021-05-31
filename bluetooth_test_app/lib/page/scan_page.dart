@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:tekartik_bluetooth_test_app/ble/app_ble.dart';
 //import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
+import 'package:tekartik_bluetooth_test_app/ble/app_ble.dart';
 import 'package:tekartik_bluetooth_test_app/constant.dart';
 import 'package:tekartik_bluetooth_test_app/import/common_import.dart';
 
@@ -116,8 +116,7 @@ class _ScanPageState extends State<ScanPage> {
   Future startScan(BuildContext context) async {
     print('stopScanning');
     stopScan();
-    var info =
-        await (initBluetoothManager.getInfo() as FutureOr<BluetoothInfo>);
+    var info = await initBluetoothManager.getInfo();
     // devPrint('info: $info');
     if (!info.hasBluetoothBle!) {
       final snackBar =
@@ -128,8 +127,7 @@ class _ScanPageState extends State<ScanPage> {
       if (initBluetoothManager.supportsEnable!) {
         await initBluetoothManager.enable(
             androidRequestCode: androidEnableBluetoothRequestCode);
-        info =
-            await (initBluetoothManager.getInfo() as FutureOr<BluetoothInfo>);
+        info = await initBluetoothManager.getInfo();
       }
     }
     if (!info.isBluetoothEnabled!) {

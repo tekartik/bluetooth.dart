@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('example', () {
-    BluetoothManager service;
+    BluetoothManager? service;
     setUpAll(() async {
       service = await initBluetoothClientService();
     });

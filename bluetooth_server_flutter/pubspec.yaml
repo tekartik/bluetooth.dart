@@ -6,7 +6,7 @@ homepage:
 publish_to: none
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
   flutter: ">=1.17.0"
 
 dependencies:
@@ -16,13 +16,13 @@ dependencies:
     git:
       url: git://github.com/tekartik/bluetooth.dart
       path: bluetooth_flutter_blue
-      ref: dart2
+      ref: null_safety
     version: '>=0.2.1'
   tekartik_bluetooth_server:
     git:
       url: git://github.com/tekartik/bluetooth.dart
       path: bluetooth_server
-      ref: dart2
+      ref: null_safety
     version: '>=0.2.1'
 
 dev_dependencies:
@@ -31,13 +31,12 @@ dev_dependencies:
     sdk: flutter
 
 dependency_overrides:
-  # temp no nnbd yet
-  # tekartik_bluetooth:
-  #  path: ../bluetooth
-  # tekartik_bluetooth_flutter_blue:
-  #  path: ../bluetooth_flutter_blue
-  # tekartik_bluetooth_flutter:
-  #  path: ../bluetooth_flutter
+  tekartik_bluetooth:
+    path: ../bluetooth
+  tekartik_bluetooth_flutter_blue:
+    path: ../bluetooth_flutter_blue
+  tekartik_bluetooth_flutter:
+    path: ../bluetooth_flutter
   tekartik_bluetooth_server:
     path: ../bluetooth_server
 # For information on the generic Dart part of this file, see the

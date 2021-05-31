@@ -12,6 +12,7 @@ import 'constant.dart';
 @deprecated
 class BluetoothOptions {
   BluetoothOptions({this.logLevel});
+
   int? logLevel;
 
   Map<String, dynamic> toMap() {

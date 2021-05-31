@@ -1,4 +1,5 @@
 abstract class BluetoothContext {
-  bool get isAndroid;
-  bool get isIOS;
+  bool? get isAndroid;
+
+  bool? get isIOS;
 }

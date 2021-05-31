@@ -21,8 +21,8 @@ void main() {
     test('info', () async {
       var info = await manager.getInfo();
       print('info $info');
-      if (info.hasBluetoothBle && info.isBluetoothEnabled) {
-        StreamSubscription scanSubscription;
+      if (info.hasBluetoothBle! && info.isBluetoothEnabled!) {
+        StreamSubscription? scanSubscription;
         try {
           scanSubscription = manager.scan().listen((scanResult) {
             print('scan: $scanResult');

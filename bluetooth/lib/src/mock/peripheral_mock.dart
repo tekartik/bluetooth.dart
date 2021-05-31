@@ -10,6 +10,7 @@ class BluetoothPeripheralMock extends BluetoothPeripheral {
 
   /// Current advertiseData
   AdvertiseData? advertiseData;
+
   @override
   Future<void> startAdvertising({AdvertiseData? advertiseData}) async {
     this.advertiseData = advertiseData ?? AdvertiseData();

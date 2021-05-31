@@ -9,7 +9,7 @@ import 'package:tekartik_bluetooth_server_app/src/prefs.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
 class BluetoothServerHomePage extends StatefulWidget {
-  BluetoothServerHomePage({Key key, this.title}) : super(key: key);
+  BluetoothServerHomePage({Key? key, this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -20,7 +20,7 @@ class BluetoothServerHomePage extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
-  final String title;
+  final String? title;
 
   @override
   _BluetoothServerHomePageState createState() =>
@@ -29,7 +29,8 @@ class BluetoothServerHomePage extends StatefulWidget {
 
 class _BluetoothServerHomePageState extends State<BluetoothServerHomePage> {
   bool _startPending = false;
-  int port = bluetoothServerDefaultPort;
+  int? port = bluetoothServerDefaultPort;
+
 // Create a text controller. We will use it to retrieve the current value
   // of the TextField!
   final portInputController = TextEditingController();
@@ -68,11 +69,11 @@ class _BluetoothServerHomePageState extends State<BluetoothServerHomePage> {
         appBar: AppBar(
           // Here we take the value from the MyHomePage object that was created by
           // the App.build method, and use it to set our appbar title.
-          title: Text(widget.title),
+          title: Text(widget.title!),
         ),
         body: FutureBuilder(
             future: _loadPrefs(),
-            builder: (BuildContext context, AsyncSnapshot<Prefs> snapshot) {
+            builder: (BuildContext context, AsyncSnapshot<Prefs?> snapshot) {
               if (snapshot.data == null) {
                 return Container();
               } else {
@@ -81,7 +82,7 @@ class _BluetoothServerHomePageState extends State<BluetoothServerHomePage> {
                       padding: const EdgeInsets.only(top: 16.0),
                       child: Text(
                         app.bluetoothServerStarted
-                            ? 'Bluetooth server listening on ${app.bluetoothServer.port}'
+                            ? 'Bluetooth server listening on ${app.bluetoothServer!.port}'
                             : (_startPending
                                 ? 'Starting listening on $port'
                                 : 'Press START to start Bluetooth server'),
@@ -117,7 +118,7 @@ class _BluetoothServerHomePageState extends State<BluetoothServerHomePage> {
               widgets.add(Text(openError));
             }
             */
-                if (app.prefs.showConsole) {
+                if (app.prefs!.showConsole) {
                   widgets.add(Expanded(
                       child: ListView.builder(
                           reverse: true,
@@ -165,7 +166,7 @@ class _BluetoothServerHomePageState extends State<BluetoothServerHomePage> {
   }
 
   Future stopServer() async {
-    await app.prefs.setAutoStart(false);
+    await app.prefs!.setAutoStart(false);
     setState(() {
       _startPending = true;
     });
@@ -181,8 +182,8 @@ class _BluetoothServerHomePageState extends State<BluetoothServerHomePage> {
       app.started = true;
       await Future<dynamic>.delayed(const Duration());
       //devPrint('startApp');
-      portInputController.text = (app.prefs.port ?? 0).toString();
-      if (app.prefs.autoStart) {
+      portInputController.text = (app.prefs!.port ?? 0).toString();
+      if (app.prefs!.autoStart) {
         await startServer();
       }
     }
@@ -199,7 +200,7 @@ class _BluetoothServerHomePageState extends State<BluetoothServerHomePage> {
         if (response == false) {
           if (method == methodBluetooth) {
             var paramsMap = param as Map;
-            var bluetoothMethod = paramsMap['method'] as String;
+            var bluetoothMethod = paramsMap['method'] as String?;
             dynamic bluetoothParam = paramsMap['param'];
             log('method $bluetoothMethod param $bluetoothParam');
             /*
@@ -224,13 +225,13 @@ class _BluetoothServerHomePageState extends State<BluetoothServerHomePage> {
         // log('$response $method $param');
       });
       // Save port in prefs upon success
-      await app.prefs.setPort(port);
-      await app.prefs.setAutoStart(true);
+      await app.prefs!.setPort(port);
+      await app.prefs!.setAutoStart(true);
       var serverPort = server.port;
       logs.clear();
       log('Version: ${app.version}');
       log('Listening on port $serverPort');
-      log('WebSocket url: ${app.bluetoothServer.url}');
+      log('WebSocket url: ${app.bluetoothServer!.url}');
       if (Platform.isAndroid) {
         log('Make sure you have ran at least once: adb forward tcp:$serverPort tcp:$serverPort');
       }
@@ -246,7 +247,7 @@ class _BluetoothServerHomePageState extends State<BluetoothServerHomePage> {
     });
   }
 
-  Future<Prefs> _loadPrefs() async {
+  Future<Prefs?> _loadPrefs() async {
     //devPrint('prefs: ${app.prefs?.toString()}');
     if (app.prefs == null) {
       var prefs = Prefs();

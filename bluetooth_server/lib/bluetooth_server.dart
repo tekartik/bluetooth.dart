@@ -5,4 +5,4 @@ export 'package:tekartik_bluetooth_server/src/bluetooth_server.dart'
 export 'package:tekartik_bluetooth_server/src/common_public.dart';
 
 /// To initialize
-BluetoothManager serverBluetoothManager;
+late BluetoothManager serverBluetoothManager;

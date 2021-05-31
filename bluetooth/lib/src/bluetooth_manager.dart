@@ -17,7 +17,7 @@ abstract class BluetoothManager extends BluetoothStateService {
   Future<void> devSetOptions(BluetoothOptions options);
 
   /// Get the info
-  Future<BluetoothInfo?> getInfo();
+  Future<BluetoothInfo> getInfo();
 
   // Android only
   Future<bool> checkCoarseLocationPermission({int? androidRequestCode});
@@ -34,7 +34,7 @@ abstract class BluetoothManager extends BluetoothStateService {
   /// It will cancel any scan and device connection
   Future stop();
 
-  Future<List<BluetoothDevice>?> getConnectedDevices();
+  Future<List<BluetoothDevice>> getConnectedDevices();
 
   /// Connect
   Future<BluetoothDeviceConnection> newConnection(BluetoothDeviceId deviceId);
@@ -44,5 +44,5 @@ abstract class BluetoothManager extends BluetoothStateService {
 }
 
 abstract class BluetoothManagerImpl implements BluetoothManager {
-  Future<T> invokeMethod<T>(String method, [dynamic arguments]);
+  Future<T> invokeMethod<T>(String method, [Object? arguments]);
 }
