@@ -10,6 +10,6 @@ dependencies:
     git:
       url: git://github.com/tekartik/bluetooth.dart
       path: bluetooth
-      ref: dart2
+      ref: null_safety
     version: '>=0.2.1'
 ```

@@ -22,22 +22,20 @@ class BluetoothServer {
     });
   }
 
-  final BluetoothServerNotifyCallback _notifyCallback;
+  final BluetoothServerNotifyCallback? _notifyCallback;
   final List<BluetoothServerChannel> _channels = [];
   final WebSocketChannelServer<String> _webSocketChannelServer;
 
   static Future<BluetoothServer> serve(
-      {WebSocketChannelServerFactory webSocketChannelServerFactory,
+      {WebSocketChannelServerFactory? webSocketChannelServerFactory,
       dynamic address,
-      int port,
-      BluetoothServerNotifyCallback notifyCallback}) async {
+      int? port,
+      BluetoothServerNotifyCallback? notifyCallback}) async {
     webSocketChannelServerFactory ??= webSocketChannelServerFactoryIo;
     var webSocketChannelServer = await webSocketChannelServerFactory
         .serve<String>(address: address, port: port);
-    if (webSocketChannelServer != null) {
-      return BluetoothServer._(webSocketChannelServer, notifyCallback);
-    }
-    return null;
+
+    return BluetoothServer._(webSocketChannelServer, notifyCallback);
   }
 
   Future close() => _webSocketChannelServer.close();
@@ -57,14 +55,14 @@ class BluetoothServerChannel {
     _rpcServer.registerMethod(methodGetServerInfo,
         (json_rpc.Parameters parameters) {
       if (_notifyCallback != null) {
-        _notifyCallback(false, methodGetServerInfo, parameters.value);
+        _notifyCallback!(false, methodGetServerInfo, parameters.value);
       }
       var result = <String, dynamic>{
         keyName: serverInfoName,
         keyVersion: serverInfoVersion.toString(),
       };
       if (_notifyCallback != null) {
-        _notifyCallback(true, methodGetServerInfo, result);
+        _notifyCallback!(true, methodGetServerInfo, result);
       }
       return result;
     });
@@ -73,7 +71,7 @@ class BluetoothServerChannel {
     _rpcServer.registerMethod(methodBluetooth,
         (json_rpc.Parameters parameters) async {
       if (_notifyCallback != null) {
-        _notifyCallback(false, methodBluetooth, parameters.value);
+        _notifyCallback!(false, methodBluetooth, parameters.value);
       }
 
       var map = parameters.value as Map;
@@ -84,7 +82,7 @@ class BluetoothServerChannel {
       dynamic result = await (serverBluetoothManager as BluetoothManagerImpl)
           .invokeMethod<dynamic>(method, param);
       if (_notifyCallback != null) {
-        _notifyCallback(true, methodBluetooth, result);
+        _notifyCallback!(true, methodBluetooth, result);
       }
 
       return result;
@@ -111,7 +109,7 @@ class BluetoothServerChannel {
 
   final BluetoothServer _server;
   final json_rpc.Server _rpcServer;
-  BluetoothServerNotifyCallback get _notifyCallback => _server._notifyCallback;
+  BluetoothServerNotifyCallback? get _notifyCallback => _server._notifyCallback;
 }
 
 class BluetoothLocalContext implements BluetoothContext {
@@ -122,6 +120,6 @@ class BluetoothLocalContext implements BluetoothContext {
   bool get isIOS => Platform.isIOS;
 }
 
-BluetoothContext _bluetoothLocalContext;
+BluetoothContext? _bluetoothLocalContext;
 BluetoothContext get bluetoothLocalContext =>
     _bluetoothLocalContext ??= BluetoothLocalContext();

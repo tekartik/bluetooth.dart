@@ -11,8 +11,8 @@ import 'package:tekartik_web_socket/web_socket.dart';
 import 'package:tekartik_web_socket_io/web_socket_io.dart';
 
 class ServerInfo {
-  bool isIOS;
-  bool isAndroid;
+  bool? isIOS;
+  bool? isAndroid;
 }
 
 /// Instance of a server
@@ -24,7 +24,7 @@ class BluetoothServerClient {
 
   static Future<BluetoothServerClient> connect(
     String url, {
-    WebSocketChannelClientFactory webSocketChannelClientFactory,
+    WebSocketChannelClientFactory? webSocketChannelClientFactory,
   }) async {
     webSocketChannelClientFactory ??= webSocketChannelClientFactoryIo;
     var webSocketChannel = webSocketChannelClientFactory.connect<String>(url);
@@ -67,12 +67,12 @@ class BluetoothServerClient {
     }
 
     Uint8List fix(dynamic value) {
-      var list = <int>[];
+      var list = <int?>[];
       for (var item in value) {
         list.add(parseInt(item));
       }
       // devPrint('fix: $value ${value.runtimeType}');
-      return Uint8List.fromList(list);
+      return Uint8List.fromList(list as List<int>);
     }
 
     // devPrint('result1: $result');

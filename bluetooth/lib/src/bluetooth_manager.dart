@@ -44,5 +44,5 @@ abstract class BluetoothManager extends BluetoothStateService {
 }
 
 abstract class BluetoothManagerImpl implements BluetoothManager {
-  Future<T> invokeMethod<T>(String method, [dynamic arguments]);
+  Future<T> invokeMethod<T>(String method, [Object? arguments]);
 }

@@ -23,7 +23,7 @@ class MixinTest with BluetoothManagerMixin {
 mixin BluetoothManagerMixin implements BluetoothManager {
   final connections = <int?, BluetoothDeviceConnection>{};
 
-  Future<T> invokeMethod<T>(String method, [dynamic arguments]);
+  Future<T> invokeMethod<T>(String method, [Object? arguments]);
 
   @override
   bool? get supportsEnable => isAndroid;

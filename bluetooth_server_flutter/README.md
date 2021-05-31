@@ -11,6 +11,6 @@ dependencies:
     git:
       url: git://git@github.com/tekartik/bluetooth.dart
       path: bluetooth_server_flutter
-      ref: dart2
+      ref: null_safety
     version: '>=0.2.1'
 ```
