@@ -1,8 +1,8 @@
 // 16 bit uuid
 import 'dart:typed_data';
+
 import 'package:collection/collection.dart';
 import 'package:tekartik_bluetooth/utils/byte_utils.dart';
-
 import 'package:tekartik_common_utils/hex_utils.dart';
 import 'package:uuid/uuid.dart';
 
@@ -98,6 +98,7 @@ class Uuid128 {
 
   Uuid16 get shortNumberUuid16 =>
       Uuid16.fromBytes(Uint8List.fromList(bytes.sublist(2, 4)));
+
   @Deprecated('user shortNumberUuid16')
   Uuid16 get serviceUuid16 => shortNumberUuid16;
 

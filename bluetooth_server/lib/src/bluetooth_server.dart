@@ -41,6 +41,7 @@ class BluetoothServer {
   Future close() => _webSocketChannelServer.close();
 
   String get url => _webSocketChannelServer.url;
+
   int get port => _webSocketChannelServer.port;
 }
 
@@ -109,6 +110,7 @@ class BluetoothServerChannel {
 
   final BluetoothServer _server;
   final json_rpc.Server _rpcServer;
+
   BluetoothServerNotifyCallback? get _notifyCallback => _server._notifyCallback;
 }
 
@@ -121,5 +123,6 @@ class BluetoothLocalContext implements BluetoothContext {
 }
 
 BluetoothContext? _bluetoothLocalContext;
+
 BluetoothContext get bluetoothLocalContext =>
     _bluetoothLocalContext ??= BluetoothLocalContext();

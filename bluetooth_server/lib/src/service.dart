@@ -1,7 +1,6 @@
 // ignore_for_file: implementation_imports
 import 'package:tekartik_bluetooth/bluetooth_manager.dart';
 import 'package:tekartik_bluetooth/src/mixin.dart';
-
 //import 'package:tekartik_bluetooth_flutter/src/mixin.dart';
 import 'package:tekartik_bluetooth_server/bluetooth.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';

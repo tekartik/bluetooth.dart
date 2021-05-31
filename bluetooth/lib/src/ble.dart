@@ -41,7 +41,9 @@ abstract class BleBluetoothCharacteristic {
   BleBluetoothService get service;
 
   Uuid128 get uuid;
+
   int get properties;
+
   List<BleBluetoothDescriptor> get descriptors;
 
   factory BleBluetoothCharacteristic(
@@ -71,6 +73,7 @@ abstract class BleBluetoothCharacteristicValue {
   BleBluetoothService get service;
 
   Uuid128 get uuid;
+
   Uint8List get value;
 
   BleBluetoothCharacteristic get bc;
@@ -110,6 +113,7 @@ mixin BleBluetoothCharacteristicMixin implements BleBluetoothCharacteristic {
 
   @override
   BleBluetoothService get service => _service;
+
   @override
   Uuid128 get uuid => _uuid;
 
@@ -144,6 +148,7 @@ mixin BleBluetoothCharacteristicValueMixin
     implements BleBluetoothCharacteristicValue {
   late BleBluetoothCharacteristic _bc;
   late Uint8List _value;
+
   @override
   Uint8List get value => _value;
 

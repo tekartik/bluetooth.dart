@@ -8,6 +8,7 @@ class App {
   bool started = false;
   Prefs? prefs;
   BluetoothServer? _bluetoothServer;
+
   BluetoothServer? get bluetoothServer => _bluetoothServer;
 
   bool get bluetoothServerStarted => _bluetoothServer != null;
@@ -34,6 +35,7 @@ class App {
 }
 
 App? _app;
+
 App get app => _app ??= App();
 
 Future clearApp() async {

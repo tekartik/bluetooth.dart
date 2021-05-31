@@ -9,6 +9,7 @@ export 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart'
         bluetoothLogLevelVerbose,
         // ignore: deprecated_member_use
         BluetoothOptions;
+
 export 'src/bluetooth_manager_flutter_blue.dart'
     show BluetoothManagerFlutterBlue, bluetoothManagerFlutterBlue;
 

@@ -4,6 +4,7 @@ import 'package:tekartik_common_utils/model/model.dart';
 
 abstract class BluetoothDevice {
   String? get name;
+
   String get address;
 
   BluetoothDeviceId get id;

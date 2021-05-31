@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/uuid.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart'
     show BluetoothFlutter;
 import 'package:tekartik_bluetooth_flutter/bluetooth_flutter_peripheral.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
-import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth_flutter_example/ble_utils.dart';
 import 'package:tekartik_bluetooth_flutter_example/constant.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';

@@ -16,6 +16,7 @@ class BleServicePage extends StatefulWidget {
 
   const BleServicePage({Key? key, required this.appBleService})
       : super(key: key);
+
   @override
   _BleServicePageState createState() => _BleServicePageState();
 }

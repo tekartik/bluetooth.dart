@@ -30,6 +30,7 @@ class BluetoothServerHomePage extends StatefulWidget {
 class _BluetoothServerHomePageState extends State<BluetoothServerHomePage> {
   bool _startPending = false;
   int? port = bluetoothServerDefaultPort;
+
 // Create a text controller. We will use it to retrieve the current value
   // of the TextField!
   final portInputController = TextEditingController();
