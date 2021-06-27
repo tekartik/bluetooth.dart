@@ -1,8 +1,6 @@
 name: tekartik_bluetooth_flutter
 description: Bluetooth flutter specific
 version: 0.5.0
-author:
-homepage:
 publish_to: none
 
 environment:

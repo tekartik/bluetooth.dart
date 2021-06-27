@@ -1,8 +1,6 @@
 name: tekartik_bluetooth_server
 description: Bluetooth server component
 version: 0.2.1
-author:
-homepage:
 publish_to: none
 
 environment:
