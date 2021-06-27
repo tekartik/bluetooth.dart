@@ -15,7 +15,7 @@ class CharacteristicMock {
   SubjectInterface<BleBluetoothCharacteristicValue?> get subject => _subject;
 
   void dispose() {
-    unawaited(_subject.close());
+    _subject.close().unawait();
   }
 }
 
