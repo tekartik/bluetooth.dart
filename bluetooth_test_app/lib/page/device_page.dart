@@ -167,7 +167,7 @@ class _DevicePageState extends State<DevicePage> {
     print('Connecting');
     connection = await deviceBluetoothManager.newConnection(widget.deviceId);
 
-    unawaited(stateSubscription?.cancel());
+    stateSubscription?.cancel().unawait();
     stateSubscription = connection!.onConnectionState.listen((state) {
       print('onConnectionState: $state');
       connectionState

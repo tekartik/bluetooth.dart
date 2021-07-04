@@ -1,8 +1,6 @@
 name: tekartik_bluetooth_server_flutter
 description: Flutter server implementation
 version: 0.2.1
-author:
-homepage:
 publish_to: none
 
 environment:

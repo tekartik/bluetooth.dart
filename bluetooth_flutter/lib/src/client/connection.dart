@@ -91,7 +91,7 @@ class BluetoothDeviceConnectionFlutterImpl
 
       return await completer.future.timeout(bleReadCharacteristicTimeout);
     } finally {
-      unawaited(subscription.cancel());
+      subscription.cancel().unawait();
     }
   }
 
@@ -123,7 +123,7 @@ class BluetoothDeviceConnectionFlutterImpl
       } catch (e) {
         print('disconnect $this error $e');
       } finally {
-        unawaited(subscription.cancel());
+        subscription.cancel().unawait();
       }
     });
   }
@@ -164,7 +164,7 @@ class BluetoothDeviceConnectionFlutterImpl
 
       return await completer.future.timeout(bleDiscoverServicesTimeout);
     } finally {
-      unawaited(subscription.cancel());
+      subscription.cancel().unawait();
     }
   }
 
@@ -230,7 +230,7 @@ class BluetoothDeviceConnectionFlutterImpl
         }
         await completer.future.timeout(bleConnectedTimeout);
       } finally {
-        unawaited(subscription.cancel());
+        subscription.cancel().unawait();
       }
     });
   }
