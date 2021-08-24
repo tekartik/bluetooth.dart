@@ -18,11 +18,11 @@ class Uuid16 {
 
   Uuid16.fromValue(int value) : bytes = uint16GetBytes(value);
 
-  @deprecated
+  @Deprecated('Use proper init')
   Uuid16.from({Uint8List? bytes, int? value})
       : bytes = bytes ?? uint16GetBytes(value!);
 
-  @deprecated
+  @Deprecated('Use Uuid16.fromText')
   Uuid16(String text)
       : _text = text,
         bytes = Uint8List.fromList(parseHexString(text));
@@ -55,7 +55,7 @@ class Uuid32 {
 
   Uuid32.fromBytes({required this.bytes});
 
-  @deprecated
+  @Deprecated('Use fromBytes')
   Uuid32.from({required this.bytes});
 
   Uuid32(String text)

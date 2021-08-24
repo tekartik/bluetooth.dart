@@ -12,7 +12,7 @@ const bluetoothServerUrlEnvKey = 'TEKARTIK_BLUETOOTH_SERVER_URL';
 const bluetoothServerPortEnvKey = 'TEKARTIK_BLUETOOTH_SERVER_PORT';
 
 int? parseBluetoothServerUrlPort(String url, {int? defaultValue}) {
-  var port = parseInt(url.split('\:').last);
+  var port = parseInt(url.split(':').last);
   return port ?? defaultValue;
 }
 

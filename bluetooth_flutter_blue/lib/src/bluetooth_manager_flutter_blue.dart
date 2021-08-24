@@ -81,9 +81,9 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
     var blueDevices =
         devices.map((native) => BluetoothDeviceFlutterBlue(native)).toList();
     // cache
-    blueDevices.forEach((device) {
+    for (var device in blueDevices) {
       _scanCache.addDevice(device);
-    });
+    }
     return blueDevices;
   }
 
