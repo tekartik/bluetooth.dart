@@ -5,7 +5,8 @@ abstract class BluetoothStateService {
   bool? get supportsEnable;
 
   Future enable(
-      {@Deprecated('Do no use') int? requestCode, int? androidRequestCode});
+      {@Deprecated('Use androidRequestCode') int? requestCode,
+      int? androidRequestCode});
 
   Future disable();
 }

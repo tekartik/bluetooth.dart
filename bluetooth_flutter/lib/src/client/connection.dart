@@ -145,7 +145,7 @@ class BluetoothDeviceConnectionFlutterImpl
     return manager.invokeMethod(method, arguments);
   }
 
-  @Deprecated('Do no use')
+  @Deprecated('Use remote get service')
   @override
   Future discoverServices() async {
     var map = _baseMap();
