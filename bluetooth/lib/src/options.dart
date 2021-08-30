@@ -9,7 +9,7 @@ import 'constant.dart';
 ///
 /// deprecated since 1.1.1 for internal usage only
 ///
-@deprecated
+@Deprecated('Dev only')
 class BluetoothOptions {
   BluetoothOptions({this.logLevel});
 
