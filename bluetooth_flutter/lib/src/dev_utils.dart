@@ -3,7 +3,7 @@ import 'package:tekartik_common_utils/env_utils.dart';
 bool _devPrintEnabled = true;
 
 /// Deprecated to prevent keeping the code used.
-@deprecated
+@Deprecated('Dev only')
 void devPrint(Object object) {
   if (_devPrintEnabled) {
     print(object);
@@ -14,7 +14,7 @@ void devPrint(Object object) {
 ///
 /// Can be use as a todo for weird code. int value = devWarning(myFunction());
 /// The function is always called
-@deprecated
+@Deprecated('Dev only')
 T devWarning<T>(T value) => value;
 
 void _devError([Object? object]) {
@@ -33,7 +33,7 @@ void _devError([Object? object]) {
 /// Deprecated to prevent keeping the code used.
 ///
 /// Will call the action on debug only
-@deprecated
+@Deprecated('Dev only')
 T? devDebugOnly<T>(T Function() action, {String? message}) {
   if (isDebug) {
     print(
@@ -44,5 +44,5 @@ T? devDebugOnly<T>(T Function() action, {String? message}) {
   }
 }
 
-@deprecated
+@Deprecated('Dev only')
 void devError([Object? object]) => _devError(object);

@@ -1,5 +1,5 @@
 import 'package:tekartik_common_utils/bool_utils.dart';
-import 'package:tekartik_common_utils/model/model.dart';
+import 'package:tekartik_common_utils/model/model_v2.dart';
 
 abstract class BluetoothInfo {
   bool? get hasBluetooth;
@@ -29,7 +29,7 @@ class BluetoothInfoImpl implements BluetoothInfo {
       {this.hasBluetooth, this.hasBluetoothBle, this.isBluetoothEnabled});
 
   void fromMap(Map result) {
-    var model = Model(result);
+    var model = asModel(result);
     hasBluetooth = parseBool(model['hasBluetooth']) ?? false;
     hasBluetoothBle = parseBool(model['hasBluetoothBle']) ?? false;
     isBluetoothEnabled = parseBool(model['isBluetoothEnabled']) ?? false;
@@ -40,7 +40,7 @@ class BluetoothInfoImpl implements BluetoothInfo {
   String toString() => toDebugMap().toString();
 
   Model toDebugMap() {
-    var model = Model()
+    var model = NewModel()
       ..setValue('hasBluetooth', hasBluetooth)
       ..setValue('hasBluetoothBle', hasBluetoothBle)
       ..setValue('isBluetoothEnabled', isBluetoothEnabled)

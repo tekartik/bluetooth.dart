@@ -4,7 +4,8 @@ import 'dart:async';
 abstract class BluetoothStateService {
   bool? get supportsEnable;
 
-  Future enable({@deprecated int? requestCode, int? androidRequestCode});
+  Future enable(
+      {@Deprecated('Do no use') int? requestCode, int? androidRequestCode});
 
   Future disable();
 }

@@ -1,5 +1,5 @@
 import 'package:tekartik_common_utils/int_utils.dart';
-import 'package:tekartik_common_utils/model/model.dart';
+import 'package:tekartik_common_utils/model/model_v2.dart';
 
 import 'bluetooth_device.dart';
 
@@ -27,7 +27,7 @@ class ScanResultImpl implements ScanResult {
   }
 
   Model toDebugMap() {
-    var model = Model();
+    var model = NewModel();
     model.setValue('rssi', rssi);
     model.setValue('device', deviceImpl.toDebugMap());
     return model;

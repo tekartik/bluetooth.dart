@@ -13,7 +13,7 @@ abstract class BluetoothManager extends BluetoothStateService {
   bool? get isAndroid;
 
   /// deprecated on purpose to remove from code.
-  @deprecated
+  @Deprecated('Dev only')
   Future<void> devSetOptions(BluetoothOptions options);
 
   /// Get the info

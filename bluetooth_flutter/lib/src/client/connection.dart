@@ -10,7 +10,7 @@ import 'package:tekartik_bluetooth_flutter/src/import.dart';
 import 'package:tekartik_bluetooth_flutter/src/mixin.dart';
 import 'package:tekartik_bluetooth_flutter/utils/model_utils.dart';
 import 'package:tekartik_common_utils/map_utils.dart';
-import 'package:tekartik_common_utils/model/model.dart';
+import 'package:tekartik_common_utils/model/model_v2.dart';
 
 // abstract class BluetoothDeviceConnection {}
 export 'package:tekartik_bluetooth/src/device_connection.dart';
@@ -48,7 +48,7 @@ class BluetoothDeviceConnectionFlutterImpl
   }
 
   Model _baseMap() {
-    var map = Model();
+    var map = NewModel();
 
     map[connectionIdKey] = connectionId;
     return map;
@@ -67,7 +67,7 @@ class BluetoothDeviceConnectionFlutterImpl
     var completer = Completer<BleBluetoothCharacteristicValue>();
     var subscription = controller.stream
         .where((call) => call.method == 'remoteReadCharacteristicResult')
-        .map((call) => Model(asMap(call.arguments)))
+        .map((call) => asModel(asMap(call.arguments) ?? {}))
         .listen((map) {
       var readServiceUuid = map[serviceUuidKey] as String?;
       var readCharacteristicUuid = map[characteristicUuidKey] as String?;
@@ -133,7 +133,7 @@ class BluetoothDeviceConnectionFlutterImpl
   }
 
   Model toDebugMap() {
-    var model = Model();
+    var model = NewModel();
     model.setValue(connectionIdKey, connectionId);
     return model;
   }
@@ -145,7 +145,7 @@ class BluetoothDeviceConnectionFlutterImpl
     return manager.invokeMethod(method, arguments);
   }
 
-  @deprecated
+  @Deprecated('Do no use')
   @override
   Future discoverServices() async {
     var map = _baseMap();
@@ -153,7 +153,7 @@ class BluetoothDeviceConnectionFlutterImpl
     var completer = Completer();
     var subscription = controller.stream
         .where((call) => call.method == 'remoteDiscoverServicesResult')
-        .map((call) => Model(asMap(call.arguments)))
+        .map((call) => asModel(asMap(call.arguments) ?? {}))
         .listen((map) {
       if (!completer.isCompleted) {
         completer.complete();
@@ -267,7 +267,7 @@ class BluetoothDeviceConnectionStateImpl
   */
 
   Model toDebugMap() {
-    var model = Model();
+    var model = NewModel();
     model.setValue('state', state);
     return model;
   }
