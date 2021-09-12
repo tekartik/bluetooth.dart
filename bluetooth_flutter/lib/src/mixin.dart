@@ -5,7 +5,7 @@ import 'package:tekartik_bluetooth/src/mixin.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
 import 'package:tekartik_bluetooth_flutter/src/client/connection.dart';
 import 'package:tekartik_bluetooth_flutter/src/constant.dart';
-import 'package:tekartik_common_utils/model/model.dart';
+import 'package:tekartik_common_utils/model/model_v2.dart';
 
 import 'import.dart';
 
@@ -28,7 +28,7 @@ mixin BluetoothFlutterManagerMixin
       BluetoothDeviceId deviceId) async {
     var connection = BluetoothDeviceConnectionFlutterImpl(manager: this);
 
-    var map = Model();
+    var map = <K, V>{};
     map['deviceId'] = deviceId;
     var result = await invokeMethod<dynamic>('remoteNewConnection', map);
     int? connectionId;

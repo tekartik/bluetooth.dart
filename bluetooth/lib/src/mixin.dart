@@ -3,7 +3,7 @@ import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/src/constant.dart';
 import 'package:tekartik_bluetooth/src/options.dart';
 import 'package:tekartik_common_utils/map_utils.dart';
-import 'package:tekartik_common_utils/model/model.dart';
+import 'package:tekartik_common_utils/model/model_v2.dart';
 
 import 'device_id.dart';
 import 'import.dart';
@@ -133,7 +133,7 @@ mixin BluetoothManagerMixin implements BluetoothManager {
 
   @override
   Stream<ScanResult> scan({ScanMode scanMode = ScanMode.lowLatency}) {
-    var map = Model();
+    var map = NewModel();
     map['androidScanMode'] = scanMode.value;
 
     scanController?.close();
@@ -158,7 +158,7 @@ mixin BluetoothManagerMixin implements BluetoothManager {
   @override
   Future<BluetoothDeviceConnection> newConnection(
       BluetoothDeviceId deviceId) async {
-    var map = Model();
+    var map = NewModel();
     map['deviceId'] = (deviceId as BluetoothDeviceIdImpl).id;
     var result = await invokeMethod<dynamic>('remoteNewConnection', map);
     int? connectionId;
