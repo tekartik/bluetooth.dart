@@ -31,11 +31,9 @@ mixin BluetoothManagerMixin implements BluetoothManager {
   @override
   Future<BluetoothInfo> getInfo() async {
     var result = await invokeMethod<Map>('getInfo');
-    if (result is Map) {
-      var info = BluetoothInfoImpl()..fromMap(result);
-      return info;
-    }
-    throw UnsupportedError('no info available');
+
+    var info = BluetoothInfoImpl()..fromMap(result);
+    return info;
   }
 
   @override
@@ -133,7 +131,7 @@ mixin BluetoothManagerMixin implements BluetoothManager {
 
   @override
   Stream<ScanResult> scan({ScanMode scanMode = ScanMode.lowLatency}) {
-    var map = NewModel();
+    var map = newModel();
     map['androidScanMode'] = scanMode.value;
 
     scanController?.close();
@@ -158,7 +156,7 @@ mixin BluetoothManagerMixin implements BluetoothManager {
   @override
   Future<BluetoothDeviceConnection> newConnection(
       BluetoothDeviceId deviceId) async {
-    var map = NewModel();
+    var map = newModel();
     map['deviceId'] = (deviceId as BluetoothDeviceIdImpl).id;
     var result = await invokeMethod<dynamic>('remoteNewConnection', map);
     int? connectionId;

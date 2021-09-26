@@ -27,7 +27,7 @@ class ScanResultImpl implements ScanResult {
   }
 
   Model toDebugMap() {
-    var model = NewModel();
+    var model = newModel();
     model.setValue('rssi', rssi);
     model.setValue('device', deviceImpl.toDebugMap());
     return model;
