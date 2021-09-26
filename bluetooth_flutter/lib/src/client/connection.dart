@@ -48,7 +48,7 @@ class BluetoothDeviceConnectionFlutterImpl
   }
 
   Model _baseMap() {
-    var map = NewModel();
+    var map = newModel();
 
     map[connectionIdKey] = connectionId;
     return map;
@@ -133,7 +133,7 @@ class BluetoothDeviceConnectionFlutterImpl
   }
 
   Model toDebugMap() {
-    var model = NewModel();
+    var model = newModel();
     model.setValue(connectionIdKey, connectionId);
     return model;
   }
@@ -267,7 +267,7 @@ class BluetoothDeviceConnectionStateImpl
   */
 
   Model toDebugMap() {
-    var model = NewModel();
+    var model = newModel();
     model.setValue('state', state);
     return model;
   }

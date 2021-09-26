@@ -33,7 +33,7 @@ class BluetoothDeviceImpl implements BluetoothDevice {
   String toString() => toDebugMap().toString();
 
   Model toDebugMap() {
-    var model = NewModel();
+    var model = newModel();
     model.setValue('address', address);
     model.setValue('name', name);
     return model;

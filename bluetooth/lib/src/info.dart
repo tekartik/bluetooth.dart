@@ -40,7 +40,7 @@ class BluetoothInfoImpl implements BluetoothInfo {
   String toString() => toDebugMap().toString();
 
   Model toDebugMap() {
-    var model = NewModel()
+    var model = newModel()
       ..setValue('hasBluetooth', hasBluetooth)
       ..setValue('hasBluetoothBle', hasBluetoothBle)
       ..setValue('isBluetoothEnabled', isBluetoothEnabled)
