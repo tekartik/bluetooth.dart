@@ -26,6 +26,7 @@ class BluetoothFlutterManagerImpl
         var connection =
             connections[connectionId] as BluetoothDeviceConnectionFlutterImpl?;
         if (connection == null) {
+          // ignore: avoid_print
           print('cannot find connection $connectionId');
         } else {
           // Dispatch to connection

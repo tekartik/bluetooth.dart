@@ -3,7 +3,6 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:json_rpc_2/json_rpc_2.dart' as json_rpc;
-import 'package:pedantic/pedantic.dart';
 import 'package:tekartik_bluetooth/src/exception.dart';
 import 'package:tekartik_bluetooth_server/src/constant.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';

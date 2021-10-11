@@ -40,13 +40,17 @@ dev_dependencies:
       ref: null_safety
       path: test_menu_flutter
     version: '>=0.2.5'
-
+  tekartik_lints_flutter:
+    git:
+      url: git://github.com/tekartik/common_flutter.dart
+      ref: null_safety
+      path: packages/lints_flutter
+    version: '>=0.1.0'
 dependency_overrides:
   # temp nnbd
   crypto:
   # temp nnbd
   uuid: '>=3.0.0-0'
-  # pedantic: '>=1.9.0'
   tekartik_bluetooth:
     path: ../bluetooth
   tekartik_bluetooth_flutter_blue:

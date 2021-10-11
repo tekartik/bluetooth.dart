@@ -129,7 +129,7 @@ class BluetoothDeviceConnectionFlutterBlue
     return null;
   }
 
-  final readCharacteristicTimeout = Duration(milliseconds: 10000);
+  final readCharacteristicTimeout = const Duration(milliseconds: 10000);
 
   @override
   Future<BleBluetoothCharacteristicValue> readCharacteristic(

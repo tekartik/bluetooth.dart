@@ -121,6 +121,7 @@ class BluetoothDeviceConnectionFlutterImpl
           // devPrint('disconnect timeout');
         });
       } catch (e) {
+        // ignore: avoid_print
         print('disconnect $this error $e');
       } finally {
         subscription.cancel().unawait();

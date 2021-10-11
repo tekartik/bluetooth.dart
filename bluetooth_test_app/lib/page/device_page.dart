@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, duplicate_ignore
+
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tekartik_bluetooth/ble.dart';
@@ -150,6 +152,7 @@ class _DevicePageState extends State<DevicePage> {
 
   Future _disconnect() async {
     if (connection != null) {
+      // ignore: avoid_print
       print('Disconnecting');
       await connection?.disconnect();
       connection?.close();

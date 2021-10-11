@@ -7,7 +7,6 @@ environment:
   sdk: '>=2.12.0 <3.0.0'
 
 dev_dependencies:
-  pedantic: '>=1.4.0 <3.0.0'
   tekartik_travis_ci_flutter:
     git:
       url: git://github.com/tekartik/travis_ci_flutter.dart
@@ -16,6 +15,9 @@ dev_dependencies:
   process_run: '>=0.11.0+2'
   dev_test: '>=0.13.4-dev.2'
   test:
-
-dependency_overrides:
-  # pedantic: '>=1.9.0 <3.0.0'
+  tekartik_lints:
+    git:
+      url: git://github.com/tekartik/common.dart
+      ref: null_safety
+      path: packages/lints
+    version: '>=0.1.0'

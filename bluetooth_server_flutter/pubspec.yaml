@@ -27,6 +27,12 @@ dev_dependencies:
   test:
   flutter_test:
     sdk: flutter
+  tekartik_lints_flutter:
+    git:
+      url: git://github.com/tekartik/common_flutter.dart
+      ref: null_safety
+      path: packages/lints_flutter
+    version: '>=0.1.0'
 
 dependency_overrides:
   tekartik_bluetooth:

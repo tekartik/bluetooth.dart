@@ -9,7 +9,7 @@ import 'package:tekartik_bluetooth_server_app/src/prefs.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
 class BluetoothServerHomePage extends StatefulWidget {
-  BluetoothServerHomePage({Key? key, this.title}) : super(key: key);
+  const BluetoothServerHomePage({Key? key, this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -45,6 +45,7 @@ class _BluetoothServerHomePageState extends State<BluetoothServerHomePage> {
   }
 
   void log(String message) {
+    // ignore: avoid_print
     print(message);
     setState(() {
       logs.add(message);
@@ -239,7 +240,9 @@ class _BluetoothServerHomePageState extends State<BluetoothServerHomePage> {
       setState(() {
         log(e.toString());
       });
+      // ignore: avoid_print
       print(e);
+      // ignore: avoid_print
       print(st);
     }
     setState(() {

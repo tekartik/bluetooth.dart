@@ -35,14 +35,18 @@ dependencies:
     version: '>=0.2.5'
 
 dependency_overrides:
-  # pedantic: '>=1.9.0'
   tekartik_bluetooth:
     path: ../../bluetooth
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  tekartik_lints_flutter:
+    git:
+      url: git://github.com/tekartik/common_flutter.dart
+      ref: null_safety
+      path: packages/lints_flutter
+    version: '>=0.1.0'
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
