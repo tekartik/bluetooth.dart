@@ -53,7 +53,7 @@ class _ScanPageState extends State<ScanPage> {
             builder: (context, snapshot) {
               if (scanSubscription == null) {
                 return ListView(children: const <Widget>[
-                   ListTile(
+                  ListTile(
                     title: Text('Tap scan for devices'),
                   )
                 ]);
@@ -123,8 +123,7 @@ class _ScanPageState extends State<ScanPage> {
     var info = await initBluetoothManager.getInfo();
     // devPrint('info: $info');
     if (!info.hasBluetoothBle!) {
-      const snackBar =
-          SnackBar(content: Text('Bluetooth BLE not supported'));
+      const snackBar = SnackBar(content: Text('Bluetooth BLE not supported'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
     } else if (!info.isBluetoothEnabled!) {
@@ -135,8 +134,8 @@ class _ScanPageState extends State<ScanPage> {
       }
     }
     if (!info.isBluetoothEnabled!) {
-      const snackBar = SnackBar(
-          content: Text('Please enable Bluetooth on your device'));
+      const snackBar =
+          SnackBar(content: Text('Please enable Bluetooth on your device'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
     }
