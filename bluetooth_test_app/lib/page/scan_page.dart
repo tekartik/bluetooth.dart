@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -9,6 +11,8 @@ import 'package:tekartik_bluetooth_test_app/constant.dart';
 import 'package:tekartik_bluetooth_test_app/import/common_import.dart';
 
 class ScanPage extends StatefulWidget {
+  const ScanPage({Key? key}) : super(key: key);
+
   @override
   _ScanPageState createState() => _ScanPageState();
 }
@@ -48,8 +52,8 @@ class _ScanPageState extends State<ScanPage> {
             stream: results,
             builder: (context, snapshot) {
               if (scanSubscription == null) {
-                return ListView(children: <Widget>[
-                  const ListTile(
+                return ListView(children: const <Widget>[
+                   ListTile(
                     title: Text('Tap scan for devices'),
                   )
                 ]);
@@ -119,8 +123,8 @@ class _ScanPageState extends State<ScanPage> {
     var info = await initBluetoothManager.getInfo();
     // devPrint('info: $info');
     if (!info.hasBluetoothBle!) {
-      final snackBar =
-          const SnackBar(content: Text('Bluetooth BLE not supported'));
+      const snackBar =
+          SnackBar(content: Text('Bluetooth BLE not supported'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
     } else if (!info.isBluetoothEnabled!) {
@@ -131,7 +135,7 @@ class _ScanPageState extends State<ScanPage> {
       }
     }
     if (!info.isBluetoothEnabled!) {
-      final snackBar = const SnackBar(
+      const snackBar = SnackBar(
           content: Text('Please enable Bluetooth on your device'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
@@ -140,7 +144,7 @@ class _ScanPageState extends State<ScanPage> {
     if (initBluetoothManager.isAndroid!) {
       if (!await initBluetoothManager.checkCoarseLocationPermission(
           androidRequestCode: androidCheckCoarseLocationPermission)) {
-        final snackBar = const SnackBar(
+        const snackBar = SnackBar(
             content: Text(
                 'Please enable location services to scan for nearby devices'));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);

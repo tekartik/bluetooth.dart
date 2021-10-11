@@ -39,7 +39,7 @@ mixin BluetoothFlutterManagerMixin
       connectionId = result[connectionIdKey] as int?;
     }
     connection.connectionId = connectionId;
-    print('newConnection success $connectionId');
+    // print('newConnection success $connectionId');
     connections[connectionId] = connection;
 
     return connection;

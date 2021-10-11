@@ -11,10 +11,12 @@ import 'test_main.dart' as test_main;
 Future<void> main() async {
   initBluetoothManager = bluetoothManager;
   deviceBluetoothManager = bluetoothManagerFlutterBlue;
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -32,13 +34,13 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, this.title}) : super(key: key);
+  const MyHomePage({Key? key, this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -73,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: ListView(
         children: [
           ListTile(
-            title: Text('Test menu'),
+            title: const Text('Test menu'),
             onTap: () {
               test_main.main();
             },
@@ -84,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () {
           () async {
             var deviceId = await Navigator.of(context).push<BluetoothDeviceId>(
-                MaterialPageRoute(builder: (_) => ScanPage()));
+                MaterialPageRoute(builder: (_) => const ScanPage()));
             if (deviceId != null) {
               await Navigator.of(context).push<String>(MaterialPageRoute(
                   builder: (_) => DevicePage(deviceId: deviceId)));

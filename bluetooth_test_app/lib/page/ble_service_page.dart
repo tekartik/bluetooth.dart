@@ -32,8 +32,8 @@ class _BleServicePageState extends State<BleServicePage> {
         var service = widget.appBleService.bleService;
         var characteristics = service.characteristics;
         if (characteristics?.isEmpty ?? true) {
-          return ListView(children: <Widget>[
-            const ListTile(title: Text('No characteristics found'))
+          return ListView(children: const <Widget>[
+            ListTile(title: Text('No characteristics found'))
           ]);
         }
         return ListView(

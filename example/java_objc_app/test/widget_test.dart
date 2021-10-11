@@ -11,7 +11,7 @@ import 'package:tekartik_test_menu_flutter/src/test_menu_manager_flutter.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(TestMenuApp());
+    await tester.pumpWidget(const TestMenuApp());
 
     /*
     // Verify that our counter starts at 0.

@@ -6,6 +6,7 @@ bool _devPrintEnabled = true;
 @Deprecated('Dev only')
 void devPrint(Object object) {
   if (_devPrintEnabled) {
+    // ignore: avoid_print
     print(object);
   }
 }
@@ -23,7 +24,9 @@ void _devError([Object? object]) {
     throw UnsupportedError('$object');
   } catch (e, st) {
     if (_devPrintEnabled) {
+      // ignore: avoid_print
       print('# ERROR $object');
+      // ignore: avoid_print
       print(st);
     }
     rethrow;
@@ -36,6 +39,7 @@ void _devError([Object? object]) {
 @Deprecated('Dev only')
 T? devDebugOnly<T>(T Function() action, {String? message}) {
   if (isDebug) {
+    // ignore: avoid_print
     print(
         '[DEBUG_ONLY]${message != null ? ' $message' : ' debug only behavior'}');
     return action();
