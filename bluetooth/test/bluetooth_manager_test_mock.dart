@@ -1,8 +1,5 @@
-import 'package:tekartik_bluetooth/bluetooth.dart';
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
-import 'package:tekartik_bluetooth/src/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/src/options.dart';
-import 'package:tekartik_bluetooth/src/scan_result.dart';
 
 class BluetoothManagerTestMock
     with BluetoothManagerMixin

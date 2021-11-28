@@ -1,4 +1,3 @@
-import 'package:tekartik_bluetooth/bluetooth.dart';
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/src/constant.dart';
 import 'package:tekartik_bluetooth/src/options.dart';

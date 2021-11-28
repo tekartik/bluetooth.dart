@@ -1,4 +1,3 @@
-import 'package:tekartik_bluetooth/bluetooth.dart';
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
 // ignore: implementation_imports
 import 'package:tekartik_bluetooth/src/mixin.dart';
