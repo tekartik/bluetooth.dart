@@ -1,5 +1,4 @@
 // ignore_for_file: implementation_imports
-import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:json_rpc_2/json_rpc_2.dart' as json_rpc;

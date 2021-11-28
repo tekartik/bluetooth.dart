@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:tekartik_bluetooth/bluetooth_manager.dart';
 import 'package:tekartik_bluetooth_server/bluetooth_context.dart';
 import 'package:tekartik_bluetooth_server/src/bluetooth_server_client.dart';

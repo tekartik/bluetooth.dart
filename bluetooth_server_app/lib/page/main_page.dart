@@ -2,7 +2,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:tekartik_bluetooth_server/bluetooth_server.dart';
 import 'package:tekartik_bluetooth_server/src/constant.dart';
 import 'package:tekartik_bluetooth_server_app/src/app.dart';
 import 'package:tekartik_bluetooth_server_app/src/prefs.dart';

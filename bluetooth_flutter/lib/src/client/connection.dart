@@ -4,7 +4,6 @@ import 'package:tekartik_bluetooth/ble.dart';
 import 'package:tekartik_bluetooth/bluetooth.dart';
 import 'package:tekartik_bluetooth/bluetooth_service.dart';
 import 'package:tekartik_bluetooth/uuid.dart';
-import 'package:tekartik_bluetooth_flutter/src/constant.dart';
 import 'package:tekartik_bluetooth_flutter/src/exception.dart';
 import 'package:tekartik_bluetooth_flutter/src/import.dart';
 import 'package:tekartik_bluetooth_flutter/src/mixin.dart';
