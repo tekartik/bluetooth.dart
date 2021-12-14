@@ -66,7 +66,7 @@ class Uuid32 {
   String toString() => _text ??= toHexString(bytes)!.toLowerCase();
 }
 
-// 128 bit uuid
+// 128 bit uuid - 16 bytes
 class Uuid128 {
   final Uint8List _value;
   String? _text;
@@ -75,10 +75,14 @@ class Uuid128 {
       : _value = bytes ?? Uint8List.fromList(Uuid.parse(text!)),
         _text = text;
 
+  /// 16 bytes
+  Uuid128.bytes(Uint8List bytes) : _value = bytes;
+
   Uuid128(String text)
       : _text = text,
         _value = Uint8List.fromList(Uuid.parse(text));
 
+  /// 16 bytes
   Uint8List get bytes => _value;
 
   Uuid128 withUuid16(Uuid16 uuid16) {

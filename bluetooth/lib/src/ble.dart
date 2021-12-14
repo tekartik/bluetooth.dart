@@ -46,6 +46,9 @@ abstract class BleBluetoothCharacteristic {
 
   List<BleBluetoothDescriptor> get descriptors;
 
+  /// We allow setting descriptors by implementation
+  @protected
+  set descriptors(List<BleBluetoothDescriptor> descriptor);
   factory BleBluetoothCharacteristic(
           {required BleBluetoothService service,
           required Uuid128 uuid,
@@ -54,7 +57,10 @@ abstract class BleBluetoothCharacteristic {
           int properties = 0x0,
           List<BleBluetoothDescriptor>? descriptors}) =>
       BleBluetoothCharacteristicImpl(
-          service: service, uuid: uuid, properties: properties);
+          service: service,
+          uuid: uuid,
+          properties: properties,
+          descriptors: descriptors);
 
   BleBluetoothCharacteristicValue withValue(Uint8List value);
 
@@ -178,6 +184,8 @@ class BleBluetoothCharacteristicImpl
     _service = service;
     _uuid = uuid;
     _properties = properties;
+
+    this.descriptors = descriptors ?? <BleBluetoothDescriptor>[];
   }
 }
 

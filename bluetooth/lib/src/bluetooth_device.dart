@@ -1,6 +1,7 @@
 import 'package:tekartik_bluetooth/src/device_id.dart';
 import 'package:tekartik_common_utils/model/model_v2.dart';
 
+/// A bluetooth device
 abstract class BluetoothDevice {
   String? get name;
 

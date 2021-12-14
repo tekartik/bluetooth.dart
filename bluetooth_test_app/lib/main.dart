@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
-import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
-import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
-import 'package:tekartik_bluetooth_test_app/ble/app_ble.dart';
 import 'package:tekartik_bluetooth_test_app/page/device_page.dart';
 import 'package:tekartik_bluetooth_test_app/page/scan_page.dart';
+import 'package:tekartik_bluetooth_test_app/src/ble_setup.dart';
+import 'package:tekartik_platform_io/context_io.dart';
 
 import 'test_main.dart' as test_main;
 
 Future<void> main() async {
-  initBluetoothManager = bluetoothManager;
-  deviceBluetoothManager = bluetoothManagerFlutterBlue;
+  if (platformContextIo.io?.isLinux ?? false) {
+    initWithBluez();
+  } else {
+    initWithFlutterBlue();
+  }
   runApp(const MyApp());
 }
 

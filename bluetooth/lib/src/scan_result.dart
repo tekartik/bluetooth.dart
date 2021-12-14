@@ -3,6 +3,7 @@ import 'package:tekartik_common_utils/model/model_v2.dart';
 
 import 'bluetooth_device.dart';
 
+/// A scan result
 abstract class ScanResult {
   BluetoothDevice get device;
 

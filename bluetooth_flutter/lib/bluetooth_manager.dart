@@ -21,7 +21,11 @@ export 'package:tekartik_bluetooth_flutter/src/options.dart';
 @Deprecated('Use [bluetoothManager] instead')
 BluetoothFlutterManager get bluetoothService => bluetoothManager;
 
-BluetoothFlutterManager get bluetoothManager => flutterBluetoothServiceImpl;
+/// Deprecated Use bluetoothManagerFlutter
+BluetoothFlutterManager get bluetoothManager => bluetoothManagerFlutter;
+
+BluetoothFlutterManager get bluetoothManagerFlutter =>
+    flutterBluetoothServiceImpl;
 
 @Deprecated('Use [bluetoothManager] instead')
 BluetoothFlutterManager get flutterBluetoothService => bluetoothService;

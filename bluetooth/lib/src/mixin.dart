@@ -1,4 +1,5 @@
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
+import 'package:tekartik_bluetooth/src/common/mixin_model.dart';
 import 'package:tekartik_bluetooth/src/constant.dart';
 import 'package:tekartik_bluetooth/src/options.dart';
 import 'package:tekartik_common_utils/map_utils.dart';
@@ -130,8 +131,8 @@ mixin BluetoothManagerMixin implements BluetoothManager {
 
   @override
   Stream<ScanResult> scan({ScanMode scanMode = ScanMode.lowLatency}) {
-    var map = newModel();
-    map['androidScanMode'] = scanMode.value;
+    var param = StartScanParam()..androidScanMode.v = scanMode.value;
+    var map = param.toMap();
 
     scanController?.close();
 
@@ -140,7 +141,7 @@ mixin BluetoothManagerMixin implements BluetoothManager {
       await invokeStopScan();
     });
     () async {
-      await invokeMethod<dynamic>('startScan', map);
+      await invokeMethod<dynamic>(methodStartScan, map);
     }();
     return scanController!.stream;
   }
