@@ -1,6 +1,6 @@
 name: tekartik_bluetooth_bluez
 description: Bluetooth on linux
-version: 0.0.1
+version: 0.1.0
 publish_to: none
 
 environment:

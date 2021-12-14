@@ -11,5 +11,5 @@ dependencies:
       url: https://github.com/tekartik/bluetooth.dart
       path: bluetooth_bluez
       ref: dart2_3
-    version: '>=0.2.1'
+    version: '>=0.1.0'
 ```
