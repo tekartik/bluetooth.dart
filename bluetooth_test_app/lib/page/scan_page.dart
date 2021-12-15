@@ -1,7 +1,5 @@
 // ignore_for_file: avoid_print
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 //import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
@@ -33,7 +31,7 @@ class AppScanResults {
 class _ScanPageState extends State<ScanPage> {
   StreamSubscription? scanSubscription;
   bool _inited = false;
-  bool _initialScanStartDone = devWarning(true); // test android
+  bool _initialScanStartDone = false; // devWarning(true); // test android
   final results = BehaviorSubject<AppScanResults?>();
 
   @override
@@ -133,7 +131,6 @@ class _ScanPageState extends State<ScanPage> {
     print('stopScanning');
     stopScan();
     var info = await initBluetoothManager.getInfo();
-    devPrint('info: $info');
     if (!info.hasBluetoothBle!) {
       const snackBar = SnackBar(content: Text('Bluetooth BLE not supported'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -151,17 +148,14 @@ class _ScanPageState extends State<ScanPage> {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
     }
-    devPrint('#3');
-
     if (initBluetoothManager.isAndroid!) {
-      if (devWarning(false)) {
-        if (!await initBluetoothManager.checkCoarseLocationPermission(
-            androidRequestCode: androidCheckCoarseLocationPermission)) {
-          const snackBar = SnackBar(
-              content: Text(
-                  'Please enable location services to scan for nearby devices'));
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        }
+      if (!await initBluetoothManager.checkCoarseLocationPermission(
+          androidRequestCode: androidCheckCoarseLocationPermission)) {
+        const snackBar = SnackBar(
+            content: Text(
+                'Please enable location services to scan for nearby devices'));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        return;
       }
     }
     print('scanning...');

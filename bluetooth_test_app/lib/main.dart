@@ -12,6 +12,7 @@ import 'import/common_import.dart';
 import 'test_main.dart' as test_main;
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   if (platformContextIo.io?.isLinux ?? false) {
     initWithBluez();
   } else {
@@ -118,10 +119,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _scan(BuildContext context) async {
     if (Platform.isAndroid) {
-      devPrint('Check permission');
+      // devPrint('Check permission');
       if (!await initBluetoothManager.checkCoarseLocationPermission(
           androidRequestCode: 1234)) {
-        devPrint('Permissions denied');
+        // devPrint('Permissions denied');
         return;
       }
     }
