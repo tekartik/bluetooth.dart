@@ -30,12 +30,13 @@ allprojects {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 31
 
     defaultConfig {
         // 18 to have Jelly Bean MR2 for BluetoothManager
         // 19 for flutter_blue
         minSdkVersion 19
+        targetSdkVersion 30
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     lintOptions {

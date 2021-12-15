@@ -1,5 +1,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tekartik.bluetooth_test_app">
+
+    <!-- New Bluetooth permissions in Android 12
+       https://developer.android.com/about/versions/12/features/bluetooth-permissions
+  -->
+    <!-- Include "neverForLocation" only if you can strongly assert that
+           your app never derives physical location from Bluetooth scan results. -->
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:usesPermissionFlags="neverForLocation" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
+    <!-- Request legacy Bluetooth permissions on older devices. -->
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:maxSdkVersion="30" />
+
    <application
         android:label="bluetooth_test_app"
         android:icon="@mipmap/ic_launcher">

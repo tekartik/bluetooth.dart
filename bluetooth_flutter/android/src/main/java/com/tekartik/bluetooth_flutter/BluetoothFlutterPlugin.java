@@ -21,6 +21,7 @@ import com.tekartik.bluetooth_flutter.peripheral.BlePeripheralPlugin;
 import com.tekartik.bluetooth_flutter.peripheral.Peripheral;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,8 +56,8 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
     int enableBluetoothRequestCode;
     Result enableBluetoothResult;
 
-    int checkCoarseLocationPermissionRequestCode;
-    Result checkCoarseLocationPermissionResult;
+    int checkPermissionRequestCode;
+    Result checkPermissionResult;
 
     BleClientPlugin clientPlugin;
     BlePeripheralPlugin peripheralPlugin;
@@ -332,7 +333,10 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
         } else if (method.equals("setOptions")) {
             onSetOptions(request);
         } else if (method.equals("checkCoarseLocationPermission")) {
-            onCheckCoarseLocationPermission(request);
+            // onCheckCoarseLocationPermission(request);
+            onCheckBluetoothPermissions(request);
+        } else if (method.equals("checkBluetoothPermissions")) {
+            onCheckBluetoothPermissions(request);
         } else {
             Log.i(TAG, "Unhandled " + call.method);
         }
@@ -472,14 +476,14 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
             }
             if (ContextCompat.checkSelfPermission(activityBinding.getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED) {
-                checkCoarseLocationPermissionRequestCode = requestCode;
-                checkCoarseLocationPermissionResult = request.result;
+                checkPermissionRequestCode = requestCode;
+                checkPermissionResult = request.result;
                 ActivityCompat.requestPermissions(
                         activityBinding.getActivity(),
                         new String[]{
                                 Manifest.permission.ACCESS_COARSE_LOCATION
                         },
-                        checkCoarseLocationPermissionRequestCode);
+                        checkPermissionRequestCode);
             } else {
                 request.result.success(true);
             }
@@ -490,14 +494,46 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
 
     }
 
+    public void onCheckBluetoothPermissions(PluginRequest request) {
+        List<String> permissions = Arrays.asList(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.BLUETOOTH_CONNECT);
+        Integer requestCode = request.call.argument("androidRequestCode");
+        List<String> askForPermissions = new ArrayList<String>();
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(activityBinding.getActivity(), permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+                askForPermissions.add(permission);
+            }
+        }
+        if (requestCode != null) {
+            if (!askForPermissions.isEmpty()) {
+                if (hasVerboseLevel()) {
+                    Log.i(TAG, "onCheckBluetoothPermissions(" + askForPermissions + ", " + requestCode + ")");
+                }
+
+
+                checkPermissionResult = request.result;
+                ActivityCompat.requestPermissions(
+                        activityBinding.getActivity(),
+                        askForPermissions.toArray(new String[0]),
+                        checkPermissionRequestCode);
+            } else {
+                request.result.success(true);
+            }
+        } else {
+            request.result.error("onCheckBluetoothPermissions", "missing androidRequestCode", null);
+
+        }
+
+    }
+
     @Override
     public boolean onRequestPermissionsResult(
             int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == checkCoarseLocationPermissionRequestCode) {
+        if (requestCode == checkPermissionRequestCode) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                checkCoarseLocationPermissionResult.success(true);
+                checkPermissionResult.success(true);
             } else {
-                checkCoarseLocationPermissionResult.error(
+                checkPermissionResult.error(
                         "checkCoarseLocationPermission", "missing location permissions for scanning", null);
 
             }

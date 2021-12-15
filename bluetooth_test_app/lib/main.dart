@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
+import 'package:tekartik_bluetooth_test_app/ble/app_ble.dart';
 import 'package:tekartik_bluetooth_test_app/page/device_page.dart';
 import 'package:tekartik_bluetooth_test_app/page/scan_page.dart';
 import 'package:tekartik_bluetooth_test_app/src/ble_setup.dart';
 import 'package:tekartik_platform_io/context_io.dart';
 
+import 'import/common_import.dart';
 import 'test_main.dart' as test_main;
 
 Future<void> main() async {
@@ -113,6 +117,14 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _scan(BuildContext context) async {
+    if (Platform.isAndroid) {
+      devPrint('Check permission');
+      if (!await initBluetoothManager.checkCoarseLocationPermission(
+          androidRequestCode: 1234)) {
+        devPrint('Permissions denied');
+        return;
+      }
+    }
     var deviceId = await Navigator.of(context).push<BluetoothDeviceId>(
         MaterialPageRoute(builder: (_) => const ScanPage()));
     if (deviceId != null) {

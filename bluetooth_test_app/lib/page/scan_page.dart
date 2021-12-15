@@ -33,7 +33,7 @@ class AppScanResults {
 class _ScanPageState extends State<ScanPage> {
   StreamSubscription? scanSubscription;
   bool _inited = false;
-  bool _initialScanStartDone = false;
+  bool _initialScanStartDone = devWarning(true); // test android
   final results = BehaviorSubject<AppScanResults?>();
 
   @override
@@ -133,7 +133,7 @@ class _ScanPageState extends State<ScanPage> {
     print('stopScanning');
     stopScan();
     var info = await initBluetoothManager.getInfo();
-    // devPrint('info: $info');
+    devPrint('info: $info');
     if (!info.hasBluetoothBle!) {
       const snackBar = SnackBar(content: Text('Bluetooth BLE not supported'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -151,14 +151,17 @@ class _ScanPageState extends State<ScanPage> {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
     }
+    devPrint('#3');
 
     if (initBluetoothManager.isAndroid!) {
-      if (!await initBluetoothManager.checkCoarseLocationPermission(
-          androidRequestCode: androidCheckCoarseLocationPermission)) {
-        const snackBar = SnackBar(
-            content: Text(
-                'Please enable location services to scan for nearby devices'));
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      if (devWarning(false)) {
+        if (!await initBluetoothManager.checkCoarseLocationPermission(
+            androidRequestCode: androidCheckCoarseLocationPermission)) {
+          const snackBar = SnackBar(
+              content: Text(
+                  'Please enable location services to scan for nearby devices'));
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
       }
     }
     print('scanning...');

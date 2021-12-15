@@ -85,12 +85,14 @@ class _BluezService {
 class BluetoothDeviceConnectionBluezImpl
     extends BluetoothDeviceConnectionBluez {
   final BluetoothDeviceBluezImpl device;
+  StreamSubscription? propertiesChangedSubscription;
   StreamController<BluetoothDeviceConnectionState>? _connectionStateController;
 
   BluetoothDeviceConnectionBluezImpl(this.device);
   @override
   void close() {
-    // TODO: implement close
+    disconnect();
+    propertiesChangedSubscription?.cancel();
   }
 
   @override
@@ -115,6 +117,14 @@ class BluetoothDeviceConnectionBluezImpl
     } finally {
       _checkState();
     }
+    propertiesChangedSubscription =
+        deviceBluez.propertiesChanged.listen((propertyName) {
+      //  Property changes [UUIDs, ServicesResolved]
+          // Property changes [Connected]
+      if (debugBluetoothManagerBluez) {
+        _log('Property changes $propertyName');
+      }
+    });
   }
 
   @override
