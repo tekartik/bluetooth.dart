@@ -8,8 +8,9 @@ import 'package:tekartik_common_utils/common_utils_import.dart';
 
 abstract class BluetoothManagerBluez extends BluetoothManager {}
 
+var debugBluetoothManagerBluez = false;
 var systemBus = DBusClient.system();
-var client = BlueZClient(bus: systemBus);
+var bluezClient = BlueZClient(bus: systemBus);
 
 class BluetoothManagerBluezImpl
     with BluetoothManagerMixin
@@ -25,7 +26,7 @@ class BluetoothManagerBluezImpl
   }
 
   Future<void> _ready() async {
-    await client.connect();
+    await bluezClient.connect();
   }
 
   @override
@@ -34,7 +35,7 @@ class BluetoothManagerBluezImpl
     return BluetoothInfoImpl(
         hasBluetooth: true,
         hasBluetoothBle: true,
-        isBluetoothEnabled: client.adapters.isNotEmpty)
+        isBluetoothEnabled: bluezClient.adapters.isNotEmpty)
       ..isScanning = _scanService?.isScanning;
   }
 

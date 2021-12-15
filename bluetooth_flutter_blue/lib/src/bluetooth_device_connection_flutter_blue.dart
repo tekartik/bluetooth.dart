@@ -129,19 +129,34 @@ class BluetoothDeviceConnectionFlutterBlue
     return null;
   }
 
+  BluetoothCharacteristicFlutterBlue findCharacteristicOrThrow(
+      BleBluetoothCharacteristic bc) {
+    var fbCharacteristic = findCharacteristic(bc);
+    if (fbCharacteristic == null) {
+      throw StateError('Characteristic $bc not found');
+    }
+    return fbCharacteristic;
+  }
+
   final readCharacteristicTimeout = const Duration(milliseconds: 10000);
+  final writeCharacteristicTimeout = const Duration(milliseconds: 10000);
 
   @override
   Future<BleBluetoothCharacteristicValue> readCharacteristic(
       BleBluetoothCharacteristic bc) async {
-    var characteristic = findCharacteristic(bc);
-    if (characteristic == null) {
-      throw StateError('read characteristic $bc not found');
-    }
+    var characteristic = findCharacteristicOrThrow(bc);
+
     var value = await characteristic.read().timeout(readCharacteristicTimeout);
 
     var bcv = BleBluetoothCharacteristicValue(
         bc: bc, value: Uint8List.fromList(value));
     return bcv;
+  }
+
+  @override
+  Future<void> writeCharacteristic(
+      BleBluetoothCharacteristicValue characteristicValue) async {
+    var characteristic = findCharacteristicOrThrow(characteristicValue.bc);
+    await characteristic.write(characteristicValue.value);
   }
 }

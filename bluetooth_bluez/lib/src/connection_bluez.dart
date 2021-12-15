@@ -1,11 +1,10 @@
-import 'dart:async';
-
 import 'package:bluez/bluez.dart';
 import 'package:tekartik_bluetooth/ble.dart';
 import 'package:tekartik_bluetooth/bluetooth.dart';
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/uuid.dart';
-import 'package:tekartik_bluetooth_bluez/src/bluez_uuid_utils.dart';
+import 'package:tekartik_bluetooth_bluez/bluetooth_bluez.dart';
+import 'package:tekartik_bluetooth_bluez/src/bluez_utils.dart';
 import 'package:tekartik_bluetooth_bluez/src/scan_bluez.dart';
 import 'package:tekartik_common_utils/byte_utils.dart';
 
@@ -42,33 +41,8 @@ class _BluezCharacteristic {
 
   _BluezCharacteristic(this.bluezService, this.gattCharacteristic) {
     var uuid = uuidFromBluezUuid(gattCharacteristic.uuid);
-    var flagToProperty = {
-      BlueZGattCharacteristicFlag.write: blePropertyWrite,
-      BlueZGattCharacteristicFlag.read: blePropertyRead,
-      BlueZGattCharacteristicFlag.notify: blePropertyNotify,
-      BlueZGattCharacteristicFlag.broadcast: blePropertyBroadcast,
 
-      BlueZGattCharacteristicFlag.writeWithoutResponse:
-          blePropertyWriteNoResponse,
-
-      BlueZGattCharacteristicFlag.indicate: blePropertyIndicate,
-      BlueZGattCharacteristicFlag.authenticatedSignedWrites:
-          blePropertySignedWrite,
-      BlueZGattCharacteristicFlag.extendedProperties: blePropertyExtendedProps,
-      // TODO BlueZGattCharacteristicFlag.reliableWrite: bleProperty,
-      // TODO BlueZGattCharacteristicFlag.writableAuxiliaries, ,
-      // TODO BlueZGattCharacteristicFlag.encryptRead,
-      // TODO BlueZGattCharacteristicFlag.encryptWrite,
-      // TODO BlueZGattCharacteristicFlag.encryptAuthenticatedRead,
-      // TODO BlueZGattCharacteristicFlag.encryptAuthenticatedWrite,
-//      TODO BlueZGattCharacteristicFlag.secureRead: bleProperty,
-      BlueZGattCharacteristicFlag.secureWrite: blePropertySignedWrite,
-      // TODO BlueZGattCharacteristicFlag.authorize,
-    };
-    var properties = 0;
-    for (var flag in gattCharacteristic.flags) {
-      properties |= flagToProperty[flag] ?? 0;
-    }
+    var properties = bluezFlagsToProperties(gattCharacteristic.flags);
 
     characteristic = BleBluetoothCharacteristic(
         service: bluezService.service, properties: properties, uuid: uuid);
@@ -85,6 +59,7 @@ class _BluezCharacteristic {
 }
 
 class _BluezService {
+  var connected = false;
   final BlueZGattService gattService;
   late BleBluetoothService service;
 
@@ -129,12 +104,12 @@ class BluetoothDeviceConnectionBluezImpl
       if (!deviceBluez.connected) {
         /// Clear cache
         _cachedServices = null;
-        try {
-          await deviceBluez.connect();
-        } catch (e) {
-          if (!deviceBluez.connected) {
-            rethrow;
-          }
+      }
+      try {
+        await deviceBluez.connect();
+      } catch (e) {
+        if (!deviceBluez.connected) {
+          rethrow;
         }
       }
     } finally {
@@ -144,13 +119,17 @@ class BluetoothDeviceConnectionBluezImpl
 
   @override
   Future disconnect() async {
+    // Create controller
+    onConnectionState;
     var deviceBluez = device.blueZDevice;
     _connectionStateController!.sink
         .add(BluetoothDeviceConnectionState.disconnecting);
     try {
       await deviceBluez.disconnect();
-      // Create controller
-      onConnectionState;
+    } catch (e) {
+      if (debugBluetoothManagerBluez) {
+        print('[debug] expected bluez disconnect error $e');
+      }
     } finally {
       _checkState();
     }
@@ -163,9 +142,34 @@ class BluetoothDeviceConnectionBluezImpl
         : BluetoothDeviceConnectionState.disconnected);
   }
 
+  void _checkConnection() {
+    var deviceBluez = device.blueZDevice;
+    if (!deviceBluez.connected) {
+      throw StateError('Device not connected');
+    }
+  }
+
   @override
   Future discoverServices() async {
+    var deviceBluez = device.blueZDevice;
+    var sw = Stopwatch();
+    while (true) {
+      // devPrint('Waiting for services');
+      // devPrint('gattServices: ${deviceBluez.gattServices}');
+      if (deviceBluez.servicesResolved) {
+        break;
+      }
+      if (sw.elapsedMilliseconds > 30000) {
+        throw StateError('Unable to resolve services');
+      }
+      await sleep(100);
+      if (deviceBluez.gattServices.isNotEmpty) {
+        break;
+      }
+      _checkConnection();
+    }
     // Ok already available
+
     _getServices();
   }
 
@@ -186,11 +190,11 @@ class BluetoothDeviceConnectionBluezImpl
 
   _BluezServices _readServices() {
     var deviceBluez = device.blueZDevice;
+    // devPrint('gattServices: ${deviceBluez.gattServices}');
     return _BluezServices(deviceBluez.gattServices);
   }
 
   @override
-  // TODO: implement onConnectionState
   Stream<BluetoothDeviceConnectionState> get onConnectionState {
     _connectionStateController ??= StreamController.broadcast(onListen: () {
       _checkState();
@@ -231,12 +235,79 @@ class BluetoothDeviceConnectionBluezImpl
     return bluezCharacteristic;
   }
 
+  void _log(Object? message) {
+    print('/bluez $message');
+  }
+
+  final _initLock = Lock();
+
+  var expConnectProfile = false;
+
+  /// Never throws
+  Future<void> _initService(BleBluetoothService service) async {
+    if (expConnectProfile) {
+      var bluezService = _getBluezServiceByUuid(service.uuid);
+      if (bluezService != null) {
+        if (!bluezService.connected) {
+          await _initLock.synchronized(() async {
+            var deviceBluez = device.blueZDevice;
+            if (!bluezService.connected) {
+              try {
+                await deviceBluez
+                    .connectProfile(bluezUuidFromUuid(service.uuid));
+                if (debugBluetoothManagerBluez) {
+                  _log('connectProfile $service success');
+                }
+              } catch (e) {
+                if (debugBluetoothManagerBluez) {
+                  _log('connectProfile $service error $e');
+                }
+              }
+            }
+          });
+        }
+      }
+    }
+  }
+
   @override
   Future<BleBluetoothCharacteristicValue> readCharacteristic(
       BleBluetoothCharacteristic characteristic) async {
+    await _initService(characteristic.service);
     var bluezCharacteristic = _getBluezCharacteristicOrThrow(characteristic);
-    var data =
-        asUint8List(await bluezCharacteristic.gattCharacteristic.readValue());
-    return characteristic.withValue(data);
+    try {
+      var data =
+          asUint8List(await bluezCharacteristic.gattCharacteristic.readValue());
+      var bcv = characteristic.withValue(data);
+      if (debugBluetoothManagerBluez) {
+        _log('read characteristic $bcv');
+      }
+      return bcv;
+    } catch (e) {
+      if (debugBluetoothManagerBluez) {
+        _log('read characteristic $characteristic value error $e');
+      }
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> writeCharacteristic(
+      BleBluetoothCharacteristicValue characteristicValue) async {
+    var bluezCharacteristic =
+        _getBluezCharacteristicOrThrow(characteristicValue.bc);
+    var bcv = characteristicValue;
+    try {
+      await bluezCharacteristic.gattCharacteristic
+          .writeValue(characteristicValue.value);
+      if (debugBluetoothManagerBluez) {
+        _log('write characteristic $bcv');
+      }
+    } catch (e) {
+      if (debugBluetoothManagerBluez) {
+        _log('write characteristic $bcv value error $e');
+      }
+      rethrow;
+    }
   }
 }

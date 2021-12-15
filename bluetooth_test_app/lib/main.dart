@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Bluetooth test app',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -36,10 +36,12 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Bluetooth test app'),
     );
   }
 }
+
+var _scanOnStart = true;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, this.title}) : super(key: key);
@@ -60,6 +62,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  @override
+  void initState() {
+    if (_scanOnStart) {
+      _scanOnStart = false;
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
+        if (mounted) {
+          await _scan(context);
+        }
+      });
+    }
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -87,17 +103,21 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           () async {
-            var deviceId = await Navigator.of(context).push<BluetoothDeviceId>(
-                MaterialPageRoute(builder: (_) => const ScanPage()));
-            if (deviceId != null) {
-              await Navigator.of(context).push<String>(MaterialPageRoute(
-                  builder: (_) => DevicePage(deviceId: deviceId)));
-            }
+            await _scan(context);
           }();
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  Future<void> _scan(BuildContext context) async {
+    var deviceId = await Navigator.of(context).push<BluetoothDeviceId>(
+        MaterialPageRoute(builder: (_) => const ScanPage()));
+    if (deviceId != null) {
+      await Navigator.of(context).push<String>(
+          MaterialPageRoute(builder: (_) => DevicePage(deviceId: deviceId)));
+    }
   }
 }

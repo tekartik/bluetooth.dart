@@ -249,6 +249,13 @@ class BluetoothDeviceConnectionFlutterImpl
   @override
   Stream<BluetoothDeviceConnectionState> get onConnectionState =>
       connectionStateController.stream;
+
+  @override
+  Future<void> writeCharacteristic(
+      BleBluetoothCharacteristicValue characteristicValue) {
+    // TODO: implement writeCharacteristic
+    throw UnimplementedError();
+  }
 }
 
 class BluetoothDeviceConnectionStateImpl

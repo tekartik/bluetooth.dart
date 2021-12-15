@@ -5,22 +5,40 @@ import 'package:tekartik_bluetooth/uuid.dart';
 import 'package:tekartik_common_utils/hex_utils.dart';
 
 /// A ble bluetooth service
-class BleBluetoothService {
-  final Uuid128 uuid;
+abstract class BleBluetoothService {
+  Uuid128 get uuid;
+
+  /// Modifiable
+  List<BleBluetoothCharacteristic>? get characteristics;
+
+  /// Deprecate for safety only
+  @protected
+  set characteristics(List<BleBluetoothCharacteristic>? characteristics);
+
+  /// Short service number
+  int get shortNumber;
+
+  factory BleBluetoothService(
+          {required Uuid128 uuid,
+          List<BleBluetoothCharacteristic>? characteristics}) =>
+      BleBluetoothServiceImpl(uuid: uuid, characteristics: characteristics);
+}
+
+mixin BleBluetoothServiceMixin implements BleBluetoothService {
+  @override
+  late final Uuid128 uuid;
 
   List<BleBluetoothCharacteristic>? _characteristics;
 
   /// Modifiable
+  @override
   List<BleBluetoothCharacteristic>? get characteristics => _characteristics;
 
   /// Deprecate for safety only
+  @override
   @protected
   set characteristics(List<BleBluetoothCharacteristic>? characteristics) =>
       _characteristics = characteristics;
-
-  BleBluetoothService(
-      {required this.uuid, List<BleBluetoothCharacteristic>? characteristics})
-      : _characteristics = characteristics;
 
   @override
   int get hashCode => uuid.hashCode;
@@ -33,7 +51,22 @@ class BleBluetoothService {
     return false;
   }
 
+  @override
   int get shortNumber => uuid.shortNumberUuid16.value;
+
+  @override
+  String toString() => 'BleService($uuid)';
+}
+
+class BleBluetoothServiceImpl
+    with BleBluetoothServiceMixin
+    implements BleBluetoothService {
+  BleBluetoothServiceImpl(
+      {required Uuid128 uuid,
+      List<BleBluetoothCharacteristic>? characteristics}) {
+    _characteristics = characteristics;
+    this.uuid = uuid;
+  }
 }
 
 /// Ble characteristic
@@ -139,7 +172,7 @@ mixin BleBluetoothCharacteristicMixin implements BleBluetoothCharacteristic {
 
   @override
   String toString() {
-    return '$uuid';
+    return 'Characteristic($uuid)';
   }
 
   @override

@@ -79,8 +79,8 @@ class ScanServicesBluez {
       /// Start discovery
       _scanAdapters = <BlueZAdapter>[];
 
-      var adapters = client.adapters;
-      await client.connect();
+      var adapters = bluezClient.adapters;
+      await bluezClient.connect();
       for (var adapter in adapters) {
         try {
           /// Add current devices
@@ -105,11 +105,11 @@ class ScanServicesBluez {
         }
       }
 
-      addDevices(client.devices);
-      addedSubscription = client.deviceAdded.listen((device) {
+      addDevices(bluezClient.devices);
+      addedSubscription = bluezClient.deviceAdded.listen((device) {
         addDevice(device);
       });
-      removedSubscription = client.deviceRemoved.listen((device) {
+      removedSubscription = bluezClient.deviceRemoved.listen((device) {
         //data.removeDevice(device.address);
         // resultController.add(data);
       });

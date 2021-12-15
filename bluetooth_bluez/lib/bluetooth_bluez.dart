@@ -1,1 +1,2 @@
-export 'src/bluetooth_manager_bluez.dart' show bluetoothManagerBluez;
+export 'src/bluetooth_manager_bluez.dart'
+    show bluetoothManagerBluez, debugBluetoothManagerBluez;

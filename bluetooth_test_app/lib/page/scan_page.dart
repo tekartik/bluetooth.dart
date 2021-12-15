@@ -17,15 +17,24 @@ class ScanPage extends StatefulWidget {
   _ScanPageState createState() => _ScanPageState();
 }
 
-class ScanResults {
-  List<ScanResult>? list;
+class AppScanResult {
+  final DateTime dateTime;
+  final ScanResult scanResult;
+  BluetoothDevice get device => scanResult.device;
+  int get rssi => scanResult.rssi;
+
+  AppScanResult(this.dateTime, this.scanResult);
+}
+
+class AppScanResults {
+  List<AppScanResult>? list;
 }
 
 class _ScanPageState extends State<ScanPage> {
   StreamSubscription? scanSubscription;
   bool _inited = false;
   bool _initialScanStartDone = false;
-  final results = BehaviorSubject<ScanResults?>();
+  final results = BehaviorSubject<AppScanResults?>();
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +56,7 @@ class _ScanPageState extends State<ScanPage> {
             }
           }();
         }
-        return StreamBuilder<ScanResults?>(
+        return StreamBuilder<AppScanResults?>(
             initialData: results.value,
             stream: results,
             builder: (context, snapshot) {
@@ -69,8 +78,11 @@ class _ScanPageState extends State<ScanPage> {
                     var item = list[index];
                     var deviceId = item.device.id;
                     return ListTile(
+                      leading: Text(
+                          item.dateTime.toIso8601String().substring(11, 19)),
                       title: Text(item.device.name ?? deviceId.id),
                       subtitle: Text(deviceId.id),
+                      trailing: Text(item.rssi.toString()),
                       onTap: () {
                         Navigator.of(context).pop(deviceId);
                       },
@@ -154,15 +166,17 @@ class _ScanPageState extends State<ScanPage> {
       // devPrint('$data');
       var scanResults = results.value;
       var list = scanResults?.list;
-      list = (list == null) ? <ScanResult>[] : List<ScanResult>.from(list);
+      var appScanResult = AppScanResult(DateTime.now(), data);
+      list =
+          (list == null) ? <AppScanResult>[] : List<AppScanResult>.from(list);
       var index =
           list.indexWhere((result) => result.device.id == data.device.id);
       if (index < 0) {
-        list.add(data);
+        list.add(appScanResult);
       } else {
-        list[index] = data;
+        list[index] = appScanResult;
       }
-      scanResults = ScanResults()..list = list;
+      scanResults = AppScanResults()..list = list;
       results.add(scanResults);
     });
   }

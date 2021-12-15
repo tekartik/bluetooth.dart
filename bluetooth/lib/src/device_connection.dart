@@ -78,6 +78,9 @@ abstract class BluetoothDeviceConnection {
   Future<BleBluetoothCharacteristicValue> readCharacteristic(
       BleBluetoothCharacteristic characteristic);
 
+  Future<void> writeCharacteristic(
+      BleBluetoothCharacteristicValue characteristicValue);
+
   Future disconnect();
 
   /// Dispose everything
@@ -129,6 +132,13 @@ class BluetoothDeviceConnectionImpl implements BluetoothDeviceConnection {
   Future<BleBluetoothCharacteristicValue> readCharacteristic(
       BleBluetoothCharacteristic characteristic) {
     // TODO: implement readCharacteristic
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> writeCharacteristic(
+      BleBluetoothCharacteristicValue characteristicValue) {
+    // TODO: implement writeCharacteristic
     throw UnimplementedError();
   }
 }
