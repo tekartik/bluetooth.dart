@@ -31,7 +31,7 @@ class BleCharacteristicPage extends StatefulWidget {
 }
 
 class _BleCharacteristicPageState extends State<BleCharacteristicPage> {
-  final valueSubject = BehaviorSubject<_ValueState>();
+  final valueSubject = BehaviorSubject<_ValueState?>();
 
   @override
   Widget build(BuildContext context) {
@@ -84,8 +84,8 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage> {
                   ));
             }),
           if (canRead)
-            StreamBuilder<_ValueState>(
-                initialData: valueSubject.value,
+            StreamBuilder<_ValueState?>(
+                initialData: valueSubject.valueOrNull,
                 stream: valueSubject,
                 builder: (context, snapshot) {
                   var state = snapshot.data;
