@@ -120,7 +120,7 @@ class BluetoothDeviceConnectionBluezImpl
     propertiesChangedSubscription =
         deviceBluez.propertiesChanged.listen((propertyName) {
       //  Property changes [UUIDs, ServicesResolved]
-          // Property changes [Connected]
+      // Property changes [Connected]
       if (debugBluetoothManagerBluez) {
         _log('Property changes $propertyName');
       }

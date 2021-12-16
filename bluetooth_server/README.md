@@ -9,7 +9,7 @@ dependencies:
 
   tekartik_bluetooth_server:
     git:
-      url: git://git@github.com/tekartik/bluetooth.dart
+      url: https://github.com/tekartik/bluetooth.dart
       path: bluetooth_server
       ref: dart2_3
     version: '>=0.2.1'

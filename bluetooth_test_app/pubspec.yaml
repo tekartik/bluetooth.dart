@@ -67,8 +67,8 @@ dev_dependencies:
     version: '>=0.1.0'
 dependency_overrides:
   # temp dev_dependencies:
-  tekartik_build_flutter:
-    path: ../../../tekartik/build_flutter.dart/packages/build_flutter
+  # tekartik_build_flutter:
+  #  path: ../../../tekartik/build_flutter.dart/packages/build_flutter
 
   tekartik_bluetooth:
     path: ../bluetooth

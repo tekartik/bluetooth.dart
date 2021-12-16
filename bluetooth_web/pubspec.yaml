@@ -1,0 +1,35 @@
+name: tekartik_bluetooth_web
+description: Bluetooth for the web
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: '>=2.15.0 <3.0.0'
+
+
+dependencies:
+  flutter_web_bluetooth:
+    git:
+      url: https://github.com/tekartikdev/flutter_web_bluetooth.git
+  tekartik_bluetooth:
+    git:
+      url: https://github.com/tekartik/bluetooth.dart
+      path: bluetooth
+      ref: dart2_3
+    version: '>=0.2.1'
+
+dependency_overrides:
+  tekartik_bluetooth:
+    path: ../bluetooth
+
+dev_dependencies:
+  lints:
+  test:
+  build_runner:
+  build_web_compilers:
+  tekartik_test_menu_browser:
+    git:
+      url: https://github.com/tekartik/test_menu.dart
+      path: test_menu_browser
+      ref: dart2_3
+    version: '>=0.4.7'

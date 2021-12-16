@@ -48,11 +48,13 @@ class _ScanCache {
 class BluetoothManagerFlutterBlue implements BluetoothManager {
   final _scanCache = _ScanCache();
 
+  @Deprecated('Not flutter blue supported here')
   @override
   Future<bool> checkCoarseLocationPermission({int? androidRequestCode}) {
     throw UnimplementedError();
   }
 
+  @Deprecated('Not flutter blue supported here')
   @override
   Future<bool> checkBluetoothPermissions({int? androidRequestCode}) {
     throw UnimplementedError();
