@@ -14,6 +14,10 @@ abstract class BluetoothManager extends BluetoothStateService {
   /// Get the info
   Future<BluetoothInfo> getInfo();
 
+  /// Android only
+  ///
+  /// Look for scan/connect permissiton for Android 12, location before
+  Future<bool> checkBluetoothPermissions({int? androidRequestCode});
   // Android only
   Future<bool> checkCoarseLocationPermission({int? androidRequestCode});
 

@@ -334,6 +334,7 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
             onSetOptions(request);
         } else if (method.equals("checkCoarseLocationPermission")) {
             // onCheckCoarseLocationPermission(request);
+            // Compat
             onCheckBluetoothPermissions(request);
         } else if (method.equals("checkBluetoothPermissions")) {
             onCheckBluetoothPermissions(request);
@@ -497,7 +498,7 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
     public void onCheckBluetoothPermissions(PluginRequest request) {
 
         List<String> permissions = new ArrayList<String>();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             permissions.add(Manifest.permission.BLUETOOTH_SCAN);
             permissions.add(Manifest.permission.BLUETOOTH_CONNECT);
 

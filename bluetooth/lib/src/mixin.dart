@@ -8,6 +8,11 @@ import 'package:tekartik_common_utils/model/model_v2.dart';
 import 'device_id.dart';
 import 'import.dart';
 
+const methodCheckBluetoothPermissions = 'checkBluetoothPermissions';
+
+const requestCodeEnableBluetoothDefault = 30123;
+const requestCodeCheckBluetoothPermissions = 30124;
+
 class MixinTest with BluetoothManagerMixin {
   @override
   Future<T> invokeMethod<T>(String method, [arguments]) =>
@@ -98,8 +103,10 @@ mixin BluetoothManagerMixin implements BluetoothManager {
   }
 
   @override
-  Future enable({int? requestCode, int? androidRequestCode}) async {
-    androidRequestCode ??= requestCode;
+  Future enable(
+      {@Deprecated('Use androidRequestCode') int? requestCode,
+      int? androidRequestCode}) async {
+    androidRequestCode ??= requestCode ?? requestCodeEnableBluetoothDefault;
     // Using a request code means explaining version
 
     await invokeMethod('enableBluetooth',
@@ -108,7 +115,15 @@ mixin BluetoothManagerMixin implements BluetoothManager {
 
   @override
   Future<bool> checkCoarseLocationPermission({int? androidRequestCode}) async {
+    androidRequestCode ??= requestCodeCheckBluetoothPermissions;
     return await invokeMethod<bool>('checkCoarseLocationPermission',
+        <String, dynamic>{'androidRequestCode': androidRequestCode});
+  }
+
+  @override
+  Future<bool> checkBluetoothPermissions({int? androidRequestCode}) async {
+    androidRequestCode ??= requestCodeCheckBluetoothPermissions;
+    return await invokeMethod<bool>('checkBluetoothPermissions',
         <String, dynamic>{'androidRequestCode': androidRequestCode});
   }
 

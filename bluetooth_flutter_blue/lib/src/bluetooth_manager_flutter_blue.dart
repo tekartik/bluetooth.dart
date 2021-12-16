@@ -54,6 +54,11 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
   }
 
   @override
+  Future<bool> checkBluetoothPermissions({int? androidRequestCode}) {
+    throw UnimplementedError();
+  }
+
+  @override
   Future<void> close() {
     throw UnimplementedError();
   }
