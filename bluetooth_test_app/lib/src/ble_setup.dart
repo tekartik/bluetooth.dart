@@ -15,6 +15,6 @@ void initWithFlutterBlue() {
 void initWithBluez() {
   // ignore: deprecated_member_use
   debugBluetoothManagerBluez = devWarning(true);
-  initBluetoothManager = bluetoothAdminManagerFlutter;
+  initBluetoothManager = bluetoothManagerBluez;
   deviceBluetoothManager = bluetoothManagerBluez;
 }

@@ -6,14 +6,15 @@ import 'package:tekartik_bluetooth_bluez/src/connection_bluez.dart';
 import 'package:tekartik_bluetooth_bluez/src/scan_bluez.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
-abstract class BluetoothManagerBluez extends BluetoothManager {}
+abstract class BluetoothManagerBluez extends BluetoothManager
+    implements BluetoothAdminManager {}
 
 var debugBluetoothManagerBluez = false;
 var systemBus = DBusClient.system();
 var bluezClient = BlueZClient(bus: systemBus);
 
 class BluetoothManagerBluezImpl
-    with BluetoothManagerMixin
+    with BluetoothManagerMixin, BluetoothAdminManagerMixin
     implements BluetoothManagerBluez {
   ScanServicesBluez? _scanService;
   StreamSubscription? _scanBluezSubscription;

@@ -562,6 +562,8 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
             if (requestCode == Activity.RESULT_OK) {
                 enableBluetoothResult.success(null);
             } else {
+                // Check enabled again
+                // bluetoothAdapter.isEnabled()
                 enableBluetoothResult.error("enable_bluetooth", "failed " + resultCode, null);
             }
             return true;

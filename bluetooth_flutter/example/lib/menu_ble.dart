@@ -82,7 +82,11 @@ void menuBle(
                   androidCheckCoarseLocationPermissionRequestCode);
       write(info.toString());
     });
-    item('checkBluetoothPermissions(adversise)', () async {
+    item('checkBluetoothPermissions(scan & connect)', () async {
+      var info = await bluetoothAdminManagerFlutter.checkBluetoothPermissions();
+      write(info.toString());
+    });
+    item('checkBluetoothPermissions(advertise)', () async {
       var info = await bluetoothAdminManagerFlutter.checkBluetoothPermissions(
           options: BluetoothPermissionsOptions(advertise: true));
       write(info.toString());
