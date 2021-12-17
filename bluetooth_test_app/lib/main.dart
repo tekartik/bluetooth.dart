@@ -126,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _scan(BuildContext context) async {
     if (Platform.isAndroid) {
       // devPrint('Check permission');
-      if (!await initBluetoothManager.checkCoarseLocationPermission(
+      if (!await initBluetoothManager.checkBluetoothPermissions(
           androidRequestCode: 1234)) {
         // devPrint('Permissions denied');
         return;

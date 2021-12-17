@@ -12,7 +12,10 @@ import 'package:tekartik_bluetooth_flutter/src/mixin.dart';
 import 'import.dart';
 
 class BluetoothFlutterManagerImpl
-    with BluetoothFlutterManagerMixin, BluetoothManagerMixin
+    with
+        BluetoothFlutterManagerMixin,
+        BluetoothManagerMixin,
+        BluetoothAdminManagerMixin
     implements BluetoothManager {
   final channel = bluetoothFlutterPlugin.methodChannel;
 

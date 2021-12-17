@@ -75,12 +75,15 @@ void menuBle(
       });
     });
     item('checkCoarseLocation', () async {
-      var info = await bluetoothManager.checkCoarseLocationPermission(
-          androidRequestCode: androidCheckCoarseLocationPermissionRequestCode);
+      var info =
+          // ignore: deprecated_member_use
+          await bluetoothAdminManagerFlutter.checkCoarseLocationPermission(
+              androidRequestCode:
+                  androidCheckCoarseLocationPermissionRequestCode);
       write(info.toString());
     });
     item('checkBluetoothPermissions(adversise)', () async {
-      var info = await bluetoothManager.checkBluetoothPermissions(
+      var info = await bluetoothAdminManagerFlutter.checkBluetoothPermissions(
           options: BluetoothPermissionsOptions(advertise: true));
       write(info.toString());
     });

@@ -17,25 +17,38 @@ class BluetoothPermissionsOptions {
       this.advertise = false});
 }
 
-abstract class BluetoothManager extends BluetoothStateService {
+abstract class BluetoothManagerCommon {
   bool? get isIOS;
 
   bool? get isAndroid;
 
-  /// deprecated on purpose to remove from code.
-  @Deprecated('Dev only')
-  Future<void> devSetOptions(BluetoothOptions options);
-
   /// Get the info
   Future<BluetoothInfo> getInfo();
+}
+
+mixin BluetoothManagerCommonMixin implements BluetoothManagerCommon {}
+
+abstract class BluetoothAdminManager
+    implements BluetoothManagerCommon, BluetoothStateService {
+  @Deprecated('User checkBluetoothPermissions instead')
+  Future<bool> checkCoarseLocationPermission({int? androidRequestCode});
 
   /// Android only
   ///
   /// Look for scan/connect permissiton for Android 12, location before
   Future<bool> checkBluetoothPermissions(
       {int? androidRequestCode, BluetoothPermissionsOptions? options});
-  // Android only
-  Future<bool> checkCoarseLocationPermission({int? androidRequestCode});
+}
+
+abstract class BluetoothManager
+    implements
+        BluetoothManagerCommon,
+
+        /// Might be removed in the future...
+        BluetoothStateService {
+  /// deprecated on purpose to remove from code.
+  @Deprecated('Dev only')
+  Future<void> devSetOptions(BluetoothOptions options);
 
   Stream<ScanResult> scan({ScanMode scanMode = ScanMode.lowLatency});
 
@@ -58,6 +71,9 @@ abstract class BluetoothManager extends BluetoothStateService {
   Future<void> close();
 }
 
-abstract class BluetoothManagerImpl implements BluetoothManager {
+abstract class BluetoothServiceInvokable implements BluetoothManager {
   Future<T> invokeMethod<T>(String method, [Object? arguments]);
 }
+
+abstract class BluetoothManagerImpl
+    implements BluetoothManager, BluetoothServiceInvokable {}

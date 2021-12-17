@@ -149,7 +149,7 @@ class _ScanPageState extends State<ScanPage> {
       return;
     }
     if (initBluetoothManager.isAndroid!) {
-      if (!await initBluetoothManager.checkCoarseLocationPermission(
+      if (!await initBluetoothManager.checkBluetoothPermissions(
           androidRequestCode: androidCheckCoarseLocationPermission)) {
         const snackBar = SnackBar(
             content: Text(

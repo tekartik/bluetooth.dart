@@ -5,6 +5,7 @@ import 'package:tekartik_bluetooth/src/options.dart';
 import 'package:tekartik_common_utils/map_utils.dart';
 import 'package:tekartik_common_utils/model/model_v2.dart';
 
+import 'bluetooth_manager.dart';
 import 'device_id.dart';
 import 'import.dart';
 
@@ -25,6 +26,19 @@ class MixinTest with BluetoothManagerMixin {
   bool? get isIOS => null;
 }
 
+mixin BluetoothAdminManagerMixin
+    implements BluetoothManager, BluetoothAdminManager, BluetoothManagerImpl {
+  @override
+  Future<bool> checkBluetoothPermissions(
+      {int? androidRequestCode, BluetoothPermissionsOptions? options}) async {
+    androidRequestCode ??= requestCodeCheckBluetoothPermissions;
+    return await invokeMethod<bool>(
+        methodCheckBluetoothPermissions, <String, dynamic>{
+      'androidRequestCode': androidRequestCode,
+      if (options?.advertise ?? false) 'advertise': true
+    });
+  }
+}
 mixin BluetoothManagerMixin implements BluetoothManager {
   final connections = <int?, BluetoothDeviceConnection>{};
 
@@ -113,22 +127,10 @@ mixin BluetoothManagerMixin implements BluetoothManager {
         <String, dynamic>{'androidRequestCode': androidRequestCode});
   }
 
-  @override
   Future<bool> checkCoarseLocationPermission({int? androidRequestCode}) async {
     androidRequestCode ??= requestCodeCheckBluetoothPermissions;
     return await invokeMethod<bool>('checkCoarseLocationPermission',
         <String, dynamic>{'androidRequestCode': androidRequestCode});
-  }
-
-  @override
-  Future<bool> checkBluetoothPermissions(
-      {int? androidRequestCode, BluetoothPermissionsOptions? options}) async {
-    androidRequestCode ??= requestCodeCheckBluetoothPermissions;
-    return await invokeMethod<bool>(
-        methodCheckBluetoothPermissions, <String, dynamic>{
-      'androidRequestCode': androidRequestCode,
-      if (options?.advertise ?? false) 'advertise': true
-    });
   }
 
   @override

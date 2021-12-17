@@ -26,8 +26,9 @@ BluetoothFlutterManager get bluetoothManager => bluetoothManagerFlutter;
 BluetoothFlutterManager get bluetoothManagerFlutter =>
     flutterBluetoothServiceImpl;
 
+BluetoothAdminManager get bluetoothAdminManagerFlutter =>
+    flutterBluetoothServiceImpl;
 @Deprecated('Use [bluetoothManager] instead')
 BluetoothFlutterManager get flutterBluetoothService => bluetoothService;
 
-abstract class BluetoothFlutterManager
-    implements BluetoothManager, BluetoothManagerImpl {}
+abstract class BluetoothFlutterManager implements BluetoothManager {}

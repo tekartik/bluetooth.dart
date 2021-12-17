@@ -5,7 +5,7 @@ import 'package:tekartik_bluetooth_test_app/ble/app_ble.dart';
 import 'package:tekartik_bluetooth_test_app/import/common_import.dart';
 
 void initWithFlutterBlue() {
-  initBluetoothManager = bluetoothManager;
+  initBluetoothManager = bluetoothAdminManagerFlutter;
   deviceBluetoothManager = bluetoothManagerFlutterBlue;
   bluetoothManager
       // ignore: deprecated_member_use
@@ -15,6 +15,6 @@ void initWithFlutterBlue() {
 void initWithBluez() {
   // ignore: deprecated_member_use
   debugBluetoothManagerBluez = devWarning(true);
-  initBluetoothManager = bluetoothManagerBluez;
+  initBluetoothManager = bluetoothAdminManagerFlutter;
   deviceBluetoothManager = bluetoothManagerBluez;
 }
