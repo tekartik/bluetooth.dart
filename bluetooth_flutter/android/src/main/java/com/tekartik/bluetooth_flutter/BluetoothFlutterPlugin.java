@@ -498,14 +498,19 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
     public void onCheckBluetoothPermissions(PluginRequest request) {
 
         List<String> permissions = new ArrayList<String>();
+        Boolean advertise = request.call.argument("advertise");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             permissions.add(Manifest.permission.BLUETOOTH_SCAN);
             permissions.add(Manifest.permission.BLUETOOTH_CONNECT);
+            if (Boolean.TRUE.equals(advertise)) {
+                permissions.add(Manifest.permission.BLUETOOTH_ADVERTISE);
+            }
 
         } else {
             permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
         }
         Integer requestCode = request.call.argument("androidRequestCode");
+
         List<String> askForPermissions = new ArrayList<String>();
         for (String permission : permissions) {
             if (ContextCompat.checkSelfPermission(activityBinding.getActivity(), permission)

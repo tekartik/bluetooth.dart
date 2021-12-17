@@ -56,7 +56,8 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
 
   @Deprecated('Not flutter blue supported here')
   @override
-  Future<bool> checkBluetoothPermissions({int? androidRequestCode}) {
+  Future<bool> checkBluetoothPermissions(
+      {int? androidRequestCode, BluetoothPermissionsOptions? options}) {
     throw UnimplementedError();
   }
 

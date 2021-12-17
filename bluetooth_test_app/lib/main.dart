@@ -98,6 +98,12 @@ class _MyHomePageState extends State<MyHomePage> {
       body: ListView(
         children: [
           ListTile(
+            title: const Text('Scan & Select'),
+            onTap: () async {
+              await _scan(context);
+            },
+          ),
+          ListTile(
             title: const Text('Test menu'),
             onTap: () {
               test_main.main();

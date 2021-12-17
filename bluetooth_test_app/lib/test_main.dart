@@ -1,6 +1,7 @@
 import 'package:flutter_blue/flutter_blue.dart' as fbl;
 import 'package:tekartik_bluetooth/ble.dart';
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
+import 'package:tekartik_bluetooth/bluetooth_peripheral.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart';
 import 'package:tekartik_bluetooth_test_app/ble/app_ble.dart';
 import 'package:tekartik_bluetooth_test_app/src/ble_setup.dart';
@@ -36,22 +37,49 @@ void main() {
     });
 
     menu('Bluetooth init', () {
-      item('enablePermissions', () async {
+      item('getInfo', () async {
         var info = await initBluetoothManager.getInfo();
         write('success $info');
       });
       item('enablePermissions', () async {
-        await initBluetoothManager.checkCoarseLocationPermission(
-            androidRequestCode: 1234);
+        await initBluetoothManager.checkBluetoothPermissions();
+        write('success');
+      });
+
+      item('enablePeripheralPermissions', () async {
+        await initBluetoothManager.checkBluetoothPermissions(
+            options: BluetoothPermissionsOptions(advertise: true));
         write('success');
       });
       item('enable', () async {
-        await initBluetoothManager.enable(androidRequestCode: 1235);
+        await initBluetoothManager.enable();
         write('success');
       });
     });
     item('Start app', () {
       app_main.main();
+    });
+
+    menu('Peripheral (android only)', () {
+      BluetoothPeripheral? peripheral;
+
+      item('initPeripheral', () async {
+        //Periphe
+        peripheral = await BluetoothFlutter.initPeripheral(
+            deviceName: 'Test app peripheral');
+        write('initPeripheral: $peripheral');
+      });
+
+      item('startAdvertising', () async {
+        //Periphe
+        await peripheral?.startAdvertising();
+        write('startAdvertising: $peripheral');
+      });
+      item('stopAdvertising', () async {
+        //Periphe
+        await peripheral?.stopAdvertising();
+        write('stopAdvertising: $peripheral');
+      });
     });
 
     menu('BluetoothFlutter', () {

@@ -2,6 +2,21 @@ import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/bluetooth_state_service.dart';
 import 'package:tekartik_bluetooth/src/options.dart';
 
+class BluetoothPermissionsOptions {
+  final int? androidRequestCode;
+  final bool connect;
+  final bool scan;
+  final bool advertise;
+
+  BluetoothPermissionsOptions(
+      {this.androidRequestCode,
+      this.connect = true,
+      this.scan = true,
+
+      /// Advertise is for simulating peripheral
+      this.advertise = false});
+}
+
 abstract class BluetoothManager extends BluetoothStateService {
   bool? get isIOS;
 
@@ -17,7 +32,8 @@ abstract class BluetoothManager extends BluetoothStateService {
   /// Android only
   ///
   /// Look for scan/connect permissiton for Android 12, location before
-  Future<bool> checkBluetoothPermissions({int? androidRequestCode});
+  Future<bool> checkBluetoothPermissions(
+      {int? androidRequestCode, BluetoothPermissionsOptions? options});
   // Android only
   Future<bool> checkCoarseLocationPermission({int? androidRequestCode});
 

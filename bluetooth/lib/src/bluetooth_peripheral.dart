@@ -282,4 +282,7 @@ class BluetoothPeripheral {
     })) as Uint8List;
     return bytes;
   }
+
+  @override
+  String toString() => 'BluetoothPeripheral($deviceName)';
 }

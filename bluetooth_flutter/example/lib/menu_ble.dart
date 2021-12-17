@@ -79,6 +79,11 @@ void menuBle(
           androidRequestCode: androidCheckCoarseLocationPermissionRequestCode);
       write(info.toString());
     });
+    item('checkBluetoothPermissions(adversise)', () async {
+      var info = await bluetoothManager.checkBluetoothPermissions(
+          options: BluetoothPermissionsOptions(advertise: true));
+      write(info.toString());
+    });
     item('bt_off', () async {
       var bluetoothStateService = await getBluetoothStateService();
       write('support enable: ${bluetoothStateService.supportsEnable}');

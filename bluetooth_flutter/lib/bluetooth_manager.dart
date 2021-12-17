@@ -1,6 +1,5 @@
+import 'package:tekartik_bluetooth/bluetooth.dart';
 import 'package:tekartik_bluetooth_flutter/src/manager.dart';
-
-import 'bluetooth_flutter.dart';
 
 export 'package:tekartik_bluetooth_flutter/src/bluetooth_device.dart'
     show BluetoothDevice;

@@ -121,10 +121,14 @@ mixin BluetoothManagerMixin implements BluetoothManager {
   }
 
   @override
-  Future<bool> checkBluetoothPermissions({int? androidRequestCode}) async {
+  Future<bool> checkBluetoothPermissions(
+      {int? androidRequestCode, BluetoothPermissionsOptions? options}) async {
     androidRequestCode ??= requestCodeCheckBluetoothPermissions;
-    return await invokeMethod<bool>('checkBluetoothPermissions',
-        <String, dynamic>{'androidRequestCode': androidRequestCode});
+    return await invokeMethod<bool>(
+        methodCheckBluetoothPermissions, <String, dynamic>{
+      'androidRequestCode': androidRequestCode,
+      if (options?.advertise ?? false) 'advertise': true
+    });
   }
 
   @override
