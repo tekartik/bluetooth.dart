@@ -14,7 +14,7 @@ Future<BluetoothStateService> getBluetoothStateService() async {
     BluetoothStateService bluetoothStateService;
     var deviceInfo = await getDeviceInfo();
     if (deviceInfo.isPhysicalDevice) {
-      bluetoothStateService = bluetoothManager;
+      bluetoothStateService = bluetoothManagerFlutter;
     } else {
       bluetoothStateService = BluetoothStateServiceMock();
     }

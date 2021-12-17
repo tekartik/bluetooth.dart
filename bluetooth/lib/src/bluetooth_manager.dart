@@ -38,6 +38,10 @@ abstract class BluetoothAdminManager
   /// Look for scan/connect permissiton for Android 12, location before
   Future<bool> checkBluetoothPermissions(
       {int? androidRequestCode, BluetoothPermissionsOptions? options});
+
+  /// deprecated on purpose to remove from code.
+  @Deprecated('Dev only')
+  Future<void> devSetOptions(BluetoothOptions options);
 }
 
 abstract class BluetoothManager
@@ -46,10 +50,6 @@ abstract class BluetoothManager
 
         /// Might be removed in the future...
         BluetoothStateService {
-  /// deprecated on purpose to remove from code.
-  @Deprecated('Dev only')
-  Future<void> devSetOptions(BluetoothOptions options);
-
   Stream<ScanResult> scan({ScanMode scanMode = ScanMode.lowLatency});
 
   /// Good to call on start.

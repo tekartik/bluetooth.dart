@@ -21,7 +21,6 @@ import com.tekartik.bluetooth_flutter.peripheral.BlePeripheralPlugin;
 import com.tekartik.bluetooth_flutter.peripheral.Peripheral;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,8 +55,8 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
     int enableBluetoothRequestCode;
     Result enableBluetoothResult;
 
-    int checkPermissionRequestCode;
-    Result checkPermissionResult;
+    int checkPermissionsRequestCode;
+    Result checkPermissionsResult;
 
     BleClientPlugin clientPlugin;
     BlePeripheralPlugin peripheralPlugin;
@@ -477,14 +476,14 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
             }
             if (ContextCompat.checkSelfPermission(activityBinding.getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED) {
-                checkPermissionRequestCode = requestCode;
-                checkPermissionResult = request.result;
+                checkPermissionsRequestCode = requestCode;
+                checkPermissionsResult = request.result;
                 ActivityCompat.requestPermissions(
                         activityBinding.getActivity(),
                         new String[]{
                                 Manifest.permission.ACCESS_COARSE_LOCATION
                         },
-                        checkPermissionRequestCode);
+                        checkPermissionsRequestCode);
             } else {
                 request.result.success(true);
             }
@@ -508,12 +507,18 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
 
         } else {
             permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+            permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
         }
         Integer requestCode = request.call.argument("androidRequestCode");
 
         List<String> askForPermissions = new ArrayList<String>();
         for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(activityBinding.getActivity(), permission)
+            int grantResult = ContextCompat.checkSelfPermission(activityBinding.getActivity(), permission);
+            if (hasVerboseLevel()) {
+                Log.i(TAG, "permission " + permission + ": "+ (
+                        (grantResult == PackageManager.PERMISSION_GRANTED) ? "ok" : ("error (" + grantResult + ")")));
+            }
+            if (grantResult
                     != PackageManager.PERMISSION_GRANTED) {
                 askForPermissions.add(permission);
             }
@@ -525,11 +530,11 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
                 }
 
 
-                checkPermissionResult = request.result;
+                checkPermissionsResult = request.result;
                 ActivityCompat.requestPermissions(
                         activityBinding.getActivity(),
                         askForPermissions.toArray(new String[0]),
-                        checkPermissionRequestCode);
+                        checkPermissionsRequestCode);
             } else {
                 request.result.success(true);
             }
@@ -543,14 +548,17 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
     @Override
     public boolean onRequestPermissionsResult(
             int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == checkPermissionRequestCode) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                checkPermissionResult.success(true);
-            } else {
-                checkPermissionResult.error(
-                        "checkCoarseLocationPermission", "missing location permissions for scanning", null);
+        if (requestCode == checkPermissionsRequestCode) {
+            for (int grantResult : grantResults) {
+                if (grantResult != PackageManager.PERMISSION_GRANTED) {
 
+                    checkPermissionsResult.error(
+                            "checkCoarseLocationPermission", "missing location permissions for scanning", null);
+                    return true;
+
+                }
             }
+            checkPermissionsResult.success(true);
             return true;
         }
         return false;

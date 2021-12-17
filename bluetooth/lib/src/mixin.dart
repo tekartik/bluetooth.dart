@@ -38,6 +38,12 @@ mixin BluetoothAdminManagerMixin
       if (options?.advertise ?? false) 'advertise': true
     });
   }
+
+  @override
+  // ignore: deprecated_member_use_from_same_package
+  Future<void> devSetOptions(BluetoothOptions options) async {
+    await invokeMethod<dynamic>(methodSetOptions, options.toMap());
+  }
 }
 mixin BluetoothManagerMixin implements BluetoothManager {
   final connections = <int?, BluetoothDeviceConnection>{};
@@ -136,12 +142,6 @@ mixin BluetoothManagerMixin implements BluetoothManager {
   @override
   Future disable() async {
     await invokeMethod('disableBluetooth');
-  }
-
-  @override
-  // ignore: deprecated_member_use_from_same_package
-  Future<void> devSetOptions(BluetoothOptions options) async {
-    await invokeMethod<dynamic>(methodSetOptions, options.toMap());
   }
 
   Future invokeStopScan() async {

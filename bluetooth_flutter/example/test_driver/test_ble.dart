@@ -15,7 +15,7 @@ Future devVerbose() async {
 }
 
 void main() {
-  var manager = bluetoothManager;
+  var manager = bluetoothManagerFlutter;
   // final factory = databaseFactory as impl.SqfliteDatabaseFactoryMixin;
   group('impl', () {
     test('info', () async {

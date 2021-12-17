@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth_test_app/ble/app_ble.dart';
@@ -124,7 +122,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _scan(BuildContext context) async {
-    if (Platform.isAndroid) {
+    if (initBluetoothManager.supportsEnable ?? false) {}
+    if (initBluetoothManager.isAndroid ?? false) {
       // devPrint('Check permission');
       if (!await initBluetoothManager.checkBluetoothPermissions(
           androidRequestCode: 1234)) {
