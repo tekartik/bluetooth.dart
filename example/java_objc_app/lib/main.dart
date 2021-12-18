@@ -5,7 +5,7 @@ void main() {
   mainMenu(() {
     //devPrint('MAIN_');
     item('getInfo', () async {
-      write(await bluetoothAdminManagerFlutter.getInfo());
+      write(await bluetoothAdminManagerFlutter.getAdminInfo());
     });
   }, showConsole: true);
 }

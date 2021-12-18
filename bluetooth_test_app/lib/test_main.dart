@@ -1,5 +1,4 @@
 import 'package:flutter_blue/flutter_blue.dart' as fbl;
-import 'package:tekartik_bluetooth/ble.dart';
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/bluetooth_peripheral.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart';
@@ -38,7 +37,7 @@ void main() {
 
     menu('Bluetooth init', () {
       item('getInfo', () async {
-        var info = await initBluetoothManager.getInfo();
+        var info = await initBluetoothManager.getAdminInfo();
         write('success $info');
       });
       item('enablePermissions', () async {
@@ -106,8 +105,7 @@ void main() {
         try {
           await bleConnection?.disconnect();
         } catch (_) {}
-        bleConnection =
-            await deviceBluetoothManager.newConnection(bleDevice!.id);
+        bleConnection = deviceBluetoothManager.newConnection(bleDevice!.id);
       }
     });
     item('discover services', () async {
@@ -116,8 +114,7 @@ void main() {
         var services = await bleConnection!.getServices();
         for (var service in services) {
           write('service: $service');
-          for (var characteristic
-              in service.characteristics ?? <BleBluetoothCharacteristic>[]) {
+          for (var characteristic in service.characteristics) {
             write('  characteristic: $characteristic');
           }
         }

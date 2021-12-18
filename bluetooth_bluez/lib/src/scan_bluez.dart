@@ -1,12 +1,12 @@
 import 'package:bluez/bluez.dart';
-import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
 import 'bluetooth_manager_bluez.dart';
+import 'import_bluetooth.dart';
 
 abstract class BluetoothDeviceBluez extends BluetoothDevice {}
 
-abstract class BluetoothDeviceIdBluez extends BluetoothDeviceId {}
+abstract class BluetoothDeviceIdBluez implements BluetoothDeviceId {}
 
 /// Unique by address for now
 class BluetoothDeviceIdBluezImpl
@@ -20,7 +20,9 @@ class BluetoothDeviceIdBluezImpl
   String get id => address;
 }
 
-class BluetoothDeviceBluezImpl implements BluetoothDeviceBluez {
+class BluetoothDeviceBluezImpl
+    with BluetoothDeviceMixin
+    implements BluetoothDeviceBluez {
   final BlueZDevice blueZDevice;
 
   BluetoothDeviceBluezImpl(this.blueZDevice);

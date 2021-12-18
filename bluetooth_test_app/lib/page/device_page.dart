@@ -193,7 +193,7 @@ class _DevicePageState extends State<DevicePage> {
     await _disconnect();
     // Created only once
     print('Connecting');
-    connection = await deviceBluetoothManager.newConnection(widget.deviceId);
+    connection = deviceBluetoothManager.newConnection(widget.deviceId);
 
     stateSubscription?.cancel().unawait();
     stateSubscription = connection!.onConnectionState.listen((state) {

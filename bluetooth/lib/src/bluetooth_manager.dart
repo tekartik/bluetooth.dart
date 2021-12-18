@@ -21,9 +21,6 @@ abstract class BluetoothManagerCommon {
   bool? get isIOS;
 
   bool? get isAndroid;
-
-  /// Get the info
-  Future<BluetoothInfo> getInfo();
 }
 
 mixin BluetoothManagerCommonMixin implements BluetoothManagerCommon {}
@@ -42,6 +39,9 @@ abstract class BluetoothAdminManager
   /// deprecated on purpose to remove from code.
   @Deprecated('Dev only')
   Future<void> devSetOptions(BluetoothOptions options);
+
+  /// Get the info
+  Future<BluetoothAdminInfo> getAdminInfo();
 }
 
 abstract class BluetoothManager
@@ -65,13 +65,17 @@ abstract class BluetoothManager
   Future<List<BluetoothDevice>> getConnectedDevices();
 
   /// Connect
-  Future<BluetoothDeviceConnection> newConnection(BluetoothDeviceId deviceId);
+  BluetoothDeviceConnection newConnection(BluetoothDeviceId deviceId);
 
   /// For server side only
   Future<void> close();
+
+  /// Get the info
+  /// Only use scanning here!
+  Future<BluetoothInfo> getInfo();
 }
 
-abstract class BluetoothServiceInvokable implements BluetoothManager {
+abstract class BluetoothServiceInvokable {
   Future<T> invokeMethod<T>(String method, [Object? arguments]);
 }
 

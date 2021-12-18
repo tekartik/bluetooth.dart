@@ -1,16 +1,26 @@
+import 'package:tekartik_bluetooth/src/common/device_mixin.dart';
 import 'package:tekartik_bluetooth/src/device_id.dart';
 import 'package:tekartik_common_utils/model/model_v2.dart';
 
-/// A bluetooth device
+/// Bluetooth device type.
+enum BluetoothDeviceType { unknown, classic, le, dual }
+
+/// A bluetooth device.
 abstract class BluetoothDevice {
+  /// Its optional name
   String? get name;
 
+  /// Its address
   String get address;
 
+  /// Its id.
   BluetoothDeviceId get id;
+
+  /// Its type.
+  BluetoothDeviceType get type;
 }
 
-class BluetoothDeviceImpl implements BluetoothDevice {
+class BluetoothDeviceImpl with BluetoothDeviceMixin implements BluetoothDevice {
   // On Android it is the address
   @override
   late final BluetoothDeviceId id;

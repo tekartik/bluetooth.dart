@@ -3,11 +3,12 @@ import 'package:tekartik_bluetooth/src/common/mixin_model.dart';
 import 'package:tekartik_bluetooth/src/constant.dart';
 import 'package:tekartik_bluetooth/src/options.dart';
 import 'package:tekartik_common_utils/map_utils.dart';
-import 'package:tekartik_common_utils/model/model_v2.dart';
 
-import 'bluetooth_manager.dart';
-import 'device_id.dart';
+import 'bluetooth_device.dart';
 import 'import.dart';
+
+export 'common/device_connection_mixin.dart';
+export 'common/device_mixin.dart';
 
 const methodCheckBluetoothPermissions = 'checkBluetoothPermissions';
 
@@ -27,7 +28,7 @@ class MixinTest with BluetoothManagerMixin {
 }
 
 mixin BluetoothAdminManagerMixin
-    implements BluetoothManager, BluetoothAdminManager, BluetoothManagerImpl {
+    implements BluetoothAdminManager, BluetoothServiceInvokable {
   @override
   Future<bool> checkBluetoothPermissions(
       {int? androidRequestCode, BluetoothPermissionsOptions? options}) async {
@@ -43,6 +44,14 @@ mixin BluetoothAdminManagerMixin
   // ignore: deprecated_member_use_from_same_package
   Future<void> devSetOptions(BluetoothOptions options) async {
     await invokeMethod<dynamic>(methodSetOptions, options.toMap());
+  }
+
+  @override
+  Future<BluetoothAdminInfo> getAdminInfo() async {
+    var result = await invokeMethod<Map>('getAdminInfo');
+
+    var info = BluetoothAdminInfoImpl()..fromMap(result);
+    return info;
   }
 }
 mixin BluetoothManagerMixin implements BluetoothManager {
@@ -175,25 +184,8 @@ mixin BluetoothManagerMixin implements BluetoothManager {
   }
 
   @override
-  Future<BluetoothDeviceConnection> newConnection(
-      BluetoothDeviceId deviceId) async {
-    var map = newModel();
-    map['deviceId'] = (deviceId as BluetoothDeviceIdImpl).id;
-    var result = await invokeMethod<dynamic>('remoteNewConnection', map);
-    int? connectionId;
-    if (result is int) {
-      connectionId = result;
-    } else if (result is Map) {
-      // ? 2019-09-23 not used on Android
-      connectionId = result[connectionIdKey] as int?;
-    }
-    var connection = BluetoothDeviceConnectionImpl(
-        manager: this, connectionId: connectionId);
-    print('newConnection success $connectionId');
-    connections[connectionId] = connection;
-
-    return connection;
-  }
+  BluetoothDeviceConnection newConnection(BluetoothDeviceId deviceId) =>
+      throw UnimplementedError('newConnection');
 
   @override
   Future<void> close() async {

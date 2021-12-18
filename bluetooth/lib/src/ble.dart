@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
+import 'package:tekartik_bluetooth/utils/ble_utils.dart';
 import 'package:tekartik_bluetooth/uuid.dart';
 import 'package:tekartik_common_utils/hex_utils.dart';
 
@@ -9,11 +10,11 @@ abstract class BleBluetoothService {
   Uuid128 get uuid;
 
   /// Modifiable
-  List<BleBluetoothCharacteristic>? get characteristics;
+  List<BleBluetoothCharacteristic> get characteristics;
 
   /// Deprecate for safety only
   @protected
-  set characteristics(List<BleBluetoothCharacteristic>? characteristics);
+  set characteristics(List<BleBluetoothCharacteristic> characteristics);
 
   /// Short service number
   int get shortNumber;
@@ -32,12 +33,12 @@ mixin BleBluetoothServiceMixin implements BleBluetoothService {
 
   /// Modifiable
   @override
-  List<BleBluetoothCharacteristic>? get characteristics => _characteristics;
+  List<BleBluetoothCharacteristic> get characteristics => _characteristics!;
 
   /// Deprecate for safety only
   @override
   @protected
-  set characteristics(List<BleBluetoothCharacteristic>? characteristics) =>
+  set characteristics(List<BleBluetoothCharacteristic> characteristics) =>
       _characteristics = characteristics;
 
   @override
@@ -69,6 +70,27 @@ class BleBluetoothServiceImpl
   }
 }
 
+/// Defines how a GATT characteristic value can be used.
+enum BleCharacteristicPropertyFlag {
+  broadcast,
+  read,
+  writeWithoutResponse,
+  write,
+  notify,
+  indicate,
+  authenticatedSignedWrites,
+  extendedProperties,
+  reliableWrite,
+  writableAuxiliaries,
+  encryptRead,
+  encryptWrite,
+  encryptAuthenticatedRead,
+  encryptAuthenticatedWrite,
+  secureRead,
+  secureWrite,
+  authorize,
+}
+
 /// Ble characteristic
 abstract class BleBluetoothCharacteristic {
   BleBluetoothService get service;
@@ -76,6 +98,7 @@ abstract class BleBluetoothCharacteristic {
   Uuid128 get uuid;
 
   int get properties;
+  Set<BleCharacteristicPropertyFlag> get propertyFlags;
 
   List<BleBluetoothDescriptor> get descriptors;
 
@@ -169,6 +192,11 @@ mixin BleBluetoothCharacteristicMixin implements BleBluetoothCharacteristic {
     }
     return false;
   }
+
+  Set<BleCharacteristicPropertyFlag>? _propertyFlags;
+  @override
+  Set<BleCharacteristicPropertyFlag> get propertyFlags =>
+      _propertyFlags ??= propertiesValueToPropertyFlags(properties);
 
   @override
   String toString() {

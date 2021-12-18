@@ -1,5 +1,6 @@
 import 'package:flutter_blue/flutter_blue.dart' as native;
-import 'package:tekartik_bluetooth/bluetooth_device.dart';
+
+import 'import_bluetooth.dart';
 
 class BluetoothDeviceIdFlutterBlue
     with BluetoothDeviceIdMixin
@@ -12,7 +13,9 @@ class BluetoothDeviceIdFlutterBlue
   String get id => nativeId.id;
 }
 
-class BluetoothDeviceFlutterBlue implements BluetoothDevice {
+class BluetoothDeviceFlutterBlue
+    with BluetoothDeviceMixin
+    implements BluetoothDevice {
   final native.BluetoothDevice nativeImpl;
 
   BluetoothDeviceFlutterBlue(this.nativeImpl);
@@ -25,4 +28,15 @@ class BluetoothDeviceFlutterBlue implements BluetoothDevice {
 
   @override
   String get name => nativeImpl.name;
+
+  @override
+  BluetoothDeviceType get type =>
+      _deviceTypeMap[nativeImpl.type] ?? BluetoothDeviceType.unknown;
 }
+
+var _deviceTypeMap = {
+  native.BluetoothDeviceType.le: BluetoothDeviceType.le,
+  native.BluetoothDeviceType.unknown: BluetoothDeviceType.unknown,
+  native.BluetoothDeviceType.classic: BluetoothDeviceType.classic,
+  native.BluetoothDeviceType.dual: BluetoothDeviceType.dual
+};

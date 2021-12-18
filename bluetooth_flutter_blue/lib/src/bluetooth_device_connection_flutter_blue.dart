@@ -2,9 +2,9 @@ import 'dart:typed_data';
 
 import 'package:flutter_blue/flutter_blue.dart' as native;
 import 'package:tekartik_bluetooth/ble.dart';
-import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth_flutter_blue/src/ble_flutter_blue.dart';
 import 'package:tekartik_bluetooth_flutter_blue/src/bluetooth_device_flutter_blue.dart';
+import 'package:tekartik_bluetooth_flutter_blue/src/import_bluetooth.dart';
 import 'package:tekartik_bluetooth_flutter_blue/utils/guid_utils.dart';
 
 BluetoothDeviceConnectionState connectionStateFromBluetoothDeviceState(
@@ -54,6 +54,7 @@ extension CharacteristicPropertiesFlutterBlueExt
 }
 
 class BluetoothDeviceConnectionFlutterBlue
+    with BluetoothDeviceConnectionMixin
     implements BluetoothDeviceConnection {
   final BluetoothDeviceFlutterBlue device;
 
@@ -154,9 +155,27 @@ class BluetoothDeviceConnectionFlutterBlue
   }
 
   @override
+  Stream<BleBluetoothCharacteristicValue> onCharacteristicValueChanged(
+      BleBluetoothCharacteristic characteristic) {
+    var nativeCharacteristic = findCharacteristicOrThrow(characteristic);
+    return nativeCharacteristic.value.map((value) {
+      var bcv = BleBluetoothCharacteristicValue(
+          bc: characteristic, value: Uint8List.fromList(value));
+      return bcv;
+    });
+  }
+
+  @override
   Future<void> writeCharacteristic(
       BleBluetoothCharacteristicValue characteristicValue) async {
     var characteristic = findCharacteristicOrThrow(characteristicValue.bc);
     await characteristic.write(characteristicValue.value);
+  }
+
+  @override
+  Future<void> registerCharacteristic(
+      BleBluetoothCharacteristic characteristic, bool on) async {
+    var nativeCharacteristic = findCharacteristicOrThrow(characteristic);
+    await nativeCharacteristic.registerNotification(on);
   }
 }

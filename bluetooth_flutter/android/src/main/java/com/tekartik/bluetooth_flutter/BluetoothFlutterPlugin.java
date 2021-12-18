@@ -326,7 +326,11 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
         } else if (method.equals("stopScan")) {
             getClientPlugin().onStopScan(request);
         } else if (method.equals("getInfo")) {
+            // deprecated
             onGetInfo(request);
+        }
+        else if (method.equals("getAdminInfo")) {
+            onGetAdminInfo(request);
         } else if (method.equals("getConnectedDevices")) {
             onGetConnectedDevices(request);
         } else if (method.equals("setOptions")) {
@@ -364,6 +368,18 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
             if (enabled) {
                 map.put("isScanning", getClientPlugin().isScanning());
             }
+        }
+        request.result.success(map);
+    }
+
+    private void onGetAdminInfo(PluginRequest request) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("hasBluetooth", hasBluetooth());
+        if (hasBluetooth()) {
+            map.put("hasBluetoothBle", hasBluetoothBle());
+            boolean enabled = bluetoothAdapter.isEnabled();
+            map.put("isBluetoothEnabled", enabled);
+
         }
         request.result.success(map);
     }

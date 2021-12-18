@@ -130,7 +130,7 @@ class _ScanPageState extends State<ScanPage> {
   Future startScan(BuildContext context) async {
     print('stopScanning');
     stopScan();
-    var info = await initBluetoothManager.getInfo();
+    var info = await initBluetoothManager.getAdminInfo();
     if (!info.hasBluetoothBle!) {
       const snackBar = SnackBar(content: Text('Bluetooth BLE not supported'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -139,7 +139,7 @@ class _ScanPageState extends State<ScanPage> {
       if (initBluetoothManager.supportsEnable!) {
         await initBluetoothManager.enable(
             androidRequestCode: androidEnableBluetoothRequestCode);
-        info = await initBluetoothManager.getInfo();
+        info = await initBluetoothManager.getAdminInfo();
       }
     }
     if (!info.isBluetoothEnabled!) {

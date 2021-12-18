@@ -3,6 +3,8 @@
 /// Use toString() to get a displayable text as device id
 abstract class BluetoothDeviceId {
   String get id;
+
+  factory BluetoothDeviceId(String id) => BluetoothDeviceIdImpl(id);
 }
 
 abstract class BluetoothDeviceIdMixin implements BluetoothDeviceId {

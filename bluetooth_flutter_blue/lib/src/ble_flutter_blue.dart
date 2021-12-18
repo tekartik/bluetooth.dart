@@ -16,6 +16,15 @@ class BluetoothCharacteristicFlutterBlue {
   Future<void> write(Uint8List value) async {
     await nativeImpl.write(value);
   }
+
+  Future<void> registerNotification(bool on) async {
+    await nativeImpl.setNotifyValue(on);
+  }
+
+  /// Value changed
+  Stream<List<int>> get value {
+    return nativeImpl.value;
+  }
 }
 
 class DiscoveredServiceFlutterBlue {
