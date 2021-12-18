@@ -82,26 +82,31 @@ class BluetoothDeviceConnectionFlutterBlue
       List<native.BluetoothService> natives) {
     var map = <BleBluetoothService, DiscoveredServiceFlutterBlue>{};
     for (var native in natives) {
-      var bleService = BleBluetoothService(uuid: uuidFromGuid(native.uuid));
-      var bleCharacteristics = <BleBluetoothCharacteristic>[];
-      for (var nativeCharacteristic in native.characteristics) {
-        var bleCharacteristic = BleBluetoothCharacteristic(
-            properties: nativeCharacteristic.properties.getValue(),
-            service: bleService,
-            uuid: uuidFromGuid((nativeCharacteristic.uuid)));
-        bleCharacteristics.add(bleCharacteristic);
-      }
+      /// Some services can be invalid (crash in uuidFromGuid), simple ignore them
+      try {
+        var bleService = BleBluetoothService(uuid: uuidFromGuid(native.uuid));
+        var bleCharacteristics = <BleBluetoothCharacteristic>[];
+        for (var nativeCharacteristic in native.characteristics) {
+          var bleCharacteristic = BleBluetoothCharacteristic(
+              properties: nativeCharacteristic.properties.getValue(),
+              service: bleService,
+              uuid: uuidFromGuid((nativeCharacteristic.uuid)));
+          bleCharacteristics.add(bleCharacteristic);
+        }
 
-      // ignore: invalid_use_of_protected_member
-      bleService.characteristics = bleCharacteristics;
-      map[bleService] = DiscoveredServiceFlutterBlue(native);
+        // ignore: invalid_use_of_protected_member
+        bleService.characteristics = bleCharacteristics;
+        map[bleService] = DiscoveredServiceFlutterBlue(native);
+      } catch (e) {
+        print('error $e for ${native.uuid}');
+      }
     }
     return map;
   }
 
   List<BleBluetoothService> get _discoveredServices =>
-      _discoverMap.keys.toList();
-  late Map<BleBluetoothService, DiscoveredServiceFlutterBlue> _discoverMap;
+      _discoverMap!.keys.toList();
+  Map<BleBluetoothService, DiscoveredServiceFlutterBlue>? _discoverMap;
 
   @override
   Future discoverServices() async {
@@ -111,6 +116,9 @@ class BluetoothDeviceConnectionFlutterBlue
 
   @override
   Future<List<BleBluetoothService>> getServices() async {
+    if (_discoverMap == null) {
+      await discoverServices();
+    }
     return _discoveredServices;
   }
 
@@ -123,7 +131,7 @@ class BluetoothDeviceConnectionFlutterBlue
 
   BluetoothCharacteristicFlutterBlue? findCharacteristic(
       BleBluetoothCharacteristic bc) {
-    var service = _discoverMap[bc.service];
+    var service = _discoverMap?[bc.service];
     if (service != null) {
       return service.getCharacteristic(bc.uuid);
     }
