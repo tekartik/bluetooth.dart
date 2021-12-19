@@ -101,7 +101,8 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
   bool get isIOS => Platform.isIOS;
 
   @override
-  BluetoothDeviceConnection newConnection(BluetoothDeviceId deviceId) {
+  Future<BluetoothDeviceConnection> newConnection(
+      BluetoothDeviceId deviceId) async {
     var device = _scanCache.getDevice(deviceId);
     if (device == null) {
       throw StateError('Scan first before connecting to $deviceId');

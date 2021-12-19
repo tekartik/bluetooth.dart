@@ -105,7 +105,8 @@ void main() {
         try {
           await bleConnection?.disconnect();
         } catch (_) {}
-        bleConnection = deviceBluetoothManager.newConnection(bleDevice!.id);
+        bleConnection =
+            await deviceBluetoothManager.newConnection(bleDevice!.id);
       }
     });
     item('discover services', () async {

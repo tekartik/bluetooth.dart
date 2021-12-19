@@ -68,7 +68,8 @@ class BluetoothManagerBluezImpl
 
   static int _connectionId = 0;
   @override
-  BluetoothDeviceConnection newConnection(BluetoothDeviceId deviceId) {
+  Future<BluetoothDeviceConnection> newConnection(
+      BluetoothDeviceId deviceId) async {
     var scanResult = _scanService?.getDeviceIdScanResult(deviceId);
     if (scanResult == null) {
       throw StateError('Device id $deviceId not found');

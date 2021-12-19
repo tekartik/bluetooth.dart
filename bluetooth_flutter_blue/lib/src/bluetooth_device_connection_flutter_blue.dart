@@ -98,6 +98,7 @@ class BluetoothDeviceConnectionFlutterBlue
         bleService.characteristics = bleCharacteristics;
         map[bleService] = DiscoveredServiceFlutterBlue(native);
       } catch (e) {
+        // ignore: avoid_print
         print('error $e for ${native.uuid}');
       }
     }

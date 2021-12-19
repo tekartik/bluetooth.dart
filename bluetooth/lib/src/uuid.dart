@@ -80,7 +80,8 @@ class Uuid128 {
 
   Uuid128(String text)
       : _text = text,
-        _value = Uint8List.fromList(Uuid.parse(text));
+        _value = Uint8List.fromList(
+            Uuid.parse(text, validationMode: ValidationMode.nonStrict));
 
   /// 16 bytes
   Uint8List get bytes => _value;

@@ -184,7 +184,7 @@ mixin BluetoothManagerMixin implements BluetoothManager {
   }
 
   @override
-  BluetoothDeviceConnection newConnection(BluetoothDeviceId deviceId) =>
+  Future<BluetoothDeviceConnection> newConnection(BluetoothDeviceId deviceId) =>
       throw UnimplementedError('newConnection');
 
   @override

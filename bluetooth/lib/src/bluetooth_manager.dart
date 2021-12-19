@@ -65,7 +65,7 @@ abstract class BluetoothManager
   Future<List<BluetoothDevice>> getConnectedDevices();
 
   /// Connect
-  BluetoothDeviceConnection newConnection(BluetoothDeviceId deviceId);
+  Future<BluetoothDeviceConnection> newConnection(BluetoothDeviceId deviceId);
 
   /// For server side only
   Future<void> close();

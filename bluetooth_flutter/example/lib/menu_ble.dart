@@ -259,7 +259,8 @@ void menuBle(
           });
            */
           // device.connect(autoConnect: true, timeout: Duration(seconds: 30));
-          deviceConnection = bluetoothManagerFlutter.newConnection(deviceId);
+          deviceConnection =
+              await bluetoothManagerFlutter.newConnection(deviceId);
           deviceConnection!.onConnectionState.listen((state) {
             write('connect state: $state');
           });
