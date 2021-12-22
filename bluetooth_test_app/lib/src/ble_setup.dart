@@ -3,6 +3,12 @@ import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
 import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
 import 'package:tekartik_bluetooth_test_app/ble/app_ble.dart';
 import 'package:tekartik_bluetooth_test_app/import/common_import.dart';
+import 'package:tekartik_bluetooth_web/bluetooth_web.dart';
+
+void initWithBleWeb() {
+  initBluetoothManager = bluetoothManagerWeb;
+  deviceBluetoothManager = bluetoothManagerFlutterBlue;
+}
 
 void initWithFlutterBlue() {
   initBluetoothManager = bluetoothAdminManagerFlutter;
