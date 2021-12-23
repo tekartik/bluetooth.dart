@@ -1,12 +1,13 @@
 // ignore_for_file: avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 //import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
-import 'package:tekartik_bluetooth/bluetooth_device.dart';
+
 import 'package:tekartik_bluetooth_test_app/ble/app_ble.dart';
 import 'package:tekartik_bluetooth_test_app/constant.dart';
 import 'package:tekartik_bluetooth_test_app/import/common_import.dart';
+import 'package:tekartik_bluetooth_test_app/import/import_bluetooth.dart';
+import 'package:tekartik_bluetooth_test_app/src/ble_setup.dart';
 
 class ScanPage extends StatefulWidget {
   const ScanPage({Key? key}) : super(key: key);
@@ -18,7 +19,9 @@ class ScanPage extends StatefulWidget {
 class AppScanResult {
   final DateTime dateTime;
   final ScanResult scanResult;
+
   BluetoothDevice get device => scanResult.device;
+
   int get rssi => scanResult.rssi;
 
   AppScanResult(this.dateTime, this.scanResult);
@@ -28,6 +31,8 @@ class AppScanResults {
   List<AppScanResult>? list;
 }
 
+const requestDeviceWeb = 'request_device';
+
 class _ScanPageState extends State<ScanPage> {
   StreamSubscription? scanSubscription;
   bool _inited = false;
@@ -36,9 +41,29 @@ class _ScanPageState extends State<ScanPage> {
 
   @override
   Widget build(BuildContext context) {
+    var hasRequestDeviceWeb = (deviceBluetoothManager is BluetoothManagerWeb);
+    var hasOptions = hasRequestDeviceWeb;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ble scan'),
+        actions: [
+          if (hasOptions)
+            PopupMenuButton<String>(
+                itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
+                      if (hasRequestDeviceWeb)
+                        const PopupMenuItem<String>(
+                            value: requestDeviceWeb,
+                            child: Text('Web.requestDevice')),
+                    ],
+                onSelected: (String value) {
+                  if (value == requestDeviceWeb) {
+                    (deviceBluetoothManager as BluetoothManagerWeb)
+                        .webRequestDevice(BluetoothRequestDeviceOptionsWeb(
+                            acceptAllDevices: true,
+                            optionalServices: webOptionalServiceIds));
+                  }
+                }),
+        ],
       ),
       body: Builder(builder: (context) {
         if (!_inited) {

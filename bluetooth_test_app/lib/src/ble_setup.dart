@@ -5,9 +5,12 @@ import 'package:tekartik_bluetooth_test_app/ble/app_ble.dart';
 import 'package:tekartik_bluetooth_test_app/import/common_import.dart';
 import 'package:tekartik_bluetooth_web/bluetooth_web.dart';
 
+/// Common services for testing, for now only battery
+List<String> webOptionalServiceIds = ['00001801-0000-1000-8000-00805f9b34fb'];
+
 void initWithBleWeb() {
   initBluetoothManager = bluetoothManagerWeb;
-  deviceBluetoothManager = bluetoothManagerFlutterBlue;
+  deviceBluetoothManager = bluetoothManagerWeb;
 }
 
 void initWithFlutterBlue() {

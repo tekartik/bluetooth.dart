@@ -1,1 +1,6 @@
-export 'src/bluetooth_web_impl.dart' show bluetoothManagerWeb;
+export 'src/bluetooth_manager_web.dart'
+    show
+        bluetoothManagerWeb,
+        BluetoothManagerWeb,
+        BluetoothRequestDeviceFilterWeb,
+        BluetoothRequestDeviceOptionsWeb;
