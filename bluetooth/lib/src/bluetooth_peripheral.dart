@@ -2,7 +2,6 @@ import 'dart:typed_data';
 
 import 'package:tekartik_bluetooth/bluetooth_service.dart';
 import 'package:tekartik_bluetooth/uuid.dart';
-import 'package:tekartik_common_utils/bool_utils.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_common_utils/hex_utils.dart';
 
@@ -283,4 +282,7 @@ class BluetoothPeripheral {
     })) as Uint8List;
     return bytes;
   }
+
+  @override
+  String toString() => 'BluetoothPeripheral($deviceName)';
 }

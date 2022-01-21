@@ -1,12 +1,19 @@
-import 'package:tekartik_bluetooth/bluetooth.dart';
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
+import 'package:tekartik_bluetooth/src/common/mixin_model.dart';
 import 'package:tekartik_bluetooth/src/constant.dart';
 import 'package:tekartik_bluetooth/src/options.dart';
 import 'package:tekartik_common_utils/map_utils.dart';
-import 'package:tekartik_common_utils/model/model_v2.dart';
 
-import 'device_id.dart';
+import 'bluetooth_device.dart';
 import 'import.dart';
+
+export 'common/device_connection_mixin.dart';
+export 'common/device_mixin.dart';
+
+const methodCheckBluetoothPermissions = 'checkBluetoothPermissions';
+
+const requestCodeEnableBluetoothDefault = 30123;
+const requestCodeCheckBluetoothPermissions = 30124;
 
 class MixinTest with BluetoothManagerMixin {
   @override
@@ -20,6 +27,33 @@ class MixinTest with BluetoothManagerMixin {
   bool? get isIOS => null;
 }
 
+mixin BluetoothAdminManagerMixin
+    implements BluetoothAdminManager, BluetoothServiceInvokable {
+  @override
+  Future<bool> checkBluetoothPermissions(
+      {int? androidRequestCode, BluetoothPermissionsOptions? options}) async {
+    androidRequestCode ??= requestCodeCheckBluetoothPermissions;
+    return await invokeMethod<bool>(
+        methodCheckBluetoothPermissions, <String, dynamic>{
+      'androidRequestCode': androidRequestCode,
+      if (options?.advertise ?? false) 'advertise': true
+    });
+  }
+
+  @override
+  // ignore: deprecated_member_use_from_same_package
+  Future<void> devSetOptions(BluetoothOptions options) async {
+    await invokeMethod<dynamic>(methodSetOptions, options.toMap());
+  }
+
+  @override
+  Future<BluetoothAdminInfo> getAdminInfo() async {
+    var result = await invokeMethod<Map>('getAdminInfo');
+
+    var info = BluetoothAdminInfoImpl()..fromMap(result);
+    return info;
+  }
+}
 mixin BluetoothManagerMixin implements BluetoothManager {
   final connections = <int?, BluetoothDeviceConnection>{};
 
@@ -98,16 +132,18 @@ mixin BluetoothManagerMixin implements BluetoothManager {
   }
 
   @override
-  Future enable({int? requestCode, int? androidRequestCode}) async {
-    androidRequestCode ??= requestCode;
+  Future enable(
+      {@Deprecated('Use androidRequestCode') int? requestCode,
+      int? androidRequestCode}) async {
+    androidRequestCode ??= requestCode ?? requestCodeEnableBluetoothDefault;
     // Using a request code means explaining version
 
     await invokeMethod('enableBluetooth',
         <String, dynamic>{'androidRequestCode': androidRequestCode});
   }
 
-  @override
   Future<bool> checkCoarseLocationPermission({int? androidRequestCode}) async {
+    androidRequestCode ??= requestCodeCheckBluetoothPermissions;
     return await invokeMethod<bool>('checkCoarseLocationPermission',
         <String, dynamic>{'androidRequestCode': androidRequestCode});
   }
@@ -115,12 +151,6 @@ mixin BluetoothManagerMixin implements BluetoothManager {
   @override
   Future disable() async {
     await invokeMethod('disableBluetooth');
-  }
-
-  @override
-  // ignore: deprecated_member_use_from_same_package
-  Future<void> devSetOptions(BluetoothOptions options) async {
-    await invokeMethod<dynamic>(methodSetOptions, options.toMap());
   }
 
   Future invokeStopScan() async {
@@ -131,8 +161,8 @@ mixin BluetoothManagerMixin implements BluetoothManager {
 
   @override
   Stream<ScanResult> scan({ScanMode scanMode = ScanMode.lowLatency}) {
-    var map = newModel();
-    map['androidScanMode'] = scanMode.value;
+    var param = StartScanParam()..androidScanMode.v = scanMode.value;
+    var map = param.toMap();
 
     scanController?.close();
 
@@ -141,7 +171,7 @@ mixin BluetoothManagerMixin implements BluetoothManager {
       await invokeStopScan();
     });
     () async {
-      await invokeMethod<dynamic>('startScan', map);
+      await invokeMethod<dynamic>(methodStartScan, map);
     }();
     return scanController!.stream;
   }
@@ -154,25 +184,8 @@ mixin BluetoothManagerMixin implements BluetoothManager {
   }
 
   @override
-  Future<BluetoothDeviceConnection> newConnection(
-      BluetoothDeviceId deviceId) async {
-    var map = newModel();
-    map['deviceId'] = (deviceId as BluetoothDeviceIdImpl).id;
-    var result = await invokeMethod<dynamic>('remoteNewConnection', map);
-    int? connectionId;
-    if (result is int) {
-      connectionId = result;
-    } else if (result is Map) {
-      // ? 2019-09-23 not used on Android
-      connectionId = result[connectionIdKey] as int?;
-    }
-    var connection = BluetoothDeviceConnectionImpl(
-        manager: this, connectionId: connectionId);
-    print('newConnection success $connectionId');
-    connections[connectionId] = connection;
-
-    return connection;
-  }
+  Future<BluetoothDeviceConnection> newConnection(BluetoothDeviceId deviceId) =>
+      throw UnimplementedError('newConnection');
 
   @override
   Future<void> close() async {

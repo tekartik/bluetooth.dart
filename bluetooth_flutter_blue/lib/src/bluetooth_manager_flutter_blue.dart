@@ -2,10 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_blue/flutter_blue.dart' as native;
-import 'package:tekartik_bluetooth/bluetooth.dart';
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
-// ignore: implementation_imports
-import 'package:tekartik_bluetooth/src/options.dart';
 import 'package:tekartik_bluetooth_flutter_blue/src/bluetooth_device_connection_flutter_blue.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
@@ -49,19 +46,19 @@ class _ScanCache {
 class BluetoothManagerFlutterBlue implements BluetoothManager {
   final _scanCache = _ScanCache();
 
-  @override
+  @Deprecated('Not flutter blue supported here')
   Future<bool> checkCoarseLocationPermission({int? androidRequestCode}) {
+    throw UnimplementedError();
+  }
+
+  @Deprecated('Not flutter blue supported here')
+  Future<bool> checkBluetoothPermissions(
+      {int? androidRequestCode, BluetoothPermissionsOptions? options}) {
     throw UnimplementedError();
   }
 
   @override
   Future<void> close() {
-    throw UnimplementedError();
-  }
-
-  @override
-  // ignore: deprecated_member_use
-  Future<void> devSetOptions(BluetoothOptions options) {
     throw UnimplementedError();
   }
 

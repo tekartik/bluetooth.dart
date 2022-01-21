@@ -21,7 +21,7 @@ void menuBle(
 
   @deprecated
   Future enableLogs() async {
-    await bluetoothManager
+    await bluetoothAdminManagerFlutter
         // ignore: deprecated_member_use
         .devSetOptions(BluetoothOptions()..logLevel = bluetoothLogLevelVerbose);
   }
@@ -32,20 +32,20 @@ void menuBle(
       await enableLogs();
     });
     item('disable_logs', () async {
-      await bluetoothManager
+      await bluetoothAdminManagerFlutter
           // ignore: deprecated_member_use
           .devSetOptions(BluetoothOptions()..logLevel = bluetoothLogLevelNone);
     });
     item('init', () async {
       // await enableLogs();
-      await bluetoothManager.init();
+      await bluetoothManagerFlutter.init();
     });
     item('get_info', () async {
-      var info = await bluetoothManager.getInfo();
+      var info = await bluetoothManagerFlutter.getInfo();
       write(info.toString());
     });
     item('get_connected_devices', () async {
-      var devices = await bluetoothManager.getConnectedDevices();
+      var devices = await bluetoothManagerFlutter.getConnectedDevices();
       devices.forEach((device) {
         write(device.toString());
       });
@@ -75,8 +75,20 @@ void menuBle(
       });
     });
     item('checkCoarseLocation', () async {
-      var info = await bluetoothManager.checkCoarseLocationPermission(
-          androidRequestCode: androidCheckCoarseLocationPermissionRequestCode);
+      var info =
+          // ignore: deprecated_member_use
+          await bluetoothAdminManagerFlutter.checkCoarseLocationPermission(
+              androidRequestCode:
+                  androidCheckCoarseLocationPermissionRequestCode);
+      write(info.toString());
+    });
+    item('checkBluetoothPermissions(scan & connect)', () async {
+      var info = await bluetoothAdminManagerFlutter.checkBluetoothPermissions();
+      write(info.toString());
+    });
+    item('checkBluetoothPermissions(advertise)', () async {
+      var info = await bluetoothAdminManagerFlutter.checkBluetoothPermissions(
+          options: BluetoothPermissionsOptions(advertise: true));
       write(info.toString());
     });
     item('bt_off', () async {
@@ -101,7 +113,7 @@ void menuBle(
 
       item('scan_$name', () {
         scanSubscription?.cancel();
-        scanSubscription = bluetoothManager.scan().listen((result) {
+        scanSubscription = bluetoothManagerFlutter.scan().listen((result) {
           write(
               'scan_$name: ${result.device.address} ${result.device.name} ${result.rssi}');
         }, onDone: () {
@@ -203,7 +215,7 @@ void menuBle(
 
       item('connect_$name', () async {
         scanSubscription?.cancel();
-        scanSubscription = bluetoothManager.scan().listen((result) {
+        scanSubscription = bluetoothManagerFlutter.scan().listen((result) {
           var id = result.device.id;
           if (!deviceIds.contains(id)) {
             write(
@@ -247,7 +259,8 @@ void menuBle(
           });
            */
           // device.connect(autoConnect: true, timeout: Duration(seconds: 30));
-          deviceConnection = await bluetoothManager.newConnection(deviceId);
+          deviceConnection =
+              await bluetoothManagerFlutter.newConnection(deviceId);
           deviceConnection!.onConnectionState.listen((state) {
             write('connect state: $state');
           });

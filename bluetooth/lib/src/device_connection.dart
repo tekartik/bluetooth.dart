@@ -1,4 +1,5 @@
 import 'package:tekartik_bluetooth/bluetooth_manager.dart';
+import 'package:tekartik_bluetooth/src/common/device_connection_mixin.dart';
 
 import 'ble.dart';
 import 'import.dart';
@@ -65,7 +66,7 @@ class BluetoothDeviceConnectionState {
 }
 
 abstract class BluetoothDeviceConnection {
-  Future discoverServices();
+  Future<void> discoverServices();
 
   Future<List<BleBluetoothService>> getServices();
 
@@ -78,13 +79,26 @@ abstract class BluetoothDeviceConnection {
   Future<BleBluetoothCharacteristicValue> readCharacteristic(
       BleBluetoothCharacteristic characteristic);
 
+  Future<void> writeCharacteristic(
+      BleBluetoothCharacteristicValue characteristicValue);
+
+  /// Get value change, cancel subscription to cancel
+  Stream<BleBluetoothCharacteristicValue> onCharacteristicValueChanged(
+      BleBluetoothCharacteristic characteristic);
+
+  /// Register for notification
+  Future<void> registerCharacteristic(
+      BleBluetoothCharacteristic characteristic, bool on);
+
   Future disconnect();
 
   /// Dispose everything
   void close();
 }
 
-class BluetoothDeviceConnectionImpl implements BluetoothDeviceConnection {
+class BluetoothDeviceConnectionImpl
+    with BluetoothDeviceConnectionMixin
+    implements BluetoothDeviceConnection {
   final BluetoothManager manager;
   final int? connectionId;
 
@@ -129,6 +143,13 @@ class BluetoothDeviceConnectionImpl implements BluetoothDeviceConnection {
   Future<BleBluetoothCharacteristicValue> readCharacteristic(
       BleBluetoothCharacteristic characteristic) {
     // TODO: implement readCharacteristic
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> writeCharacteristic(
+      BleBluetoothCharacteristicValue characteristicValue) {
+    // TODO: implement writeCharacteristic
     throw UnimplementedError();
   }
 }

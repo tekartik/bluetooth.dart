@@ -8,12 +8,14 @@ import 'package:tekartik_bluetooth_flutter/src/client/connection.dart';
 import 'package:tekartik_bluetooth_flutter/src/constant.dart';
 import 'package:tekartik_bluetooth_flutter/src/exception.dart';
 import 'package:tekartik_bluetooth_flutter/src/mixin.dart';
-import 'package:tekartik_bluetooth_flutter/src/plugin.dart';
 
 import 'import.dart';
 
 class BluetoothFlutterManagerImpl
-    with BluetoothFlutterManagerMixin, BluetoothManagerMixin
+    with
+        BluetoothFlutterManagerMixin,
+        BluetoothManagerMixin,
+        BluetoothAdminManagerMixin
     implements BluetoothManager {
   final channel = bluetoothFlutterPlugin.methodChannel;
 

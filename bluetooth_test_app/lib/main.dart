@@ -1,16 +1,24 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:tekartik_app_platform/app_platform.dart';
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
-import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
-import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
 import 'package:tekartik_bluetooth_test_app/ble/app_ble.dart';
 import 'package:tekartik_bluetooth_test_app/page/device_page.dart';
 import 'package:tekartik_bluetooth_test_app/page/scan_page.dart';
+import 'package:tekartik_bluetooth_test_app/src/ble_setup.dart';
 
+import 'import/common_import.dart';
 import 'test_main.dart' as test_main;
 
 Future<void> main() async {
-  initBluetoothManager = bluetoothManager;
-  deviceBluetoothManager = bluetoothManagerFlutterBlue;
+  WidgetsFlutterBinding.ensureInitialized();
+  if (platformContext.io?.isLinux ?? false) {
+    initWithBluez();
+  } else if (kIsWeb) {
+    initWithBleWeb();
+  } else {
+    initWithFlutterBlue();
+  }
   runApp(const MyApp());
 }
 
@@ -21,7 +29,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'Bluetooth test app',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -34,10 +43,12 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Bluetooth test app'),
     );
   }
 }
+
+var _scanOnStart = true;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, this.title}) : super(key: key);
@@ -59,6 +70,20 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   @override
+  void initState() {
+    if (_scanOnStart) {
+      _scanOnStart = false;
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
+        if (mounted) {
+          await _scan(context);
+        }
+      });
+    }
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
@@ -75,6 +100,12 @@ class _MyHomePageState extends State<MyHomePage> {
       body: ListView(
         children: [
           ListTile(
+            title: const Text('Scan & Select'),
+            onTap: () async {
+              await _scan(context);
+            },
+          ),
+          ListTile(
             title: const Text('Test menu'),
             onTap: () {
               test_main.main();
@@ -85,17 +116,30 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           () async {
-            var deviceId = await Navigator.of(context).push<BluetoothDeviceId>(
-                MaterialPageRoute(builder: (_) => const ScanPage()));
-            if (deviceId != null) {
-              await Navigator.of(context).push<String>(MaterialPageRoute(
-                  builder: (_) => DevicePage(deviceId: deviceId)));
-            }
+            await _scan(context);
           }();
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  Future<void> _scan(BuildContext context) async {
+    if (initBluetoothManager.supportsEnable ?? false) {}
+    if (initBluetoothManager.isAndroid ?? false) {
+      // devPrint('Check permission');
+      if (!await initBluetoothManager.checkBluetoothPermissions(
+          androidRequestCode: 1234)) {
+        // devPrint('Permissions denied');
+        return;
+      }
+    }
+    var deviceId = await Navigator.of(context).push<BluetoothDeviceId>(
+        MaterialPageRoute(builder: (_) => const ScanPage()));
+    if (deviceId != null) {
+      await Navigator.of(context).push<String>(
+          MaterialPageRoute(builder: (_) => DevicePage(deviceId: deviceId)));
+    }
   }
 }

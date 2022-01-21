@@ -8,8 +8,8 @@ Bluetooth common
 dependencies:
   tekartik_bluetooth:
     git:
-      url: git://github.com/tekartik/bluetooth.dart
+      url: https://github.com/tekartik/bluetooth.dart
       path: bluetooth
-      ref: null_safety
+      ref: dart2_3
     version: '>=0.2.1'
 ```

@@ -12,6 +12,14 @@ abstract class BluetoothInfo {
   bool? get isScanning;
 }
 
+abstract class BluetoothAdminInfo {
+  bool? get hasBluetooth;
+
+  bool? get hasBluetoothBle;
+
+  bool? get isBluetoothEnabled;
+}
+
 class BluetoothInfoImpl implements BluetoothInfo {
   @override
   bool? hasBluetooth;
@@ -45,6 +53,38 @@ class BluetoothInfoImpl implements BluetoothInfo {
       ..setValue('hasBluetoothBle', hasBluetoothBle)
       ..setValue('isBluetoothEnabled', isBluetoothEnabled)
       ..setValue('isScanning', isScanning);
+    return model;
+  }
+}
+
+class BluetoothAdminInfoImpl implements BluetoothAdminInfo {
+  @override
+  bool? hasBluetooth;
+
+  @override
+  bool? hasBluetoothBle;
+
+  @override
+  bool? isBluetoothEnabled;
+
+  BluetoothAdminInfoImpl(
+      {this.hasBluetooth, this.hasBluetoothBle, this.isBluetoothEnabled});
+
+  void fromMap(Map result) {
+    var model = asModel(result);
+    hasBluetooth = parseBool(model['hasBluetooth']) ?? false;
+    hasBluetoothBle = parseBool(model['hasBluetoothBle']) ?? false;
+    isBluetoothEnabled = parseBool(model['isBluetoothEnabled']) ?? false;
+  }
+
+  @override
+  String toString() => toDebugMap().toString();
+
+  Model toDebugMap() {
+    var model = newModel()
+      ..setValue('hasBluetooth', hasBluetooth)
+      ..setValue('hasBluetoothBle', hasBluetoothBle)
+      ..setValue('isBluetoothEnabled', isBluetoothEnabled);
     return model;
   }
 }

@@ -1,26 +1,45 @@
 import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
+import 'package:tekartik_bluetooth/utils/ble_utils.dart';
 import 'package:tekartik_bluetooth/uuid.dart';
 import 'package:tekartik_common_utils/hex_utils.dart';
 
 /// A ble bluetooth service
-class BleBluetoothService {
-  final Uuid128 uuid;
+abstract class BleBluetoothService {
+  Uuid128 get uuid;
+
+  /// Modifiable
+  List<BleBluetoothCharacteristic> get characteristics;
+
+  /// Deprecate for safety only
+  @protected
+  set characteristics(List<BleBluetoothCharacteristic> characteristics);
+
+  /// Short service number
+  int get shortNumber;
+
+  factory BleBluetoothService(
+          {required Uuid128 uuid,
+          List<BleBluetoothCharacteristic>? characteristics}) =>
+      BleBluetoothServiceImpl(uuid: uuid, characteristics: characteristics);
+}
+
+mixin BleBluetoothServiceMixin implements BleBluetoothService {
+  @override
+  late final Uuid128 uuid;
 
   List<BleBluetoothCharacteristic>? _characteristics;
 
   /// Modifiable
-  List<BleBluetoothCharacteristic>? get characteristics => _characteristics;
+  @override
+  List<BleBluetoothCharacteristic> get characteristics => _characteristics!;
 
   /// Deprecate for safety only
+  @override
   @protected
-  set characteristics(List<BleBluetoothCharacteristic>? characteristics) =>
+  set characteristics(List<BleBluetoothCharacteristic> characteristics) =>
       _characteristics = characteristics;
-
-  BleBluetoothService(
-      {required this.uuid, List<BleBluetoothCharacteristic>? characteristics})
-      : _characteristics = characteristics;
 
   @override
   int get hashCode => uuid.hashCode;
@@ -33,7 +52,43 @@ class BleBluetoothService {
     return false;
   }
 
+  @override
   int get shortNumber => uuid.shortNumberUuid16.value;
+
+  @override
+  String toString() => 'BleService($uuid)';
+}
+
+class BleBluetoothServiceImpl
+    with BleBluetoothServiceMixin
+    implements BleBluetoothService {
+  BleBluetoothServiceImpl(
+      {required Uuid128 uuid,
+      List<BleBluetoothCharacteristic>? characteristics}) {
+    _characteristics = characteristics;
+    this.uuid = uuid;
+  }
+}
+
+/// Defines how a GATT characteristic value can be used.
+enum BleCharacteristicPropertyFlag {
+  broadcast,
+  read,
+  writeWithoutResponse,
+  write,
+  notify,
+  indicate,
+  authenticatedSignedWrites,
+  extendedProperties,
+  reliableWrite,
+  writableAuxiliaries,
+  encryptRead,
+  encryptWrite,
+  encryptAuthenticatedRead,
+  encryptAuthenticatedWrite,
+  secureRead,
+  secureWrite,
+  authorize,
 }
 
 /// Ble characteristic
@@ -43,9 +98,13 @@ abstract class BleBluetoothCharacteristic {
   Uuid128 get uuid;
 
   int get properties;
+  Set<BleCharacteristicPropertyFlag> get propertyFlags;
 
   List<BleBluetoothDescriptor> get descriptors;
 
+  /// We allow setting descriptors by implementation
+  @protected
+  set descriptors(List<BleBluetoothDescriptor> descriptor);
   factory BleBluetoothCharacteristic(
           {required BleBluetoothService service,
           required Uuid128 uuid,
@@ -54,7 +113,10 @@ abstract class BleBluetoothCharacteristic {
           int properties = 0x0,
           List<BleBluetoothDescriptor>? descriptors}) =>
       BleBluetoothCharacteristicImpl(
-          service: service, uuid: uuid, properties: properties);
+          service: service,
+          uuid: uuid,
+          properties: properties,
+          descriptors: descriptors);
 
   BleBluetoothCharacteristicValue withValue(Uint8List value);
 
@@ -131,9 +193,14 @@ mixin BleBluetoothCharacteristicMixin implements BleBluetoothCharacteristic {
     return false;
   }
 
+  Set<BleCharacteristicPropertyFlag>? _propertyFlags;
+  @override
+  Set<BleCharacteristicPropertyFlag> get propertyFlags =>
+      _propertyFlags ??= propertiesValueToPropertyFlags(properties);
+
   @override
   String toString() {
-    return '$uuid';
+    return 'Characteristic($uuid)';
   }
 
   @override
@@ -178,6 +245,8 @@ class BleBluetoothCharacteristicImpl
     _service = service;
     _uuid = uuid;
     _properties = properties;
+
+    this.descriptors = descriptors ?? <BleBluetoothDescriptor>[];
   }
 }
 

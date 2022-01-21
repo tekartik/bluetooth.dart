@@ -55,8 +55,8 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
     int enableBluetoothRequestCode;
     Result enableBluetoothResult;
 
-    int checkCoarseLocationPermissionRequestCode;
-    Result checkCoarseLocationPermissionResult;
+    int checkPermissionsRequestCode;
+    Result checkPermissionsResult;
 
     BleClientPlugin clientPlugin;
     BlePeripheralPlugin peripheralPlugin;
@@ -326,13 +326,21 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
         } else if (method.equals("stopScan")) {
             getClientPlugin().onStopScan(request);
         } else if (method.equals("getInfo")) {
+            // deprecated
             onGetInfo(request);
+        }
+        else if (method.equals("getAdminInfo")) {
+            onGetAdminInfo(request);
         } else if (method.equals("getConnectedDevices")) {
             onGetConnectedDevices(request);
         } else if (method.equals("setOptions")) {
             onSetOptions(request);
         } else if (method.equals("checkCoarseLocationPermission")) {
-            onCheckCoarseLocationPermission(request);
+            // onCheckCoarseLocationPermission(request);
+            // Compat
+            onCheckBluetoothPermissions(request);
+        } else if (method.equals("checkBluetoothPermissions")) {
+            onCheckBluetoothPermissions(request);
         } else {
             Log.i(TAG, "Unhandled " + call.method);
         }
@@ -360,6 +368,18 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
             if (enabled) {
                 map.put("isScanning", getClientPlugin().isScanning());
             }
+        }
+        request.result.success(map);
+    }
+
+    private void onGetAdminInfo(PluginRequest request) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("hasBluetooth", hasBluetooth());
+        if (hasBluetooth()) {
+            map.put("hasBluetoothBle", hasBluetoothBle());
+            boolean enabled = bluetoothAdapter.isEnabled();
+            map.put("isBluetoothEnabled", enabled);
+
         }
         request.result.success(map);
     }
@@ -472,14 +492,14 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
             }
             if (ContextCompat.checkSelfPermission(activityBinding.getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED) {
-                checkCoarseLocationPermissionRequestCode = requestCode;
-                checkCoarseLocationPermissionResult = request.result;
+                checkPermissionsRequestCode = requestCode;
+                checkPermissionsResult = request.result;
                 ActivityCompat.requestPermissions(
                         activityBinding.getActivity(),
                         new String[]{
                                 Manifest.permission.ACCESS_COARSE_LOCATION
                         },
-                        checkCoarseLocationPermissionRequestCode);
+                        checkPermissionsRequestCode);
             } else {
                 request.result.success(true);
             }
@@ -490,17 +510,71 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
 
     }
 
+    public void onCheckBluetoothPermissions(PluginRequest request) {
+
+        List<String> permissions = new ArrayList<String>();
+        Boolean advertise = request.call.argument("advertise");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            permissions.add(Manifest.permission.BLUETOOTH_SCAN);
+            permissions.add(Manifest.permission.BLUETOOTH_CONNECT);
+            if (Boolean.TRUE.equals(advertise)) {
+                permissions.add(Manifest.permission.BLUETOOTH_ADVERTISE);
+            }
+
+        } else {
+            permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+            permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+        Integer requestCode = request.call.argument("androidRequestCode");
+
+        List<String> askForPermissions = new ArrayList<String>();
+        for (String permission : permissions) {
+            int grantResult = ContextCompat.checkSelfPermission(activityBinding.getActivity(), permission);
+            if (hasVerboseLevel()) {
+                Log.i(TAG, "permission " + permission + ": "+ (
+                        (grantResult == PackageManager.PERMISSION_GRANTED) ? "ok" : ("error (" + grantResult + ")")));
+            }
+            if (grantResult
+                    != PackageManager.PERMISSION_GRANTED) {
+                askForPermissions.add(permission);
+            }
+        }
+        if (requestCode != null) {
+            if (!askForPermissions.isEmpty()) {
+                if (hasVerboseLevel()) {
+                    Log.i(TAG, "onCheckBluetoothPermissions(" + askForPermissions + ", " + requestCode + ")");
+                }
+
+
+                checkPermissionsResult = request.result;
+                ActivityCompat.requestPermissions(
+                        activityBinding.getActivity(),
+                        askForPermissions.toArray(new String[0]),
+                        checkPermissionsRequestCode);
+            } else {
+                request.result.success(true);
+            }
+        } else {
+            request.result.error("onCheckBluetoothPermissions", "missing androidRequestCode", null);
+
+        }
+
+    }
+
     @Override
     public boolean onRequestPermissionsResult(
             int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == checkCoarseLocationPermissionRequestCode) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                checkCoarseLocationPermissionResult.success(true);
-            } else {
-                checkCoarseLocationPermissionResult.error(
-                        "checkCoarseLocationPermission", "missing location permissions for scanning", null);
+        if (requestCode == checkPermissionsRequestCode) {
+            for (int grantResult : grantResults) {
+                if (grantResult != PackageManager.PERMISSION_GRANTED) {
 
+                    checkPermissionsResult.error(
+                            "checkCoarseLocationPermission", "missing location permissions for scanning", null);
+                    return true;
+
+                }
             }
+            checkPermissionsResult.success(true);
             return true;
         }
         return false;
@@ -512,6 +586,8 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
             if (requestCode == Activity.RESULT_OK) {
                 enableBluetoothResult.success(null);
             } else {
+                // Check enabled again
+                // bluetoothAdapter.isEnabled()
                 enableBluetoothResult.error("enable_bluetooth", "failed " + resultCode, null);
             }
             return true;

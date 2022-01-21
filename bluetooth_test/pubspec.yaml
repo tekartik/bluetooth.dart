@@ -7,14 +7,13 @@ environment:
   sdk: '>=2.12.0 <3.0.0'
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
+  test:
   process_run:
   tekartik_bluetooth:
     git:
-      url: git://github.com/tekartik/bluetooth.dart
+      url: https://github.com/tekartik/bluetooth.dart
       path: bluetooth
-      ref: null_safety
+      ref: dart2_3
     version: '>=0.2.1'
 
 dependency_overrides:

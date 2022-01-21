@@ -1,4 +1,4 @@
 import 'package:tekartik_bluetooth/bluetooth.dart';
 
-late BluetoothManager initBluetoothManager;
+late BluetoothAdminManager initBluetoothManager;
 late BluetoothManager deviceBluetoothManager;

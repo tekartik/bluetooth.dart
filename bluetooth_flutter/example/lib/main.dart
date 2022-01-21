@@ -17,7 +17,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   BluetoothInfo? _bluetoothInfo;
   DateTime? _statusDate;
-  final _bluetoothManager = bluetoothManager;
+  final _bluetoothManager = bluetoothManagerFlutter;
 
   @override
   void initState() {

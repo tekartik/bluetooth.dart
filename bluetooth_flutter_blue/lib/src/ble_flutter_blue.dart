@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_blue/flutter_blue.dart' as native;
 import 'package:tekartik_bluetooth/uuid.dart';
 import 'package:tekartik_bluetooth_flutter_blue/utils/guid_utils.dart';
@@ -9,6 +11,19 @@ class BluetoothCharacteristicFlutterBlue {
 
   Future<List<int>> read() async {
     return await nativeImpl.read();
+  }
+
+  Future<void> write(Uint8List value) async {
+    await nativeImpl.write(value);
+  }
+
+  Future<void> registerNotification(bool on) async {
+    await nativeImpl.setNotifyValue(on);
+  }
+
+  /// Value changed
+  Stream<List<int>> get value {
+    return nativeImpl.value;
   }
 }
 

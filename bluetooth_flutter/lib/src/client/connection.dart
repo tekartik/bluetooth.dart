@@ -1,12 +1,11 @@
 import 'dart:typed_data';
 
 import 'package:tekartik_bluetooth/ble.dart';
-import 'package:tekartik_bluetooth/bluetooth.dart';
 import 'package:tekartik_bluetooth/bluetooth_service.dart';
 import 'package:tekartik_bluetooth/uuid.dart';
-import 'package:tekartik_bluetooth_flutter/src/constant.dart';
 import 'package:tekartik_bluetooth_flutter/src/exception.dart';
 import 'package:tekartik_bluetooth_flutter/src/import.dart';
+import 'package:tekartik_bluetooth_flutter/src/import_bluetooth.dart';
 import 'package:tekartik_bluetooth_flutter/src/mixin.dart';
 import 'package:tekartik_bluetooth_flutter/utils/model_utils.dart';
 import 'package:tekartik_common_utils/map_utils.dart';
@@ -16,6 +15,7 @@ import 'package:tekartik_common_utils/model/model_v2.dart';
 export 'package:tekartik_bluetooth/src/device_connection.dart';
 
 class BluetoothDeviceConnectionFlutterImpl
+    with BluetoothDeviceConnectionMixin
     implements BluetoothDeviceConnection {
   final lock = Lock();
   final BluetoothFlutterManagerMixin manager;
@@ -179,23 +179,27 @@ class BluetoothDeviceConnectionFlutterImpl
       var bleService = BleBluetoothService(uuid: Uuid128.from(text: uuidText));
       var characteristicsMapList = map[characteristicsKey] as List?;
       var characteristics = characteristicsMapList?.map((item) {
-        var map = item as Map;
-        var uuidText = map[uuidKey] as String?;
-        // devPrint('properties ${map[propertiesKey]}');
-        var properties = (map[propertiesKey] as int?) ?? 0x00;
-        var descriptorMapList = (map[descriptorsKey] as List?)?.cast<Map>();
+            var map = item as Map;
+            var uuidText = map[uuidKey] as String?;
+            // devPrint('properties ${map[propertiesKey]}');
+            var properties = (map[propertiesKey] as int?) ?? 0x00;
+            var descriptorMapList = (map[descriptorsKey] as List?)?.cast<Map>();
 
-        var characteristic = BleBluetoothCharacteristicImpl(
-            service: bleService,
-            uuid: Uuid128.from(text: uuidText),
-            properties: properties);
-        var descriptors = descriptorMapList
-            ?.map((map) =>
-                descriptorFromMap(characteristic: characteristic, map: map))
-            .toList(growable: false);
-        characteristic.descriptors = <BleBluetoothDescriptor>[...?descriptors];
-        return characteristic;
-      }).toList(growable: false);
+            var characteristic = BleBluetoothCharacteristic(
+                service: bleService,
+                uuid: Uuid128.from(text: uuidText),
+                properties: properties);
+            var descriptors = descriptorMapList
+                ?.map((map) =>
+                    descriptorFromMap(characteristic: characteristic, map: map))
+                .toList(growable: false);
+            // ignore: invalid_use_of_protected_member
+            characteristic.descriptors = <BleBluetoothDescriptor>[
+              ...?descriptors
+            ];
+            return characteristic;
+          }).toList(growable: false) ??
+          <BleBluetoothCharacteristic>[];
       // ignore: invalid_use_of_protected_member
       bleService.characteristics = characteristics;
       return bleService;
@@ -250,6 +254,13 @@ class BluetoothDeviceConnectionFlutterImpl
   @override
   Stream<BluetoothDeviceConnectionState> get onConnectionState =>
       connectionStateController.stream;
+
+  @override
+  Future<void> writeCharacteristic(
+      BleBluetoothCharacteristicValue characteristicValue) {
+    // TODO: implement writeCharacteristic
+    throw UnimplementedError();
+  }
 }
 
 class BluetoothDeviceConnectionStateImpl

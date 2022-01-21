@@ -116,6 +116,12 @@ class _DevicePageState extends State<DevicePage> {
                   return ListTile(
                     title: Text(stateText),
                     subtitle: subtitle == null ? null : Text(subtitle),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.refresh),
+                      onPressed: () {
+                        _refreshServices();
+                      },
+                    ),
                   );
                 }),
             StreamBuilder<List<BleBluetoothService>?>(
@@ -150,6 +156,7 @@ class _DevicePageState extends State<DevicePage> {
     );
   }
 
+  var disconnectForExit = false;
   Future _disconnect() async {
     if (connection != null) {
       // ignore: avoid_print
@@ -157,26 +164,14 @@ class _DevicePageState extends State<DevicePage> {
       await connection?.disconnect();
       connection?.close();
       connection = null;
+      print('Disconnected');
     }
   }
 
   StreamSubscription? stateSubscription;
 
-  Future _connect() async {
+  Future _refreshServices() async {
     _deviceServices.add(null);
-
-    await _disconnect();
-    // Created only once
-    print('Connecting');
-    connection = await deviceBluetoothManager.newConnection(widget.deviceId);
-
-    stateSubscription?.cancel().unawait();
-    stateSubscription = connection!.onConnectionState.listen((state) {
-      print('onConnectionState: $state');
-      connectionState
-          .add(connectionState.value?.clone(deviceConnectionState: state));
-    });
-    await connection!.connect();
     try {
       connectionState
           .add(connectionState.value?.clone(discoveringServices: true));
@@ -192,6 +187,30 @@ class _DevicePageState extends State<DevicePage> {
         .add(connectionState.value?.clone(discoveringServices: false));
   }
 
+  Future _connect() async {
+    _deviceServices.add(null);
+
+    await _disconnect();
+    // Created only once
+    print('Connecting');
+    connection = await deviceBluetoothManager.newConnection(widget.deviceId);
+
+    stateSubscription?.cancel().unawait();
+    stateSubscription = connection!.onConnectionState.listen((state) {
+      print('onConnectionState: $state');
+      connectionState
+          .add(connectionState.value?.clone(deviceConnectionState: state));
+    });
+    try {
+      await connection!.connect();
+      await _refreshServices();
+    } catch (e) {
+      if (disconnectForExit) {
+        // nothing
+      } else {}
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -199,6 +218,7 @@ class _DevicePageState extends State<DevicePage> {
 
   @override
   void dispose() {
+    disconnectForExit = true;
     _disconnect();
     stateSubscription?.cancel();
     connection?.close();

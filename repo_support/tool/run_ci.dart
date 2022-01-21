@@ -5,6 +5,8 @@ Future main() async {
   for (var dir in [
     // '.',
     'bluetooth',
+    'bluetooth_web',
+    'bluetooth_bluez',
     'bluetooth_flutter_blue',
     'bluetooth_server',
     'bluetooth_server_flutter',

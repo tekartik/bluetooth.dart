@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tekartik_bluetooth/ble.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
 import 'package:tekartik_bluetooth_test_app/page/ble_characteristic_page.dart';
-import 'package:tekartik_bluetooth_test_app/utils/app_uuid_utils.dart';
+import 'package:tekartik_bluetooth_test_app/utils/app_utils.dart';
 
 class AppBleService {
   final BluetoothDeviceConnection? connection;
@@ -31,7 +31,7 @@ class _BleServicePageState extends State<BleServicePage> {
       body: Builder(builder: (context) {
         var service = widget.appBleService.bleService;
         var characteristics = service.characteristics;
-        if (characteristics?.isEmpty ?? true) {
+        if (characteristics.isEmpty) {
           return ListView(children: const <Widget>[
             ListTile(title: Text('No characteristics found'))
           ]);
@@ -41,11 +41,12 @@ class _BleServicePageState extends State<BleServicePage> {
             ListTile(
                 title: const Text('Service'),
                 subtitle: Text(uuidText(service.uuid))),
-            ...characteristics!.map((characteristic) {
+            ...characteristics.map((characteristic) {
+              var propertiesText = propertiesAsText(characteristic.properties);
               return ListTile(
                 title: const Text('Characteristic'),
-                subtitle:
-                    Text(uuidText(characteristic.uuid, parent: service.uuid)),
+                subtitle: Text(
+                    '${uuidText(characteristic.uuid, parent: service.uuid)}${propertiesText.isNotEmpty ? '\n$propertiesText' : ''}'),
                 onTap: () {
                   () async {
                     await Navigator.of(context).push<String>(MaterialPageRoute(

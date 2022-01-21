@@ -12,15 +12,15 @@ dependencies:
     sdk: flutter
   tekartik_bluetooth_flutter_blue:
     git:
-      url: git://github.com/tekartik/bluetooth.dart
+      url: https://github.com/tekartik/bluetooth.dart
       path: bluetooth_flutter_blue
-      ref: null_safety
+      ref: dart2_3
     version: '>=0.2.1'
   tekartik_bluetooth_server:
     git:
-      url: git://github.com/tekartik/bluetooth.dart
+      url: https://github.com/tekartik/bluetooth.dart
       path: bluetooth_server
-      ref: null_safety
+      ref: dart2_3
     version: '>=0.2.1'
 
 dev_dependencies:
@@ -29,8 +29,8 @@ dev_dependencies:
     sdk: flutter
   tekartik_lints_flutter:
     git:
-      url: git://github.com/tekartik/common_flutter.dart
-      ref: null_safety
+      url: https://github.com/tekartik/common_flutter.dart
+      ref: dart2_3
       path: packages/lints_flutter
     version: '>=0.1.0'
 

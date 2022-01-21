@@ -6,3 +6,4 @@ export 'package:tekartik_bluetooth_server/src/common_public.dart';
 
 /// To initialize
 late BluetoothManager serverBluetoothManager;
+late BluetoothAdminManager serverBluetoothAdminManager;
