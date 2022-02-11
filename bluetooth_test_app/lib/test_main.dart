@@ -1,4 +1,4 @@
-import 'package:flutter_blue/flutter_blue.dart' as fbl;
+import 'package:flutter_blue_plus/flutter_blue_plus.dart' as fbl;
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/bluetooth_peripheral.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart';
@@ -90,12 +90,12 @@ void main() {
 
     menu('Flutter blue', () {
       item('Enable bluetooth', () async {
-        var state = await fbl.FlutterBlue.instance.state.first;
+        var state = await fbl.FlutterBluePlus.instance.state.first;
         write('state: $state');
       });
 
       item('Current state', () async {
-        var state = await fbl.FlutterBlue.instance.state.first;
+        var state = await fbl.FlutterBluePlus.instance.state.first;
         write('state: $state');
       });
     });
