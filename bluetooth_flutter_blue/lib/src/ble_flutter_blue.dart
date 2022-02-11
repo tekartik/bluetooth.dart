@@ -1,8 +1,9 @@
 import 'dart:typed_data';
 
-import 'package:flutter_blue/flutter_blue.dart' as native;
 import 'package:tekartik_bluetooth/uuid.dart';
 import 'package:tekartik_bluetooth_flutter_blue/utils/guid_utils.dart';
+
+import 'flutter_blue_import.dart' as native;
 
 class BluetoothCharacteristicFlutterBlue {
   final native.BluetoothCharacteristic nativeImpl;

@@ -1,5 +1,5 @@
 //import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
-import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_test_menu_flutter/test.dart';
 
@@ -18,7 +18,7 @@ void menuFlutterBlue() {
 
       item('connect_$name', () async {
         scanSubscription?.cancel();
-        scanSubscription = FlutterBlue.instance
+        scanSubscription = FlutterBluePlus.instance
             .scan(timeout: Duration(seconds: 30))
             .listen((result) {
           var id = result.device.id.id;
@@ -80,10 +80,10 @@ void menuFlutterBlue() {
   menu('flutter_blue_scan', () {
     StreamSubscription? stateSubscription;
     item('get_bt_state', () async {
-      write('get_state: ${await FlutterBlue.instance.state.first}');
+      write('get_state: ${await FlutterBluePlus.instance.state.first}');
     });
     item('register_bt_state', () {
-      FlutterBlue.instance.state.listen((state) {
+      FlutterBluePlus.instance.state.listen((state) {
         write('state: $state');
       }, onDone: () {
         write('register_bt_state done');
@@ -106,7 +106,7 @@ void menuFlutterBlue() {
 
       item('scan_$name', () {
         scanSubscription?.cancel();
-        scanSubscription = FlutterBlue.instance
+        scanSubscription = FlutterBluePlus.instance
             .scan(timeout: Duration(seconds: 30))
             .listen((result) {
           write(

@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter_blue/flutter_blue.dart' as native;
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth_flutter_blue/src/bluetooth_device_connection_flutter_blue.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
 import 'bluetooth_device_flutter_blue.dart';
+import 'flutter_blue_import.dart' as native;
 
 class ScanResultFlutter implements ScanResult {
   final native.ScanResult nativeImpl;
@@ -74,7 +74,7 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
 
   @override
   Future<List<BluetoothDevice>> getConnectedDevices() async {
-    var devices = await native.FlutterBlue.instance.connectedDevices;
+    var devices = await native.FlutterBluePlus.instance.connectedDevices;
     var blueDevices =
         devices.map((native) => BluetoothDeviceFlutterBlue(native)).toList();
     // cache
