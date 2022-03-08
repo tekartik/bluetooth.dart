@@ -10,6 +10,8 @@ export 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart'
         // ignore: deprecated_member_use
         BluetoothOptions;
 
+export 'src/bluetooth_admin_manager_flutter_blue.dart'
+    show bluetoothAdminManagerFlutterBlue;
 export 'src/bluetooth_manager_flutter_blue.dart'
     show BluetoothManagerFlutterBlue, bluetoothManagerFlutterBlue;
 

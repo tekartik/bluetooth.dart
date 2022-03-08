@@ -29,7 +29,12 @@ dependencies:
       path: bluetooth_flutter
       ref: dart2_3
     version: '>=0.2.1'
-
+  tekartik_app_platform:
+    git:
+      url: https://github.com/tekartik/app_flutter_utils.dart
+      ref: dart2_3
+      path: app_platform
+    version: '>=0.1.0'
 dependency_overrides:
   crypto:
   uuid: '>=3.0.0-0'
