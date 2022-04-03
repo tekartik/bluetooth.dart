@@ -1,7 +1,7 @@
 import 'package:bluez/bluez.dart';
-import 'package:tekartik_common_utils/common_utils_import.dart';
 
 import 'bluetooth_manager_bluez.dart';
+import 'import.dart';
 import 'import_bluetooth.dart';
 
 abstract class BluetoothDeviceBluez extends BluetoothDevice {}

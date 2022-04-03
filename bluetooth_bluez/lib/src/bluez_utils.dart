@@ -1,7 +1,8 @@
 import 'package:bluez/bluez.dart';
 import 'package:tekartik_bluetooth/ble.dart';
 import 'package:tekartik_bluetooth/uuid.dart';
-import 'package:tekartik_common_utils/byte_utils.dart';
+
+import 'import.dart';
 
 /// Uuid conversion
 BlueZUUID bluezUuidFromUuid(Uuid128 uuid) {

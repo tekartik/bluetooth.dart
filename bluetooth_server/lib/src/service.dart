@@ -4,7 +4,8 @@ import 'package:tekartik_bluetooth/src/mixin.dart';
 //import 'package:tekartik_bluetooth_flutter/src/mixin.dart';
 import 'package:tekartik_bluetooth_server/bluetooth.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
-import 'package:tekartik_web_socket/web_socket.dart';
+
+import 'import.dart';
 
 class BluetoothServerService
     with BluetoothManagerMixin

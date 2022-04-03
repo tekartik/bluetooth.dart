@@ -4,7 +4,6 @@ import 'package:tekartik_bluetooth/uuid.dart';
 import 'package:tekartik_bluetooth_bluez/bluetooth_bluez.dart';
 import 'package:tekartik_bluetooth_bluez/src/bluez_utils.dart';
 import 'package:tekartik_bluetooth_bluez/src/scan_bluez.dart';
-import 'package:tekartik_common_utils/byte_utils.dart';
 
 import 'import.dart';
 import 'import_bluetooth.dart';

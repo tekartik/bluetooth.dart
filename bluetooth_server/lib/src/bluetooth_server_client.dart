@@ -5,8 +5,9 @@ import 'package:json_rpc_2/json_rpc_2.dart' as json_rpc;
 import 'package:tekartik_bluetooth/src/exception.dart';
 import 'package:tekartik_bluetooth_server/src/constant.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
-import 'package:tekartik_web_socket/web_socket.dart';
 import 'package:tekartik_web_socket_io/web_socket_io.dart';
+
+import 'import.dart';
 
 class ServerInfo {
   bool? isIOS;
@@ -27,25 +28,26 @@ class BluetoothServerClient {
     webSocketChannelClientFactory ??= webSocketChannelClientFactoryIo;
     var webSocketChannel = webSocketChannelClientFactory.connect<String>(url);
     var rpcClient = json_rpc.Client(webSocketChannel);
-    ServerInfo _serverInfo;
+    ServerInfo serverInfo;
     unawaited(rpcClient.listen());
     try {
-      var serverInfo = await rpcClient.sendRequest(methodGetServerInfo) as Map;
-      if (serverInfo[keyName] != serverInfoName) {
-        throw 'invalid name in $serverInfo';
+      var serverInfoMap =
+          await rpcClient.sendRequest(methodGetServerInfo) as Map;
+      if (serverInfoMap[keyName] != serverInfoName) {
+        throw 'invalid name in $serverInfoMap';
       }
-      var version = Version.parse(serverInfo[keyVersion] as String);
+      var version = Version.parse(serverInfoMap[keyVersion] as String);
       if (version < serverInfoMinVersion) {
         throw 'Bluetooth server version $version not supported, >=$serverInfoMinVersion expected';
       }
-      _serverInfo = ServerInfo()
-        ..isIOS = parseBool(serverInfo[keyIsIOS])
-        ..isAndroid = parseBool(serverInfo[keyIsAndroid]);
+      serverInfo = ServerInfo()
+        ..isIOS = parseBool(serverInfoMap[keyIsIOS])
+        ..isAndroid = parseBool(serverInfoMap[keyIsAndroid]);
     } catch (e) {
       await rpcClient.close();
       rethrow;
     }
-    return BluetoothServerClient._(rpcClient, _serverInfo);
+    return BluetoothServerClient._(rpcClient, serverInfo);
   }
 
   Future<T> sendRequest<T>(String method, dynamic param) async {
@@ -90,9 +92,9 @@ class BluetoothServerClient {
       }
     } else if (result is Map) {
       // print(result);
-      dynamic _rows = result['rows'];
-      if (_rows is List) {
-        var rows = _rows.cast<List>();
+      dynamic rawRows = result['rows'];
+      if (rawRows is List) {
+        var rows = rawRows.cast<List>();
         for (var row in rows) {
           for (var i = 0; i < row.length; i++) {
             dynamic value = row[i];
