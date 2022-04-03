@@ -1,3 +1,4 @@
+import 'package:tekartik_app_platform/app_platform.dart';
 import 'package:tekartik_bluetooth_bluez/bluetooth_bluez.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
 import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
@@ -14,9 +15,15 @@ void initWithBleWeb() {
 }
 
 void initWithFlutterBlue() {
-  initBluetoothManager = bluetoothAdminManagerFlutter;
+  if (platformContext.io?.isIOS ?? false) {
+    // ignore: avoid_print
+    print('iOS user flutter blue');
+    initBluetoothManager = bluetoothAdminManagerFlutterBlue;
+  } else {
+    initBluetoothManager = bluetoothAdminManagerFlutter;
+  }
   deviceBluetoothManager = bluetoothManagerFlutterBlue;
-  bluetoothAdminManagerFlutter
+  initBluetoothManager
       // ignore: deprecated_member_use
       .devSetOptions(BluetoothOptions()..logLevel = bluetoothLogLevelVerbose);
 }

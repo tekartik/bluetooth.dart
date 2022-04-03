@@ -1,6 +1,6 @@
-import 'package:flutter_blue/flutter_blue.dart';
-
 //export 'package:flutter_blue/flutter_blue.dart';
+import 'package:tekartik_bluetooth_flutter_blue/src/flutter_blue_import.dart';
+
 export 'package:tekartik_bluetooth/bluetooth.dart';
 export 'package:tekartik_bluetooth/bluetooth_state_service.dart';
 export 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart'
@@ -10,6 +10,8 @@ export 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart'
         // ignore: deprecated_member_use
         BluetoothOptions;
 
+export 'src/bluetooth_admin_manager_flutter_blue.dart'
+    show bluetoothAdminManagerFlutterBlue;
 export 'src/bluetooth_manager_flutter_blue.dart'
     show BluetoothManagerFlutterBlue, bluetoothManagerFlutterBlue;
 
@@ -17,13 +19,13 @@ class BluetoothFlutterBlue {
   static bool? _isSupported;
 
   static Future<bool> get _isSupportedReady async {
-    return _isSupported ??= await FlutterBlue.instance.isAvailable;
+    return _isSupported ??= await FlutterBluePlus.instance.isAvailable;
   }
 
   static Future<BluetoothState> get bluetoothState async {
     _isSupported ??= await _isSupportedReady;
     if (_isSupported!) {
-      return await FlutterBlue.instance.state.first;
+      return await FlutterBluePlus.instance.state.first;
     } else {
       return BluetoothState.unavailable;
     }

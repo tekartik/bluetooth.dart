@@ -1,5 +1,4 @@
-import 'package:flutter_blue/flutter_blue.dart' as native;
-
+import 'flutter_blue_import.dart' as native;
 import 'import_bluetooth.dart';
 
 class BluetoothDeviceIdFlutterBlue

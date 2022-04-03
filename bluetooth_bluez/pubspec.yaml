@@ -14,6 +14,7 @@ dependencies:
       ref: dart2_3
     version: '>=0.2.1'
   bluez:
+  dbus:
 
 dev_dependencies:
   lints: ^1.0.0

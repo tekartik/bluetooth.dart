@@ -1,4 +1,5 @@
-import 'package:flutter_blue/flutter_blue.dart' as fbl;
+import 'package:flutter_blue_plus/flutter_blue_plus.dart' as fbl;
+import 'package:tekartik_app_platform/app_platform.dart';
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/bluetooth_peripheral.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart';
@@ -20,6 +21,7 @@ void main() {
         write('Using bluez');
         initWithBluez();
       } else {
+        write('Using flutter blue');
         initWithFlutterBlue();
       }
     });
@@ -28,12 +30,15 @@ void main() {
     fail('fail');
   });
   */
-    item('Use flutter blue', () {
-      initWithFlutterBlue();
-    });
-    item('Use bluez', () {
-      initWithBluez();
-    });
+    if (platformContext.io?.isLinux ?? false) {
+      item('Use bluez', () {
+        initWithBluez();
+      });
+    } else {
+      item('Use flutter blue', () {
+        initWithFlutterBlue();
+      });
+    }
 
     menu('Bluetooth init', () {
       item('getInfo', () async {
@@ -90,12 +95,12 @@ void main() {
 
     menu('Flutter blue', () {
       item('Enable bluetooth', () async {
-        var state = await fbl.FlutterBlue.instance.state.first;
+        var state = await fbl.FlutterBluePlus.instance.state.first;
         write('state: $state');
       });
 
       item('Current state', () async {
-        var state = await fbl.FlutterBlue.instance.state.first;
+        var state = await fbl.FlutterBluePlus.instance.state.first;
         write('state: $state');
       });
     });

@@ -4,7 +4,8 @@ import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/src/mixin.dart'; // ignore: implementation_imports
 import 'package:tekartik_bluetooth_bluez/src/connection_bluez.dart';
 import 'package:tekartik_bluetooth_bluez/src/scan_bluez.dart';
-import 'package:tekartik_common_utils/common_utils_import.dart';
+
+import 'import.dart';
 
 abstract class BluetoothManagerBluez extends BluetoothManager
     implements BluetoothAdminManager {}

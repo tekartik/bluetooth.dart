@@ -1,8 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter_web_bluetooth/flutter_web_bluetooth.dart' as web;
 import 'package:tekartik_bluetooth_web/src/bluetooth_device_connection_web.dart';
 import 'package:tekartik_bluetooth_web/src/bluetooth_device_web.dart';
 import 'package:tekartik_bluetooth_web/src/scan_result_web.dart';
-import 'package:tekartik_common_utils/common_utils_import.dart';
 
 import 'import_bluetooth.dart';
 

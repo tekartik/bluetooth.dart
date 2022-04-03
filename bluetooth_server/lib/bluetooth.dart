@@ -4,7 +4,8 @@ import 'package:tekartik_bluetooth_server/src/bluetooth_server_client.dart';
 import 'package:tekartik_bluetooth_server/src/common_public.dart';
 import 'package:tekartik_bluetooth_server/src/service.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
-import 'package:tekartik_web_socket/web_socket.dart';
+
+import 'src/import.dart';
 
 const bluetoothServerUrlEnvKey = 'TEKARTIK_BLUETOOTH_SERVER_URL';
 const bluetoothServerPortEnvKey = 'TEKARTIK_BLUETOOTH_SERVER_PORT';

@@ -1,6 +1,6 @@
 import 'package:tekartik_bluetooth_server/src/bluetooth_server.dart';
 import 'package:tekartik_bluetooth_server/src/bluetooth_server_client.dart';
-import 'package:tekartik_web_socket/web_socket.dart';
+import 'package:tekartik_bluetooth_server/src/import.dart';
 import 'package:test/test.dart';
 
 void main() {

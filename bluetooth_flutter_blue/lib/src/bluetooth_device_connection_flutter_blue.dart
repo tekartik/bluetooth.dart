@@ -1,11 +1,12 @@
 import 'dart:typed_data';
 
-import 'package:flutter_blue/flutter_blue.dart' as native;
 import 'package:tekartik_bluetooth/ble.dart';
 import 'package:tekartik_bluetooth_flutter_blue/src/ble_flutter_blue.dart';
 import 'package:tekartik_bluetooth_flutter_blue/src/bluetooth_device_flutter_blue.dart';
 import 'package:tekartik_bluetooth_flutter_blue/src/import_bluetooth.dart';
 import 'package:tekartik_bluetooth_flutter_blue/utils/guid_utils.dart';
+
+import 'flutter_blue_import.dart' as native;
 
 BluetoothDeviceConnectionState connectionStateFromBluetoothDeviceState(
     native.BluetoothDeviceState state) {
