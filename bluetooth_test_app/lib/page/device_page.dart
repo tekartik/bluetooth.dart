@@ -2,10 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:tekartik_bluetooth/ble.dart';
-import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth_test_app/ble/app_ble.dart';
 import 'package:tekartik_bluetooth_test_app/import/common_import.dart';
+import 'package:tekartik_bluetooth_test_app/import/import_bluetooth.dart';
 import 'package:tekartik_bluetooth_test_app/page/ble_service_page.dart';
 
 class DevicePage extends StatefulWidget {
@@ -14,6 +13,7 @@ class DevicePage extends StatefulWidget {
   const DevicePage({Key? key, required this.deviceId}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _DevicePageState createState() => _DevicePageState();
 }
 

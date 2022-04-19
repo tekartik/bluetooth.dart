@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tekartik_app_platform/app_platform.dart';
-import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth_test_app/ble/app_ble.dart';
 import 'package:tekartik_bluetooth_test_app/page/device_page.dart';
 import 'package:tekartik_bluetooth_test_app/page/scan_page.dart';
 import 'package:tekartik_bluetooth_test_app/src/ble_setup.dart';
 
 import 'import/common_import.dart';
+import 'import/import_bluetooth.dart';
 import 'test_main.dart' as test_main;
 
 Future<void> main() async {
@@ -65,6 +65,7 @@ class MyHomePage extends StatefulWidget {
   final String? title;
 
   @override
+  // ignore: library_private_types_in_public_api
   _MyHomePageState createState() => _MyHomePageState();
 }
 
@@ -135,9 +136,11 @@ class _MyHomePageState extends State<MyHomePage> {
         return;
       }
     }
+    // ignore: use_build_context_synchronously
     var deviceId = await Navigator.of(context).push<BluetoothDeviceId>(
         MaterialPageRoute(builder: (_) => const ScanPage()));
     if (deviceId != null) {
+      // ignore: use_build_context_synchronously
       await Navigator.of(context).push<String>(
           MaterialPageRoute(builder: (_) => DevicePage(deviceId: deviceId)));
     }

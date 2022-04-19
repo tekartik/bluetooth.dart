@@ -1,14 +1,11 @@
 import 'package:flutter_blue_plus/flutter_blue_plus.dart' as fbl;
 import 'package:tekartik_app_platform/app_platform.dart';
-import 'package:tekartik_bluetooth/bluetooth_device.dart';
-import 'package:tekartik_bluetooth/bluetooth_peripheral.dart';
-import 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart';
 import 'package:tekartik_bluetooth_test_app/ble/app_ble.dart';
+import 'package:tekartik_bluetooth_test_app/import/common_import.dart';
 import 'package:tekartik_bluetooth_test_app/src/ble_setup.dart';
-import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_platform_io/context_io.dart';
-import 'package:tekartik_test_menu_flutter/test_menu_flutter.dart';
 
+import 'import/import_bluetooth.dart';
 import 'main.dart' as app_main;
 
 void main() {

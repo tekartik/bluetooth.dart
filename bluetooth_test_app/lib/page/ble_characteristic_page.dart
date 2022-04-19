@@ -2,16 +2,14 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:tekartik_bluetooth/ble.dart';
-import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
+import 'package:tekartik_bluetooth_test_app/import/common_import.dart';
+import 'package:tekartik_bluetooth_test_app/import/import_bluetooth.dart';
 import 'package:tekartik_bluetooth_test_app/page/screen_mixin.dart';
 import 'package:tekartik_bluetooth_test_app/utils/app_utils.dart';
 import 'package:tekartik_bluetooth_test_app/view/app_button.dart';
 import 'package:tekartik_bluetooth_test_app/view/app_text_field.dart';
 import 'package:tekartik_bluetooth_test_app/view/body_container.dart';
 import 'package:tekartik_bluetooth_test_app/view/body_padding.dart';
-import 'package:tekartik_common_utils/byte_utils.dart';
-import 'package:tekartik_common_utils/hex_utils.dart';
 
 /// Decode a BigInt from bytes in big-endian encoding.
 BigInt decodeBigInt(List<int> bytes) {
@@ -56,6 +54,7 @@ class BleCharacteristicPage extends StatefulWidget {
       : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _BleCharacteristicPageState createState() => _BleCharacteristicPageState();
 }
 
@@ -197,6 +196,7 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage>
                                   .withValue(asUint8List(data));
                               try {
                                 await connection!.writeCharacteristic(bcv);
+                                // ignore: use_build_context_synchronously
                                 snackInfo(context, 'Write $bcv success');
                               } catch (e) {
                                 snackError(context, 'Write $bcv error $e');

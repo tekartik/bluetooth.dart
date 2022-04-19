@@ -1,7 +1,6 @@
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:tekartik_app_platform/app_platform.dart';
 import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
-import 'package:tekartik_common_utils/common_utils_import.dart';
 
 class BluetoothAdminManagerFlutterBlue implements BluetoothAdminManager {
   @override

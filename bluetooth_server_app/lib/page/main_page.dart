@@ -2,10 +2,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:tekartik_bluetooth_server/src/constant.dart';
 import 'package:tekartik_bluetooth_server_app/src/app.dart';
+import 'package:tekartik_bluetooth_server_app/src/import.dart';
 import 'package:tekartik_bluetooth_server_app/src/prefs.dart';
-import 'package:tekartik_common_utils/common_utils_import.dart';
 
 class BluetoothServerHomePage extends StatefulWidget {
   const BluetoothServerHomePage({Key? key, this.title}) : super(key: key);
@@ -22,6 +21,7 @@ class BluetoothServerHomePage extends StatefulWidget {
   final String? title;
 
   @override
+  // ignore: library_private_types_in_public_api
   _BluetoothServerHomePageState createState() =>
       _BluetoothServerHomePageState();
 }

@@ -1,6 +1,6 @@
-import 'package:tekartik_bluetooth_server/bluetooth_server.dart';
 import 'package:tekartik_bluetooth_server_app/src/prefs.dart';
-import 'package:tekartik_common_utils/common_utils_import.dart';
+
+import 'import.dart';
 
 Version _appVersion = Version(0, 1, 0);
 

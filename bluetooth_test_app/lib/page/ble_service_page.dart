@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tekartik_bluetooth/ble.dart';
-import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
+import 'package:tekartik_bluetooth_test_app/import/import_bluetooth.dart';
 import 'package:tekartik_bluetooth_test_app/page/ble_characteristic_page.dart';
 import 'package:tekartik_bluetooth_test_app/utils/app_utils.dart';
 
@@ -18,6 +17,7 @@ class BleServicePage extends StatefulWidget {
       : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _BleServicePageState createState() => _BleServicePageState();
 }
 

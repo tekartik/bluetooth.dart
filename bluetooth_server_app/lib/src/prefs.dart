@@ -1,8 +1,8 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 import 'package:sqflite/sqlite_api.dart';
-import 'package:tekartik_bluetooth_server/bluetooth_server.dart';
-import 'package:tekartik_common_utils/common_utils_import.dart';
+
+import 'import.dart';
 
 class Prefs {
   Prefs({DatabaseFactory? databaseFactory, String? dbName})

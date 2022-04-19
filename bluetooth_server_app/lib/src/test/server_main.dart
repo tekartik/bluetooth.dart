@@ -1,5 +1,4 @@
-import 'package:tekartik_bluetooth_server/bluetooth_server.dart';
-import 'package:tekartik_test_menu/test.dart';
+import 'package:tekartik_bluetooth_server_app/src/import.dart';
 
 int defaultPort = bluetoothServerDefaultPort;
 
