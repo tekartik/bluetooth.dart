@@ -1,8 +1,8 @@
+import 'package:synchronized/synchronized.dart';
 import 'package:tekartik_bluetooth/bluetooth_service.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_flutter_peripheral.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
 import 'package:tekartik_bluetooth_flutter/src/plugin.dart';
-import 'package:tekartik_common_utils/common_utils_import.dart';
 
 export 'package:tekartik_bluetooth/bluetooth.dart';
 export 'package:tekartik_bluetooth/bluetooth_state_service.dart';

@@ -1,5 +1,4 @@
-import 'package:tekartik_bluetooth/ble.dart';
-import 'package:tekartik_bluetooth/uuid.dart';
+import 'package:tekartik_bluetooth_test_app/import/import_bluetooth.dart';
 
 String uuidText(Uuid128? uuid, {Uuid128? parent}) {
   if (uuid == null) {

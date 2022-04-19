@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth_flutter_blue/src/bluetooth_device_connection_flutter_blue.dart';
-import 'package:tekartik_common_utils/common_utils_import.dart';
 
 import 'bluetooth_device_flutter_blue.dart';
 import 'flutter_blue_import.dart' as native;

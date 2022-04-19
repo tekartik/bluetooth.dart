@@ -13,6 +13,7 @@ class ScanPage extends StatefulWidget {
   const ScanPage({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _ScanPageState createState() => _ScanPageState();
 }
 
@@ -158,6 +159,7 @@ class _ScanPageState extends State<ScanPage> {
     var info = await initBluetoothManager.getAdminInfo();
     if (!info.hasBluetoothBle!) {
       const snackBar = SnackBar(content: Text('Bluetooth BLE not supported'));
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
     } else if (!info.isBluetoothEnabled!) {
@@ -170,6 +172,7 @@ class _ScanPageState extends State<ScanPage> {
     if (!info.isBluetoothEnabled!) {
       const snackBar =
           SnackBar(content: Text('Please enable Bluetooth on your device'));
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
     }
@@ -179,6 +182,7 @@ class _ScanPageState extends State<ScanPage> {
         const snackBar = SnackBar(
             content: Text(
                 'Please enable location services to scan for nearby devices'));
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         return;
       }

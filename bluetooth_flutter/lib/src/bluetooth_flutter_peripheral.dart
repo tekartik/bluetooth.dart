@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:tekartik_bluetooth/bluetooth_peripheral.dart';
 import 'package:tekartik_bluetooth/uuid.dart';
 import 'package:tekartik_bluetooth_flutter/src/plugin.dart';
-import 'package:tekartik_common_utils/common_utils_import.dart';
 
 class BluetoothFlutterPeripheral {
   final List<BluetoothGattService>? services;
