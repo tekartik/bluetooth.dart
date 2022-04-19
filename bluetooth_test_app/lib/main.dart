@@ -74,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     if (_scanOnStart) {
       _scanOnStart = false;
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
         if (mounted) {
           await _scan(context);
         }
