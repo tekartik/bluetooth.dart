@@ -1,7 +1,5 @@
 import 'package:tekartik_bluetooth/src/constant.dart';
 
-import 'constant.dart';
-
 ///
 /// internal options.
 ///

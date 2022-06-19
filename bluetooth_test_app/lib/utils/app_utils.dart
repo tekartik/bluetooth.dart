@@ -24,7 +24,7 @@ String propertiesAsText(int properties) {
   var canNotify = checkFlag(blePropertyNotify);
 
   var sb = StringBuffer();
-  void _addPropertyText(String text, bool test) {
+  void addPropertyText(String text, bool test) {
     if (test) {
       if (sb.isNotEmpty) {
         sb.write(', ');
@@ -33,14 +33,14 @@ String propertiesAsText(int properties) {
     }
   }
 
-  _addPropertyText('read', canRead);
-  _addPropertyText('write', canWrite);
-  _addPropertyText('notify', canNotify);
-  _addPropertyText('indicate', checkFlag(blePropertyIndicate));
-  _addPropertyText('broadcast', checkFlag(blePropertyBroadcast));
-  _addPropertyText('writeNoResponse', checkFlag(blePropertyWriteNoResponse));
-  _addPropertyText('signedWrite', checkFlag(blePropertySignedWrite));
-  _addPropertyText('extendedProps', checkFlag(blePropertyExtendedProps));
+  addPropertyText('read', canRead);
+  addPropertyText('write', canWrite);
+  addPropertyText('notify', canNotify);
+  addPropertyText('indicate', checkFlag(blePropertyIndicate));
+  addPropertyText('broadcast', checkFlag(blePropertyBroadcast));
+  addPropertyText('writeNoResponse', checkFlag(blePropertyWriteNoResponse));
+  addPropertyText('signedWrite', checkFlag(blePropertySignedWrite));
+  addPropertyText('extendedProps', checkFlag(blePropertyExtendedProps));
 
   return sb.toString();
 }
