@@ -143,7 +143,6 @@ abstract class BleBluetoothCharacteristicValue {
   /// Best usage is to use [bc] and [value]
   factory BleBluetoothCharacteristicValue(
       {
-
       /// Needed if bc is null
       BleBluetoothService? service,
 
