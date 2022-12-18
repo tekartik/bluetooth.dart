@@ -98,6 +98,7 @@ abstract class BleBluetoothCharacteristic {
   Uuid128 get uuid;
 
   int get properties;
+
   Set<BleCharacteristicPropertyFlag> get propertyFlags;
 
   List<BleBluetoothDescriptor> get descriptors;
@@ -105,6 +106,7 @@ abstract class BleBluetoothCharacteristic {
   /// We allow setting descriptors by implementation
   @protected
   set descriptors(List<BleBluetoothDescriptor> descriptor);
+
   factory BleBluetoothCharacteristic(
           {required BleBluetoothService service,
           required Uuid128 uuid,
@@ -143,6 +145,7 @@ abstract class BleBluetoothCharacteristicValue {
   /// Best usage is to use [bc] and [value]
   factory BleBluetoothCharacteristicValue(
       {
+
       /// Needed if bc is null
       BleBluetoothService? service,
 
@@ -193,6 +196,7 @@ mixin BleBluetoothCharacteristicMixin implements BleBluetoothCharacteristic {
   }
 
   Set<BleCharacteristicPropertyFlag>? _propertyFlags;
+
   @override
   Set<BleCharacteristicPropertyFlag> get propertyFlags =>
       _propertyFlags ??= propertiesValueToPropertyFlags(properties);
