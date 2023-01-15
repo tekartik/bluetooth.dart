@@ -138,7 +138,7 @@ mixin BluetoothManagerMixin implements BluetoothManager {
     androidRequestCode ??= requestCode ?? requestCodeEnableBluetoothDefault;
     // Using a request code means explaining version
 
-    await invokeMethod('enableBluetooth',
+    await invokeMethod<void>('enableBluetooth',
         <String, dynamic>{'androidRequestCode': androidRequestCode});
   }
 
@@ -150,7 +150,7 @@ mixin BluetoothManagerMixin implements BluetoothManager {
 
   @override
   Future disable() async {
-    await invokeMethod('disableBluetooth');
+    await invokeMethod<void>('disableBluetooth');
   }
 
   Future invokeStopScan() async {
