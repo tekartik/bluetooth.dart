@@ -62,13 +62,14 @@ class BluetoothServerClient {
   }
 
   static void fixResult<T>(T result) {
-    bool shouldFix(dynamic value) {
+    bool shouldFix(Object? value) {
       return value is List && (value is! Uint8List);
     }
 
-    Uint8List fix(dynamic value) {
+    // only if shouldFix is called
+    Uint8List fix(Object? value) {
       var list = <int?>[];
-      for (var item in value) {
+      for (var item in (value as List)) {
         list.add(parseInt(item));
       }
       // devPrint('fix: $value ${value.runtimeType}');
