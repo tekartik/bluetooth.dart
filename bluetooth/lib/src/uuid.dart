@@ -122,7 +122,7 @@ class Uuid128 {
   @override
   bool operator ==(other) {
     if (other is Uuid128) {
-      return const ListEquality().equals(_value, other._value);
+      return const ListEquality<int>().equals(_value, other._value);
     }
     return false;
   }
