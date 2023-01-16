@@ -1,4 +1,4 @@
-// ignore_for_file: implementation_imports
+// ignore_for_file: implementation_imports, depend_on_referenced_packages
 import 'package:tekartik_bluetooth/bluetooth.dart';
 import 'package:tekartik_bluetooth/src/mixin.dart';
 import 'package:tekartik_bluetooth_flutter/src/mixin.dart';

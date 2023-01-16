@@ -98,7 +98,7 @@ class BluetoothDeviceConnectionFlutterImpl
     await lock.synchronized(() async {
       var map = _baseMap();
 
-      var completer = Completer();
+      var completer = Completer<void>();
       if (connectionState?.state == null ||
           connectionState?.state == androidBleConnectionStateDisconnected) {
         // devPrint('Not connected');
@@ -149,7 +149,7 @@ class BluetoothDeviceConnectionFlutterImpl
   Future discoverServices() async {
     var map = _baseMap();
 
-    var completer = Completer();
+    var completer = Completer<void>();
     var subscription = controller.stream
         .where((call) => call.method == 'remoteDiscoverServicesResult')
         .map((call) => asModel(asMap(call.arguments) ?? {}))
@@ -215,7 +215,7 @@ class BluetoothDeviceConnectionFlutterImpl
     await lock.synchronized(() async {
       var map = _baseMap();
 
-      var completer = Completer();
+      var completer = Completer<void>();
       if (connectionState?.state == androidBleConnectionStateConnected) {
         // devPrint('Already connected');
       }

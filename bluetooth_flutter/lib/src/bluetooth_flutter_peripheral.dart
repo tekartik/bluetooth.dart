@@ -10,8 +10,8 @@ class BluetoothFlutterPeripheral {
 
   BluetoothFlutterPeripheral({this.services, this.deviceName});
 
-  Map toMap() {
-    var map = {};
+  Map<String, Object?> toMap() {
+    var map = <String, Object?>{};
     if (services != null) {
       map['services'] =
           services!.map((service) => service.toMap()).toList(growable: false);
