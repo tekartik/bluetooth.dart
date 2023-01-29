@@ -1,7 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
 
 export 'package:tekartik_bluetooth/ble.dart';
-export 'package:tekartik_bluetooth/ble.dart';
 export 'package:tekartik_bluetooth/bluetooth.dart';
 export 'package:tekartik_bluetooth/bluetooth_device.dart';
 export 'package:tekartik_bluetooth/bluetooth_peripheral.dart';
