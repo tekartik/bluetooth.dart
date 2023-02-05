@@ -30,12 +30,12 @@ mixin MethodCallMixin implements MethodCall {
 }
 
 class EventChannel {
-  final _stream = BehaviorSubject();
+  final _stream = BehaviorSubject<Object?>();
   final String name;
 
   EventChannel(this.name);
 
-  Stream<dynamic> receiveBroadcastStream() => _stream;
+  Stream<Object?> receiveBroadcastStream() => _stream;
 }
 
 mixin EventChannelMixin implements EventChannel {
@@ -43,7 +43,7 @@ mixin EventChannelMixin implements EventChannel {
   String get name => throw UnimplementedError();
 
   @override
-  Stream receiveBroadcastStream() {
+  Stream<Object?> receiveBroadcastStream() {
     throw UnimplementedError();
   }
 }

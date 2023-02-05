@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
 import 'package:tekartik_bluetooth_server/src/bluetooth_server.dart';
 import 'package:tekartik_bluetooth_server_flutter/src/service_flutter.dart';
-import 'package:tekartik_web_socket/web_socket.dart';
+import 'package:tekartik_web_socket/web_socket.dart'; // ignore: depend_on_referenced_packages
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

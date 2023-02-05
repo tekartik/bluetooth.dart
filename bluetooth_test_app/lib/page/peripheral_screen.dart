@@ -18,7 +18,7 @@ class _PeripheralScreenState extends State<PeripheralScreen> {
 }
 
 Future<void> goToPeripheralScreen(BuildContext context) async {
-  await Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+  await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) {
     return const PeripheralScreen();
   }));
 }

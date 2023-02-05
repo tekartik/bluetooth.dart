@@ -44,7 +44,7 @@ class EventChannelFlutter implements EventChannel {
   String get name => _native.name;
 
   @override
-  Stream<dynamic> receiveBroadcastStream() => _native.receiveBroadcastStream();
+  Stream<Object?> receiveBroadcastStream() => _native.receiveBroadcastStream();
 }
 
 class BluetoothPeripheralFlutterPlugin implements BluetoothPeripheralPlugin {

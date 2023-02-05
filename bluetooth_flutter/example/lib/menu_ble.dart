@@ -206,7 +206,7 @@ void menuBle(
     void _menu(String name) {
       StreamSubscription? scanSubscription;
       BluetoothDeviceConnection? deviceConnection;
-      StreamSubscription? stateChangeSubscription;
+      // StreamSubscription? stateChangeSubscription;
 
       void _cancelScanSubscription() {
         scanSubscription?.cancel();
@@ -239,8 +239,8 @@ void menuBle(
           var deviceId = deviceIds[index];
 
           _cancelScanSubscription();
-          stateChangeSubscription?.cancel();
           /*
+          stateChangeSubscription?.cancel();
           stateChangeSubscription = device.state.listen((state) {
             write('onStateChanged_$name $state');
           }, onDone: () {
