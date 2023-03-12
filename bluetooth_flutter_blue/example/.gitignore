@@ -74,3 +74,6 @@ build/
 
 # Symlinked manually
 Pods
+
+# not needed
+.metadata

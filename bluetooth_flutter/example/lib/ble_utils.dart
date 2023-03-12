@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
