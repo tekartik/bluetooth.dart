@@ -2,6 +2,7 @@ import 'package:bluez/bluez.dart';
 import 'package:dbus/dbus.dart';
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/src/mixin.dart'; // ignore: implementation_imports
+import 'package:tekartik_bluetooth/uuid.dart';
 import 'package:tekartik_bluetooth_bluez/src/connection_bluez.dart';
 import 'package:tekartik_bluetooth_bluez/src/scan_bluez.dart';
 
@@ -50,7 +51,8 @@ class BluetoothManagerBluezImpl
   bool? get isIOS => false;
 
   @override
-  Stream<ScanResult> scan({ScanMode scanMode = ScanMode.lowLatency}) {
+  Stream<ScanResult> scan(
+      {ScanMode scanMode = ScanMode.lowLatency, List<Uuid128>? withServices}) {
     scanController?.close();
 
     scanController = StreamController<ScanResult>(onCancel: () {

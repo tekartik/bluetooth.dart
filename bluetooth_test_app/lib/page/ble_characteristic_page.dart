@@ -66,6 +66,7 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage>
   TextEditingController? textController;
   TextEditingController? base64Controller;
 
+  StreamSubscription? notifySubscription;
   bool checkFlag(int flag) {
     return ((widget.appBleCharacteristic?.characteristic.properties ?? 0) &
             flag) !=
@@ -79,6 +80,7 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage>
     base64Controller?.dispose();
     valueSubject.close();
     notifyValueSubject.close();
+    notifySubscription?.cancel();
     super.dispose();
   }
 
@@ -129,7 +131,7 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage>
                           ],
                         ));
                   }),
-                if (canRead || canIndicate)
+                if (canRead)
                   StreamBuilder<_ValueState?>(
                       initialData: valueSubject.valueOrNull,
                       stream: valueSubject,
@@ -172,6 +174,33 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage>
                                         ? '$valuePretty\n$valueInt'
                                         : '[null]')));
                       }),
+                if (canIndicate)
+                  ListTile(
+                      leading: AppButton(
+                          text: 'Subscribe',
+                          onPressed: () {
+                            () async {
+                              try {
+                                var characteristic =
+                                    widget.appBleCharacteristic!.characteristic;
+                                notifySubscription?.cancel().unawait();
+
+                                notifySubscription = connection!
+                                    .onCharacteristicValueChanged(
+                                        characteristic)
+                                    .listen((event) {
+                                  // ignore: avoid_print
+                                  print('received: $event ${event.value}');
+                                });
+                                await connection.registerCharacteristic(
+                                    characteristic, true);
+                                // print('onCharacteristicValueChanged');
+                              } catch (e) {
+                                // ignore: avoid_print
+                                print('error $e registerCharacteristic');
+                              }
+                            }();
+                          })),
                 if (canWrite) ...[
                   const SizedBox(
                     height: 16,

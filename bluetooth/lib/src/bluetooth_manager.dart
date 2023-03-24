@@ -1,6 +1,7 @@
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/bluetooth_state_service.dart';
 import 'package:tekartik_bluetooth/src/options.dart';
+import 'package:tekartik_bluetooth/uuid.dart';
 
 class BluetoothPermissionsOptions {
   final int? androidRequestCode;
@@ -50,7 +51,8 @@ abstract class BluetoothManager
 
         /// Might be removed in the future...
         BluetoothStateService {
-  Stream<ScanResult> scan({ScanMode scanMode = ScanMode.lowLatency});
+  Stream<ScanResult> scan(
+      {ScanMode scanMode = ScanMode.lowLatency, List<Uuid128>? withServices});
 
   /// Good to call on start.
   ///

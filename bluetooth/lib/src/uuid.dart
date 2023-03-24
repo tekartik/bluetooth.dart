@@ -6,6 +6,10 @@ import 'package:tekartik_bluetooth/utils/byte_utils.dart';
 import 'package:tekartik_common_utils/hex_utils.dart';
 import 'package:uuid/uuid.dart';
 
+/// https://www.real-world-systems.com/docs/GUIDs.html
+/// It does not appear to be an RFC4122 compliant UUID: The first character
+/// after the second - in your UUID is a d. However valid UUIDs have the
+/// version number at this position which must be one of 1, 3, 4, 5.
 class Uuid16 {
   final Uint8List bytes;
   String? _text;
@@ -80,8 +84,8 @@ class Uuid128 {
 
   Uuid128(String text)
       : _text = text,
-        _value = Uint8List.fromList(
-            Uuid.parse(text, validationMode: ValidationMode.nonStrict));
+        _value = Uint8List.fromList(Uuid.parse(text,
+            validate: false, validationMode: ValidationMode.nonStrict));
 
   /// 16 bytes
   Uint8List get bytes => _value;

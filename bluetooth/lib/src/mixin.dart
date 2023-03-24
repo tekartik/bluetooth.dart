@@ -2,6 +2,7 @@ import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/src/common/mixin_model.dart';
 import 'package:tekartik_bluetooth/src/constant.dart';
 import 'package:tekartik_bluetooth/src/options.dart';
+import 'package:tekartik_bluetooth/uuid.dart';
 import 'package:tekartik_common_utils/map_utils.dart';
 
 import 'bluetooth_device.dart';
@@ -160,7 +161,8 @@ mixin BluetoothManagerMixin implements BluetoothManager {
   StreamController<ScanResult>? scanController;
 
   @override
-  Stream<ScanResult> scan({ScanMode scanMode = ScanMode.lowLatency}) {
+  Stream<ScanResult> scan(
+      {ScanMode scanMode = ScanMode.lowLatency, List<Uuid128>? withServices}) {
     var param = StartScanParam()..androidScanMode.v = scanMode.value;
     var map = param.toMap();
 
