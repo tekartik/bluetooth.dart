@@ -16,20 +16,20 @@
 
 package com.tekartik.bluetooth_flutter.peripheral;
 
+import static com.tekartik.bluetooth_flutter.BluetoothFlutterPlugin.TAG;
+
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.os.Build;
 import android.os.ParcelUuid;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import androidx.annotation.RequiresApi;
-
-import static com.tekartik.bluetooth_flutter.BluetoothFlutterPlugin.TAG;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class Service {

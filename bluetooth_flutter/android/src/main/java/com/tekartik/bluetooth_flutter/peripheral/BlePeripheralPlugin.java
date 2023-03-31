@@ -1,5 +1,9 @@
 package com.tekartik.bluetooth_flutter.peripheral;
 
+import static com.tekartik.bluetooth_flutter.BfluPluginError.errorCodeNoPeripheral;
+import static com.tekartik.bluetooth_flutter.BfluPluginError.errorOtherError;
+import static com.tekartik.bluetooth_flutter.BfluPluginError.errorUnsupported;
+
 import android.os.Build;
 import android.util.Log;
 
@@ -9,10 +13,6 @@ import com.tekartik.bluetooth_flutter.PluginRequest;
 
 import java.util.Map;
 import java.util.UUID;
-
-import static com.tekartik.bluetooth_flutter.BfluPluginError.errorCodeNoPeripheral;
-import static com.tekartik.bluetooth_flutter.BfluPluginError.errorOtherError;
-import static com.tekartik.bluetooth_flutter.BfluPluginError.errorUnsupported;
 
 public class BlePeripheralPlugin {
     public static final String TAG = "BfluPluginPral";
@@ -92,7 +92,6 @@ public class BlePeripheralPlugin {
     public void sendError(PluginRequest request, int errorCode) {
         bfluPlugin.sendError(request, errorCode);
     }
-
 
 
     public void onPeripheralSetCharacteristicValue(PluginRequest request) {

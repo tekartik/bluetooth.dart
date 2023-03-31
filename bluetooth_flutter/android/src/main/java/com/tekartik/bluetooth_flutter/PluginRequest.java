@@ -27,9 +27,9 @@ public class PluginRequest {
     Long getArgumentLong(String key) {
         Object argument = call.argument(key);
         if (argument instanceof Long) {
-            return (Long)argument;
+            return (Long) argument;
         } else if (argument instanceof Integer) {
-            return ((Integer)argument).longValue();
+            return ((Integer) argument).longValue();
         }
         return null;
     }
@@ -37,9 +37,9 @@ public class PluginRequest {
     public Integer getArgumentInt(String key) {
         Object argument = call.argument(key);
         if (argument instanceof Integer) {
-            return (Integer)argument;
+            return (Integer) argument;
         } else if (argument instanceof Long) {
-            return ((Long)argument).intValue();
+            return ((Long) argument).intValue();
         }
         return null;
     }
@@ -55,7 +55,7 @@ public class PluginRequest {
     public Boolean getArgumentBool(String key) {
         Object argument = call.argument(key);
         if (argument instanceof Boolean) {
-            return (Boolean)argument;
+            return (Boolean) argument;
         }
         return null;
     }

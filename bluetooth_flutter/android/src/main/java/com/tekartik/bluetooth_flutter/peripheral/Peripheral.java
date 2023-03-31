@@ -16,6 +16,9 @@
 
 package com.tekartik.bluetooth_flutter.peripheral;
 
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
+import static com.tekartik.bluetooth_flutter.BfluPluginError.errorCodeStartFailure;
+
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -34,6 +37,8 @@ import android.content.Context;
 import android.os.ParcelUuid;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
+
 import com.tekartik.bluetooth_flutter.BluetoothFlutterPlugin;
 import com.tekartik.bluetooth_flutter.PluginRequest;
 
@@ -44,11 +49,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import androidx.annotation.RequiresApi;
-
-import static android.os.Build.VERSION_CODES.LOLLIPOP;
-import static com.tekartik.bluetooth_flutter.BfluPluginError.errorCodeStartFailure;
 
 @RequiresApi(LOLLIPOP)
 public class Peripheral {

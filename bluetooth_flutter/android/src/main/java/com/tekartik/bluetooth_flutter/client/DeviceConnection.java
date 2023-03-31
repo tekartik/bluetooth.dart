@@ -1,5 +1,14 @@
 package com.tekartik.bluetooth_flutter.client;
 
+import static android.bluetooth.BluetoothGatt.GATT_SUCCESS;
+import static com.tekartik.bluetooth_flutter.BluetoothFlutterPlugin.TAG;
+import static com.tekartik.bluetooth_flutter.Constant.CHARACTERISTIC_UUID_KEY;
+import static com.tekartik.bluetooth_flutter.Constant.CONNECTION_ID_KEY;
+import static com.tekartik.bluetooth_flutter.Constant.SERVICE_UUID_KEY;
+import static com.tekartik.bluetooth_flutter.Constant.STATE_KEY;
+import static com.tekartik.bluetooth_flutter.Constant.STATUS_KEY;
+import static com.tekartik.bluetooth_flutter.common.ModelUtils.VALUE_KEY;
+
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
@@ -18,15 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import static android.bluetooth.BluetoothGatt.GATT_SUCCESS;
-import static com.tekartik.bluetooth_flutter.BluetoothFlutterPlugin.TAG;
-import static com.tekartik.bluetooth_flutter.Constant.CHARACTERISTIC_UUID_KEY;
-import static com.tekartik.bluetooth_flutter.Constant.CONNECTION_ID_KEY;
-import static com.tekartik.bluetooth_flutter.Constant.SERVICE_UUID_KEY;
-import static com.tekartik.bluetooth_flutter.Constant.STATE_KEY;
-import static com.tekartik.bluetooth_flutter.Constant.STATUS_KEY;
-import static com.tekartik.bluetooth_flutter.common.ModelUtils.VALUE_KEY;
 
 public class DeviceConnection {
     final int connectionId;
