@@ -229,6 +229,7 @@ public class Peripheral {
             addServiceData.next();
         }
 
+        @SuppressLint("MissingPermission")
         @Override
         public void onCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset,
                                                 BluetoothGattCharacteristic characteristic) {
@@ -251,6 +252,7 @@ public class Peripheral {
             Log.v(TAG, "Notification sent. Status: " + status);
         }
 
+        @SuppressLint("MissingPermission")
         @Override
         public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId,
                                                  BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded,
@@ -287,6 +289,7 @@ public class Peripheral {
             }
         }
 
+        @SuppressLint("MissingPermission")
         @Override
         public void onDescriptorReadRequest(BluetoothDevice device, int requestId,
                                             int offset, BluetoothGattDescriptor descriptor) {
@@ -303,6 +306,7 @@ public class Peripheral {
                     descriptor.getValue());
         }
 
+        @SuppressLint("MissingPermission")
         @Override
         public void onDescriptorWriteRequest(BluetoothDevice device, int requestId,
                                              BluetoothGattDescriptor descriptor, boolean preparedWrite, boolean responseNeeded,
@@ -427,6 +431,7 @@ public class Peripheral {
         return true;
     }
 
+    @SuppressLint("MissingPermission")
     private boolean startAdvertisingWhenServicesAdded(PluginRequest request) {
 
         AdvertiseData.Builder builder =
@@ -476,6 +481,7 @@ public class Peripheral {
         Peripheral.sendError(request, errorCode);
     }
 
+    @SuppressLint("MissingPermission")
     public void stop() {
 
         try {
@@ -497,6 +503,7 @@ public class Peripheral {
     }
 
 
+    @SuppressLint("MissingPermission")
     public void sendNotificationToDevices(BluetoothGattCharacteristic characteristic) {
         boolean indicate = (characteristic.getProperties()
                 & BluetoothGattCharacteristic.PROPERTY_INDICATE)

@@ -1,5 +1,6 @@
 package com.tekartik.bluetooth_flutter.peripheral;
 
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.os.Build;
 import android.util.Log;
@@ -19,7 +20,6 @@ public class Characteristic {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public Characteristic(BluetoothGattCharacteristic bluetoothGattCharacteristic, String description) {
         this.bluetoothGattCharacteristic = bluetoothGattCharacteristic;
-
 
         bluetoothGattCharacteristic.addDescriptor(
                 Peripheral.getClientCharacteristicConfigurationDescriptor());

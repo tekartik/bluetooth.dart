@@ -1,6 +1,11 @@
 package com.tekartik.bluetooth_flutter;
 
+import static com.tekartik.bluetooth_flutter.BfluPluginError.errorCodeNoPeripheral;
+import static com.tekartik.bluetooth_flutter.BfluPluginError.errorOtherError;
+import static com.tekartik.bluetooth_flutter.BfluPluginError.errorUnsupported;
+
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -35,10 +40,6 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
-
-import static com.tekartik.bluetooth_flutter.BfluPluginError.errorCodeNoPeripheral;
-import static com.tekartik.bluetooth_flutter.BfluPluginError.errorOtherError;
-import static com.tekartik.bluetooth_flutter.BfluPluginError.errorUnsupported;
 
 /**
  * BluetoothFlutterPlugin
@@ -112,6 +113,7 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
     private void createHandler() {
         handler = new Handler();
     }
+
     private void onAttachedToEngine(Context applicationContext, BinaryMessenger messenger) {
         this.mApplicationContext = applicationContext;
 
@@ -328,8 +330,7 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
         } else if (method.equals("getInfo")) {
             // deprecated
             onGetInfo(request);
-        }
-        else if (method.equals("getAdminInfo")) {
+        } else if (method.equals("getAdminInfo")) {
             onGetAdminInfo(request);
         } else if (method.equals("getConnectedDevices")) {
             onGetConnectedDevices(request);
@@ -393,6 +394,7 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
         request.result.success(null);
     }
 
+    @SuppressLint("MissingPermission")
     private void onEnableBluetooth(PluginRequest request) {
         if (!bluetoothAdapter.isEnabled()) {
             Integer requestCode = request.call.argument("androidRequestCode");
@@ -531,7 +533,7 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
         for (String permission : permissions) {
             int grantResult = ContextCompat.checkSelfPermission(activityBinding.getActivity(), permission);
             if (hasVerboseLevel()) {
-                Log.i(TAG, "permission " + permission + ": "+ (
+                Log.i(TAG, "permission " + permission + ": " + (
                         (grantResult == PackageManager.PERMISSION_GRANTED) ? "ok" : ("error (" + grantResult + ")")));
             }
             if (grantResult
