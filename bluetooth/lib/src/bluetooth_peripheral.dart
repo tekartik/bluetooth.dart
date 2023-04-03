@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:tekartik_bluetooth/ble.dart';
 import 'package:tekartik_bluetooth/bluetooth_service.dart';
 import 'package:tekartik_bluetooth/uuid.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
@@ -147,6 +148,32 @@ class BluetoothGattService {
   @override
   String toString() {
     return '$uuid';
+  }
+}
+
+/// find helpers.
+extension BluetoothGattServiceExtension on BluetoothGattService {
+  BluetoothGattCharacteristic? findGattCharacteristic(
+      BleBluetoothCharacteristic bc) {
+    for (var characteristic in characteristics) {
+      if (bc.uuid == characteristic.uuid) {
+        return characteristic;
+      }
+    }
+    return null;
+  }
+}
+
+/// find helpers.
+extension BluetoothGattServiceListExtension on Iterable<BluetoothGattService> {
+  BluetoothGattCharacteristic? findGattCharacteristic(
+      BleBluetoothCharacteristic bc) {
+    for (var service in this) {
+      if (service.uuid == bc.service.uuid) {
+        return service.findGattCharacteristic(bc);
+      }
+    }
+    return null;
   }
 }
 
