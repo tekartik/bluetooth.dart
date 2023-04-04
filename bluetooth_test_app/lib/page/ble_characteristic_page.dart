@@ -47,6 +47,15 @@ class _ValueState {
   Uint8List? value;
 }
 
+class _NotifyState {
+  dynamic exception;
+  List<Uint8List>? values;
+
+  @override
+  String toString() =>
+      values == null ? 'error $exception' : 'values ${values!.length}';
+}
+
 class BleCharacteristicPage extends StatefulWidget {
   final AppBleCharacteristic? appBleCharacteristic;
 
@@ -61,7 +70,7 @@ class BleCharacteristicPage extends StatefulWidget {
 class _BleCharacteristicPageState extends State<BleCharacteristicPage>
     with AppScreenMixin {
   final valueSubject = BehaviorSubject<_ValueState?>();
-  final notifyValueSubject = BehaviorSubject<_ValueState?>();
+  final notifyValueSubject = BehaviorSubject<_NotifyState?>();
   TextEditingController? intController;
   TextEditingController? textController;
   TextEditingController? base64Controller;
@@ -174,7 +183,7 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage>
                                         ? '$valuePretty\n$valueInt'
                                         : '[null]')));
                       }),
-                if (canIndicate)
+                if (canIndicate || canNotify)
                   ListTile(
                       leading: AppButton(
                           text: 'Subscribe',
@@ -191,6 +200,15 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage>
                                     .listen((event) {
                                   // ignore: avoid_print
                                   print('received: $event ${event.value}');
+                                  var list =
+                                      notifyValueSubject.valueOrNull?.values ??
+                                          <Uint8List>[];
+                                  list.insert(0, event.value);
+                                  if (list.length > 100) {
+                                    list = list.sublist(0, 100);
+                                  }
+                                  notifyValueSubject
+                                      .add(_NotifyState()..values = list);
                                 });
                                 await connection.registerCharacteristic(
                                     characteristic, true);
@@ -258,73 +276,38 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage>
                     height: 16,
                   ),
                 ],
-                if (canNotify)
-                  StreamBuilder<_ValueState?>(
+                if (canIndicate || canNotify)
+                  StreamBuilder<_NotifyState?>(
                       initialData: notifyValueSubject.valueOrNull,
-                      stream: valueSubject,
+                      stream: notifyValueSubject,
                       builder: (context, snapshot) {
                         var state = snapshot.data;
-                        var value = state?.value;
-                        String? valuePretty;
-                        BigInt? valueInt;
-                        if (value != null) {
+                        var values = state?.values;
+                        if (state == null) {
+                          return Container();
+                        }
+                        if (state.exception != null) {
+                          return ListTile(
+                              title: const Text('Error'),
+                              subtitle: Text(state.exception.toString()));
+                        }
+                        var list = values ?? <Uint8List>[];
+                        return Column(
+                            children: list.map((value) {
+                          String? valuePretty;
+                          BigInt? valueInt;
                           try {
                             valuePretty = hexPretty(value);
                           } catch (_) {}
                           try {
                             valueInt = decodeBigInt(value);
                           } catch (_) {}
-                        }
-                        return Column(
-                          children: [
-                            ListTile(
-                                title: Row(
-                                  children: [
-                                    AppButton(
-                                        text: 'Register',
-                                        onPressed: () {
-                                          () async {
-                                            try {
-                                              var bcv = await connection!
-                                                  .readCharacteristic(widget
-                                                      .appBleCharacteristic!
-                                                      .characteristic);
-                                              valueSubject.add(_ValueState()
-                                                ..value = bcv.value);
-                                            } catch (e) {
-                                              valueSubject.add(
-                                                  _ValueState()..exception = e);
-                                            }
-                                          }();
-                                        }),
-                                    AppButton(
-                                        text: 'Unregister',
-                                        onPressed: () {
-                                          () async {
-                                            try {
-                                              var bcv = await connection!
-                                                  .readCharacteristic(widget
-                                                      .appBleCharacteristic!
-                                                      .characteristic);
-                                              valueSubject.add(_ValueState()
-                                                ..value = bcv.value);
-                                            } catch (e) {
-                                              valueSubject.add(
-                                                  _ValueState()..exception = e);
-                                            }
-                                          }();
-                                        }),
-                                  ],
-                                ),
-                                subtitle: state == null
-                                    ? null
-                                    : ((state.exception != null)
-                                        ? Text(state.exception.toString())
-                                        : Text(value != null
-                                            ? '$valuePretty\n$valueInt'
-                                            : '[null]'))),
-                          ],
-                        );
+                          return ListTile(
+                              title: Text('$valuePretty'),
+                              subtitle: valueInt == null
+                                  ? null
+                                  : Text(valueInt.toString()));
+                        }).toList());
                       }),
               ],
             ),

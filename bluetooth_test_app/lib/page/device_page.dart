@@ -179,6 +179,19 @@ class _DevicePageState extends State<DevicePage> {
       await connection!.discoverServices();
       // devPrint('getting services');
       var services = await connection!.getServices();
+      // Dump services
+      for (var service in services) {
+        print('Service uuid ${service.uuid}');
+        for (var characteristic in service.characteristics) {
+          print('  Characteristic ${characteristic.uuid}');
+          print('            prop ${characteristic.properties}');
+          print('            flags ${characteristic.propertyFlags}');
+          for (var descriptor in characteristic.descriptors) {
+            print('    Descriptor ${descriptor.uuid}');
+          }
+        }
+      }
+      // devPrint('services: $services');
       _deviceServices.add(services);
     } catch (e) {
       print(e);

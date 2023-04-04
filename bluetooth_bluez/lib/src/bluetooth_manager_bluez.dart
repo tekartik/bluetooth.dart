@@ -33,6 +33,16 @@ class BluetoothManagerBluezImpl
   }
 
   @override
+  Future<BluetoothAdminInfo> getAdminInfo() async {
+    await _ready();
+    return BluetoothAdminInfoImpl(
+        hasBluetooth: true,
+        hasBluetoothBle: true,
+        isBluetoothEnabled: bluezClient.adapters.isNotEmpty);
+  }
+
+  // Old
+  @override
   Future<BluetoothInfo> getInfo() async {
     await _ready();
     return BluetoothInfoImpl(
@@ -43,11 +53,9 @@ class BluetoothManagerBluezImpl
   }
 
   @override
-  // TODO: implement isAndroid
   bool? get isAndroid => false;
 
   @override
-  // TODO: implement isIOS
   bool? get isIOS => false;
 
   @override
