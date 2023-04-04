@@ -125,12 +125,41 @@ abstract class BleBluetoothCharacteristic {
   int get shortNumber;
 }
 
+/// Helper
+extension BleBluetoothCharacteristicExtension on BleBluetoothCharacteristic {
+  BleBluetoothCharacteristicRef get ref =>
+      BleBluetoothCharacteristicRef(service.uuid, uuid);
+}
+
 /// Descriptor definition
 class BleBluetoothDescriptor {
   final BleBluetoothCharacteristic characteristic;
   final Uuid128 uuid;
 
   BleBluetoothDescriptor({required this.characteristic, required this.uuid});
+}
+
+/// Common characteristic reference implementation
+class BleBluetoothCharacteristicRef {
+  /// Service reference.
+  final Uuid128 service;
+
+  /// Characteristic reference.
+  final Uuid128 characteristic;
+
+  BleBluetoothCharacteristicRef(this.service, this.characteristic);
+
+  @override
+  int get hashCode => service.hashCode + characteristic.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    if (other is BleBluetoothCharacteristicRef) {
+      return (other.service == service) &&
+          (other.characteristic == characteristic);
+    }
+    return false;
+  }
 }
 
 abstract class BleBluetoothCharacteristicValue {

@@ -287,14 +287,15 @@ class BluetoothPeripheral {
     });
   }
 
-  //TODO check if value should be passed here...
   Future notifyCharacteristicValue(
       {required Uuid128 serviceUuid,
-      required Uuid128? characteristicUuid}) async {
+      required Uuid128? characteristicUuid,
+      Uint8List? value}) async {
     await _bluetoothFlutterPlugin!.methodChannel
         .invokeMethod('peripheralNotifyCharacteristicValue', {
       'service': serviceUuid.toString(),
       'characteristic': characteristicUuid.toString(),
+      'value': value,
     });
   }
 

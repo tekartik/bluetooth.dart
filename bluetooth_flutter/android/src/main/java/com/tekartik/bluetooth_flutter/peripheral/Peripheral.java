@@ -37,6 +37,7 @@ import android.content.Context;
 import android.os.ParcelUuid;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.tekartik.bluetooth_flutter.BluetoothFlutterPlugin;
@@ -613,20 +614,26 @@ public class Peripheral {
         return characteristic.getValue();
     }
 
-    public boolean sendNotificationToDevices(UUID serviceUuid, UUID characteristicUuid) {
+    @SuppressLint({"MissingPermission", "NewApi"})
+    public boolean sendNotificationToDevices(UUID serviceUuid, UUID characteristicUuid, @Nullable byte[] value) {
         Characteristic characteristic = getCharacteristic(serviceUuid, characteristicUuid);
         if (characteristic == null) {
             Log.e(TAG, "Service " + serviceUuid + " Characteristic " + characteristicUuid + " not found");
             return false;
-
+        }
+        // Handle null value
+        if (value == null) {
+            value = new byte[0];
         }
         boolean indicate = (characteristic.bluetoothGattCharacteristic.getProperties()
                 & BluetoothGattCharacteristic.PROPERTY_INDICATE)
                 == BluetoothGattCharacteristic.PROPERTY_INDICATE;
+        characteristic.bluetoothGattCharacteristic.setValue(value);
         for (BluetoothDevice device : mBluetoothDevices) {
             // true for indication (acknowledge) and false for notification (unacknowledge).
             //TODO handle failure (??? what should i do if one fails)
             mGattServer.notifyCharacteristicChanged(device, characteristic.bluetoothGattCharacteristic, indicate);
+            // mGattServer.notifyCharacteristicChanged(device, characteristic.bluetoothGattCharacteristic, indicate, value);
         }
         return true;
     }

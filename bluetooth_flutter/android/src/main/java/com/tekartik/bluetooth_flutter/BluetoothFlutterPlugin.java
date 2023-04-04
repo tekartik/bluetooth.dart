@@ -1,7 +1,6 @@
 package com.tekartik.bluetooth_flutter;
 
 import static com.tekartik.bluetooth_flutter.BfluPluginError.errorCodeNoPeripheral;
-import static com.tekartik.bluetooth_flutter.BfluPluginError.errorOtherError;
 import static com.tekartik.bluetooth_flutter.BfluPluginError.errorUnsupported;
 
 import android.Manifest;
@@ -265,6 +264,7 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
         }
     }
 
+    @SuppressLint("MissingPermission")
     public void onRequest(PluginRequest request) {
         if (hasVerboseLevel()) {
             Log.d(TAG, "onRequest(" + request.call.method + ", " + request.call.arguments + ")");
@@ -298,7 +298,7 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
         } else if (method.equals("peripheralGetCharacteristicValue")) {
             onPeripheralGetCharacteristicValue(request);
         } else if (method.equals("peripheralNotifyCharacteristicValue")) {
-            onPeripheralNotifyCharacteristicValue(request);
+            getPeripheralPlugin().onPeripheralNotifyCharacteristicValue(request);
 
         } else if (method.equals("stopAdvertising")) {
             Log.i(TAG, "stopAdvertising");
@@ -348,7 +348,7 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
     }
 
     private void onGetConnectedDevices(PluginRequest request) {
-        List<BluetoothDevice> devices = bluetoothManager.getConnectedDevices(BluetoothProfile.GATT);
+        @SuppressLint("MissingPermission") List<BluetoothDevice> devices = bluetoothManager.getConnectedDevices(BluetoothProfile.GATT);
         List<Map<String, Object>> list = new ArrayList<>();
         if (devices != null) {
             for (BluetoothDevice androidBluetoothDevice : devices) {
@@ -443,28 +443,6 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
 
             byte[] value = getPeripheral().getValue(serviceUuid, characteristicUuid);
             request.sendSuccess(value);
-
-        } else {
-            sendError(request, errorUnsupported);
-        }
-    }
-
-    private void onPeripheralNotifyCharacteristicValue(PluginRequest request) {
-        if (hasVerboseLevel()) {
-            Log.i(TAG, "peripheralNotifyCharacteristicValue");
-        }
-        if (getPeripheral() == null) {
-            sendError(request, errorCodeNoPeripheral);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-
-            UUID serviceUuid = UUID.fromString((String) request.call.argument("service"));
-            UUID characteristicUuid = UUID.fromString((String) request.call.argument("characteristic"));
-
-            if (getPeripheral().sendNotificationToDevices(serviceUuid, characteristicUuid)) {
-                request.sendSuccess();
-            } else {
-                sendError(request, errorOtherError);
-            }
 
         } else {
             sendError(request, errorUnsupported);

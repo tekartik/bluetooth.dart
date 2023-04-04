@@ -115,4 +115,29 @@ public class BlePeripheralPlugin {
             sendError(request, errorUnsupported);
         }
     }
+
+
+    public void onPeripheralNotifyCharacteristicValue(PluginRequest request) {
+        if (hasVerboseLevel()) {
+            Log.i(TAG, "peripheralNotifyCharacteristicValue");
+        }
+        if (getPeripheral() == null) {
+            sendError(request, errorCodeNoPeripheral);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            UUID serviceUuid = UUID.fromString((String) request.call.argument("service"));
+            UUID characteristicUuid = UUID.fromString((String) request.call.argument("characteristic"));
+            byte[] value = request.call.argument("value");
+
+            if (getPeripheral().sendNotificationToDevices(serviceUuid, characteristicUuid, value)) {
+                request.sendSuccess();
+            } else {
+                sendError(request, errorOtherError);
+            }
+
+        } else {
+            sendError(request, errorUnsupported);
+        }
+    }
+
 }

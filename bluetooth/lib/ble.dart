@@ -4,5 +4,7 @@ export 'src/ble.dart'
         BleBluetoothCharacteristic,
         BleBluetoothService,
         BleBluetoothCharacteristicValue,
+        BleBluetoothCharacteristicRef,
+        BleBluetoothCharacteristicExtension,
         BleBluetoothDescriptor;
 export 'src/constant.dart';
