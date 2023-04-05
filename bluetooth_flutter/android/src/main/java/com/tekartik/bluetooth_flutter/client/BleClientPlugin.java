@@ -72,7 +72,6 @@ public class BleClientPlugin {
         // parameter to false.
         // sendError(request, errorUnsupported);
         // New request, connect and add gattServer to Map
-        BluetoothGatt gattServer;
         int connectionId = newConnectionId();
         DeviceConnection connection = new DeviceConnection(this, connectionId, device);
         connections.put(connectionId, connection);

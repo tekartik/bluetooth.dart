@@ -116,29 +116,11 @@ public class Peripheral {
             }
             this.services.addAll(services);
         }
-        //TODO for now include battery
-        // this.services.add(mCurrentService);
-
-        //Log.i(TAG, "init3");
-        mAdvSettings = new AdvertiseSettings.Builder()
-                .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
-                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM)
-                .setConnectable(true)
-                .setTimeout(0)
-                .build();
 
         if (deviceName != null) {
             mBluetoothAdapter.setName(deviceName);
         }
-        mAdvScanResponse = new AdvertiseData.Builder()
-                .setIncludeDeviceName(true)
-                //.addServiceUuid(new ParcelUuid(UUID.randomUUID()))
-                .build();
-
-
-        //Log.i(TAG, "inited");
         return true;
-
     }
 
     class AddServiceData {
@@ -261,8 +243,8 @@ public class Peripheral {
                                                  int offset, byte[] value) {
             Log.v(TAG, "Characteristic Write request: " + Arrays.toString(value));
             // Don't call super here...
-            // super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite,
-            //        responseNeeded, offset, value);
+            super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite,
+                    responseNeeded, offset, value);
             //
 
             // Always response true
@@ -361,7 +343,7 @@ public class Peripheral {
     };
 
     @SuppressLint("MissingPermission")
-    public boolean start(final PluginRequest request) {
+    public boolean startAdvertising(final PluginRequest request) {
         Log.i(TAG, "start");
 
         mAdvCallback = new AdvertiseCallback() {
@@ -444,15 +426,15 @@ public class Peripheral {
         // .addServiceUuid(mCurrentService.getServiceUUID())
 
 
+        Boolean includeDeviceName = request.call.argument("includeDeviceName");
+        AdvertiseData.Builder advertiseDataBuilder = new AdvertiseData.Builder().setIncludeDeviceName(Boolean.TRUE.equals(includeDeviceName));
         List<Map> list = request.call.argument("services");
         if (list != null) {
             for (Map item : list) {
                 String uuidText = (String) item.get("uuid");
                 UUID uuid = UUID.fromString(uuidText);
                 ParcelUuid parcelUuid = new ParcelUuid(uuid);
-                // builder.addServiceUuid(parcelUuid)
-//                        .addServiceData(parcelUuid, new byte[]{1, 2, 3, 4})
-                ;
+                advertiseDataBuilder = advertiseDataBuilder.addServiceUuid(parcelUuid);
             }
         }
         // Use ericson
@@ -460,6 +442,15 @@ public class Peripheral {
 
         mAdvData = builder.build();
 
+        //Log.i(TAG, "init3");
+        mAdvSettings = new AdvertiseSettings.Builder()
+                .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
+                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM)
+                .setConnectable(true)
+                .setTimeout(0)
+                .build();
+
+        mAdvScanResponse = advertiseDataBuilder.build();
 
         // Log.i(TAG, "#3");
         if (mBluetoothAdapter.isMultipleAdvertisementSupported()) {
@@ -512,6 +503,7 @@ public class Peripheral {
                 & BluetoothGattCharacteristic.PROPERTY_INDICATE)
                 == BluetoothGattCharacteristic.PROPERTY_INDICATE;
         for (BluetoothDevice device : mBluetoothDevices) {
+            Log.d(TAG, "sending " + characteristic + " to " + device + " confirm " + indicate);
             mGattServer.notifyCharacteristicChanged(device, characteristic, indicate);
         }
     }

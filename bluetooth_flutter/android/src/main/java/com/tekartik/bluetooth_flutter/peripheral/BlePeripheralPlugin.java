@@ -32,7 +32,9 @@ public class BlePeripheralPlugin {
             PeripheralDefinition definition = Utils.peripheralDefinitionFromMap((Map) request.call.arguments);
             Peripheral newPeripheral = new Peripheral(bfluPlugin);
             Log.d(TAG, definition.services.toString());
-            if (newPeripheral.init(definition.services, (String) request.call.argument("deviceName"))) {
+            String deviceName = (String) request.call.argument("deviceName");
+
+            if (newPeripheral.init(definition.services, deviceName)) {
                 Log.i(TAG, "init success");
                 setPeripheral(newPeripheral);
                 request.sendSuccess();
@@ -65,7 +67,7 @@ public class BlePeripheralPlugin {
                     return;
                 }
             }
-            if (!getPeripheral().start(request)) {
+            if (!getPeripheral().startAdvertising(request)) {
                 sendError(request, BfluPluginError.errorCodeNotEnabled);
             }
 

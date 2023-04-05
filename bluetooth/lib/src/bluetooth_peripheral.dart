@@ -189,9 +189,10 @@ class AdvertiseDataService {
 }
 
 class AdvertiseData {
+  final bool includeDeviceName;
   final List<AdvertiseDataService>? services;
 
-  AdvertiseData({this.services});
+  AdvertiseData({this.services, this.includeDeviceName = true});
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{};
@@ -199,9 +200,15 @@ class AdvertiseData {
       map['services'] =
           services!.map((service) => service.toMap()).toList(growable: false);
     }
+    if (includeDeviceName) {
+      map['includeDeviceName'] = true;
+    }
     // devPrint(map);
     return map;
   }
+
+  @override
+  String toString() => toMap().toString();
 }
 
 class BluetoothPeripheralWriteCharacteristicEvent {
