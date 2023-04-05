@@ -37,7 +37,7 @@ abstract class BluetoothManagerWeb extends BluetoothManager
       [BluetoothRequestDeviceOptionsWeb? options]);
 }
 
-var debugBluetoothManagerWeb = false;
+bool debugBluetoothManagerWeb = false;
 
 class BluetoothManagerWebImpl
     with BluetoothManagerMixin, BluetoothAdminManagerMixin

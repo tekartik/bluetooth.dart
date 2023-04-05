@@ -45,7 +45,7 @@ mixin BleBluetoothServiceMixin implements BleBluetoothService {
   int get hashCode => uuid.hashCode;
 
   @override
-  bool operator ==(other) {
+  bool operator ==(Object other) {
     if (other is BleBluetoothService) {
       return (other.uuid == uuid);
     }
@@ -216,7 +216,7 @@ mixin BleBluetoothCharacteristicMixin implements BleBluetoothCharacteristic {
   int get hashCode => uuid.hashCode;
 
   @override
-  bool operator ==(other) {
+  bool operator ==(Object other) {
     if (other is BleBluetoothCharacteristicMixin) {
       return (other.service == service) && (other.uuid == uuid);
     }

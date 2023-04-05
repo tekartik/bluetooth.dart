@@ -89,7 +89,7 @@ class _BluezCharacteristic {
 }
 
 class _BluezService {
-  var connected = false;
+  bool connected = false;
   final BlueZGattService gattService;
   late BleBluetoothService service;
 
@@ -237,9 +237,8 @@ class BluetoothDeviceConnectionBluezImpl extends BluetoothDeviceConnectionBluez
 
   @override
   Stream<BluetoothDeviceConnectionState> get onConnectionState {
-    _connectionStateController ??= StreamController.broadcast(onListen: () {
-      _checkState();
-    });
+    _connectionStateController ??=
+        StreamController.broadcast(onListen: _checkState);
     return _connectionStateController!.stream;
   }
 
@@ -282,7 +281,7 @@ class BluetoothDeviceConnectionBluezImpl extends BluetoothDeviceConnectionBluez
 
   final _initLock = Lock();
 
-  var expConnectProfile = false;
+  bool expConnectProfile = false;
 
   /// Never throws
   Future<void> _initService(BleBluetoothService service) async {

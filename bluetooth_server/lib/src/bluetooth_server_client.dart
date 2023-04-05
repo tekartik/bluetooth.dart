@@ -34,11 +34,12 @@ class BluetoothServerClient {
       var serverInfoMap =
           await rpcClient.sendRequest(methodGetServerInfo) as Map;
       if (serverInfoMap[keyName] != serverInfoName) {
-        throw 'invalid name in $serverInfoMap';
+        throw StateError('invalid name in $serverInfoMap');
       }
       var version = Version.parse(serverInfoMap[keyVersion] as String);
       if (version < serverInfoMinVersion) {
-        throw 'Bluetooth server version $version not supported, >=$serverInfoMinVersion expected';
+        throw StateError(
+            'Bluetooth server version $version not supported, >=$serverInfoMinVersion expected');
       }
       serverInfo = ServerInfo()
         ..isIOS = parseBool(serverInfoMap[keyIsIOS])
@@ -69,7 +70,7 @@ class BluetoothServerClient {
     // only if shouldFix is called
     Uint8List fix(Object? value) {
       var list = <int?>[];
-      for (var item in (value as List)) {
+      for (var item in value as List) {
         list.add(parseInt(item));
       }
       // devPrint('fix: $value ${value.runtimeType}');

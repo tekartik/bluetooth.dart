@@ -11,9 +11,9 @@ import 'import.dart';
 abstract class BluetoothManagerBluez extends BluetoothManager
     implements BluetoothAdminManager {}
 
-var debugBluetoothManagerBluez = false;
-var systemBus = DBusClient.system();
-var bluezClient = BlueZClient(bus: systemBus);
+bool debugBluetoothManagerBluez = false;
+DBusClient systemBus = DBusClient.system();
+BlueZClient bluezClient = BlueZClient(bus: systemBus);
 
 class BluetoothManagerBluezImpl
     with BluetoothManagerMixin, BluetoothAdminManagerMixin

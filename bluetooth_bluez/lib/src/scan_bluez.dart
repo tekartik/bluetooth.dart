@@ -63,7 +63,7 @@ class ScanServicesBluez {
 
   final _scanLock = Lock();
 
-  var isScanning = false;
+  bool isScanning = false;
 
   final _lastScanData = <BluetoothDeviceId, ScanResultBluez>{};
 
@@ -108,9 +108,7 @@ class ScanServicesBluez {
       }
 
       addDevices(bluezClient.devices);
-      addedSubscription = bluezClient.deviceAdded.listen((device) {
-        addDevice(device);
-      });
+      addedSubscription = bluezClient.deviceAdded.listen(addDevice);
       removedSubscription = bluezClient.deviceRemoved.listen((device) {
         //data.removeDevice(device.address);
         // resultController.add(data);

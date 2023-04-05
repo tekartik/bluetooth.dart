@@ -1,14 +1,14 @@
 export 'src/bluetooth_manager.dart'
     show
-        BluetoothManager,
         BluetoothAdminManager,
-        BluetoothServiceInvokable,
-        BluetoothPermissionsOptions;
+        BluetoothManager,
+        BluetoothPermissionsOptions,
+        BluetoothServiceInvokable;
 export 'src/device_connection.dart'
     show
+        BluetoothDeviceConnection,
         BluetoothDeviceConnectionState,
-        bluetoothDeviceConnectionStateDisconnecting,
-        bluetoothDeviceConnectionStateConnecting,
         bluetoothDeviceConnectionStateConnected,
+        bluetoothDeviceConnectionStateConnecting,
         bluetoothDeviceConnectionStateDisconnected,
-        BluetoothDeviceConnection;
+        bluetoothDeviceConnectionStateDisconnecting;
