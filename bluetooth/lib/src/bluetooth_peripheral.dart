@@ -238,7 +238,7 @@ class BluetoothPeripheral {
     //assert(_isSupported, 'call bluetoothState first');
 
     await _bluetoothFlutterPlugin!.methodChannel
-        .invokeMethod('stopAdvertising', null);
+        .invokeMethod('peripheralStopAdvertising', null);
   }
 
   BluetoothPeripheral(

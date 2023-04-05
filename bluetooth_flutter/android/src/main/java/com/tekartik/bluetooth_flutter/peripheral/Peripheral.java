@@ -152,6 +152,7 @@ public class Peripheral {
             this.services = services;
         }
 
+        @SuppressLint("MissingPermission")
         void next() {
             index++;
             if (index == services.size()) {
@@ -359,6 +360,7 @@ public class Peripheral {
         }
     };
 
+    @SuppressLint("MissingPermission")
     public boolean start(final PluginRequest request) {
         Log.i(TAG, "start");
 
@@ -510,31 +512,15 @@ public class Peripheral {
                 & BluetoothGattCharacteristic.PROPERTY_INDICATE)
                 == BluetoothGattCharacteristic.PROPERTY_INDICATE;
         for (BluetoothDevice device : mBluetoothDevices) {
-            // true for indication (acknowledge) and false for notification (unacknowledge).
             mGattServer.notifyCharacteristicChanged(device, characteristic, indicate);
         }
     }
 
 
     private void updateConnectedDevicesStatus() {
-    /*
-    final String message = getString(R.string.status_devicesConnected) + " "
-        + mBluetoothManager.getConnectedDevices(BluetoothGattServer.GATT).size();
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        mConnectionStatus.setText(message);
-      }
-    });
-    */
-        //TODO
         Log.d(TAG, "TODO notify updateConnectedDevicesStatus()");
     }
 
-
-    ///////////////////////
-    ////// Bluetooth //////
-    ///////////////////////
     public static BluetoothGattDescriptor getClientCharacteristicConfigurationDescriptor() {
         BluetoothGattDescriptor descriptor = new BluetoothGattDescriptor(
                 CLIENT_CHARACTERISTIC_CONFIGURATION_UUID,
@@ -595,8 +581,6 @@ public class Peripheral {
     }
 
     public boolean setValue(UUID serviceUuid, UUID characteristicUuid, byte[] value) {
-
-
         Characteristic characteristic = getCharacteristic(serviceUuid, characteristicUuid);
         if (characteristic == null) {
             Log.e(TAG, "Service " + serviceUuid + " Characteristic " + characteristicUuid + " not found");
@@ -614,7 +598,8 @@ public class Peripheral {
         return characteristic.getValue();
     }
 
-    @SuppressLint({"MissingPermission", "NewApi"})
+
+    @SuppressLint("MissingPermission")
     public boolean sendNotificationToDevices(UUID serviceUuid, UUID characteristicUuid, @Nullable byte[] value) {
         Characteristic characteristic = getCharacteristic(serviceUuid, characteristicUuid);
         if (characteristic == null) {
@@ -625,16 +610,9 @@ public class Peripheral {
         if (value == null) {
             value = new byte[0];
         }
-        boolean indicate = (characteristic.bluetoothGattCharacteristic.getProperties()
-                & BluetoothGattCharacteristic.PROPERTY_INDICATE)
-                == BluetoothGattCharacteristic.PROPERTY_INDICATE;
         characteristic.bluetoothGattCharacteristic.setValue(value);
-        for (BluetoothDevice device : mBluetoothDevices) {
-            // true for indication (acknowledge) and false for notification (unacknowledge).
-            //TODO handle failure (??? what should i do if one fails)
-            mGattServer.notifyCharacteristicChanged(device, characteristic.bluetoothGattCharacteristic, indicate);
-            // mGattServer.notifyCharacteristicChanged(device, characteristic.bluetoothGattCharacteristic, indicate, value);
-        }
+        sendNotificationToDevices(characteristic.bluetoothGattCharacteristic);
+
         return true;
     }
 

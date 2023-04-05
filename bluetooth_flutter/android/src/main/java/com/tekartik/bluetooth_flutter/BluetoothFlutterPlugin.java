@@ -1,6 +1,5 @@
 package com.tekartik.bluetooth_flutter;
 
-import static com.tekartik.bluetooth_flutter.BfluPluginError.errorCodeNoPeripheral;
 import static com.tekartik.bluetooth_flutter.BfluPluginError.errorUnsupported;
 
 import android.Manifest;
@@ -28,7 +27,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
@@ -288,20 +286,16 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
             }
         } else if (method.equals("peripheralStartAdvertising")) {
             getPeripheralPlugin().onStartAdvertising(request);
-
         } else if (method.equals("peripheralInit")) {
             getPeripheralPlugin().onInitPeripheral(request);
-
         } else if (method.equals("peripheralSetCharacteristicValue")) {
             getPeripheralPlugin().onPeripheralSetCharacteristicValue(request);
-
         } else if (method.equals("peripheralGetCharacteristicValue")) {
-            onPeripheralGetCharacteristicValue(request);
+            getPeripheralPlugin().onPeripheralGetCharacteristicValue(request);
         } else if (method.equals("peripheralNotifyCharacteristicValue")) {
             getPeripheralPlugin().onPeripheralNotifyCharacteristicValue(request);
-
-        } else if (method.equals("stopAdvertising")) {
-            Log.i(TAG, "stopAdvertising");
+        } else if (method.equals("peripheralStopAdvertising")) {
+            Log.i(TAG, "peripheralStopAdvertising");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 if (getPeripheral() != null) {
                     getPeripheral().stop();
@@ -429,25 +423,6 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
         }
     }
 
-
-    private void onPeripheralGetCharacteristicValue(PluginRequest request) {
-        if (hasVerboseLevel()) {
-            Log.i(TAG, "peripheralGetCharacteristicValue");
-        }
-        if (getPeripheral() == null) {
-            sendError(request, errorCodeNoPeripheral);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-
-            UUID serviceUuid = UUID.fromString((String) request.call.argument("service"));
-            UUID characteristicUuid = UUID.fromString((String) request.call.argument("characteristic"));
-
-            byte[] value = getPeripheral().getValue(serviceUuid, characteristicUuid);
-            request.sendSuccess(value);
-
-        } else {
-            sendError(request, errorUnsupported);
-        }
-    }
 
     public void sendError(PluginRequest request, int errorCode) {
         if (hasVerboseLevel()) {

@@ -48,7 +48,6 @@ public class BlePeripheralPlugin {
         }
     }
 
-
     public void onStartAdvertising(PluginRequest request) {
         if (hasVerboseLevel()) {
             Log.i(TAG, "startAdvertising");
@@ -93,6 +92,25 @@ public class BlePeripheralPlugin {
         bfluPlugin.sendError(request, errorCode);
     }
 
+
+    public void onPeripheralGetCharacteristicValue(PluginRequest request) {
+        if (hasVerboseLevel()) {
+            Log.i(TAG, "peripheralGetCharacteristicValue");
+        }
+        if (getPeripheral() == null) {
+            sendError(request, errorCodeNoPeripheral);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            UUID serviceUuid = UUID.fromString((String) request.call.argument("service"));
+            UUID characteristicUuid = UUID.fromString((String) request.call.argument("characteristic"));
+
+            byte[] value = getPeripheral().getValue(serviceUuid, characteristicUuid);
+            request.sendSuccess(value);
+
+        } else {
+            sendError(request, errorUnsupported);
+        }
+    }
 
     public void onPeripheralSetCharacteristicValue(PluginRequest request) {
         if (hasVerboseLevel()) {
