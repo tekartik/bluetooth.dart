@@ -16,15 +16,15 @@
 
 package com.tekartik.bluetooth_flutter.peripheral;
 
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
+
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.os.ParcelUuid;
 
-import java.util.UUID;
-
 import androidx.annotation.RequiresApi;
 
-import static android.os.Build.VERSION_CODES.LOLLIPOP;
+import java.util.UUID;
 
 
 @RequiresApi(LOLLIPOP)

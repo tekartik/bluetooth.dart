@@ -1,11 +1,13 @@
 export 'src/bluetooth_peripheral.dart'
     show
-        BluetoothPeripheral,
+        AdvertiseData,
+        AdvertiseDataService,
         BluetoothGattCharacteristic,
         BluetoothGattService,
-        BluetoothPeripheralWriteCharacteristicEvent,
-        AdvertiseData,
+        BluetoothGattServiceExtension,
+        BluetoothGattServiceListExtension,
+        BluetoothPeripheral,
         BluetoothPeripheralPlugin,
+        BluetoothPeripheralWriteCharacteristicEvent,
         BluetoothSlaveConnection,
-        AdvertiseDataService,
         bluetoothPluginNamespace;

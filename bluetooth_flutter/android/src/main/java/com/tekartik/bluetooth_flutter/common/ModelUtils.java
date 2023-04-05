@@ -16,6 +16,7 @@ public class ModelUtils {
     static public String CHARACTERISTICS_KEY = "characteristics"; // list
     static public String DESCRIPTORS_KEY = "descriptors"; // list
     static public String VALUE_KEY = "value"; // byte[]
+
     static public List<Map<String, Object>> servicesDefToMap(List<BluetoothGattService> services) {
         if (services == null) {
             return null;
@@ -29,6 +30,7 @@ public class ModelUtils {
         }
         return list;
     }
+
     static public Map<String, Object> serviceDefToMap(BluetoothGattService service) {
         if (service == null) {
             return null;

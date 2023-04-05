@@ -85,8 +85,8 @@ class BluetoothServerContext implements BluetoothContext {
   static Future<BluetoothServerContext?> connect(String url,
       {WebSocketChannelClientFactory? webSocketChannelClientFactory}) async {
     var context = BluetoothServerContext();
-    var client = await (context.connectClient(url,
-        webSocketChannelClientFactory: webSocketChannelClientFactory));
+    var client = await context.connectClient(url,
+        webSocketChannelClientFactory: webSocketChannelClientFactory);
     if (client == null) {
       var port = parseBluetoothServerUrlPort(url);
       print('''

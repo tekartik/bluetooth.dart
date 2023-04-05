@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:bluez/bluez.dart';
 import 'package:tekartik_bluetooth/ble.dart';
 import 'package:tekartik_bluetooth/uuid.dart';
@@ -10,6 +12,36 @@ import 'import_bluetooth.dart';
 
 abstract class BluetoothDeviceConnectionBluez
     extends BluetoothDeviceConnection {}
+
+class _BluezCharacteristicChangeController {
+  final BlueZGattCharacteristic characteristic;
+  late StreamController<Uint8List> _controller;
+  StreamSubscription? _subscription;
+
+  Stream<Uint8List> get stream => _controller.stream;
+
+  _BluezCharacteristicChangeController(this.characteristic) {
+    _controller = StreamController.broadcast(onListen: () async {
+      try {
+        _subscription = characteristic.propertiesChanged.listen((names) {
+          // propertiesChanged [Value] [0]
+          if (debugBluetoothManagerBluez) {
+            print(
+                'propertiesChanged ($names) characteristic ${characteristic.uuid}');
+          }
+          if (names.contains('Value')) {
+            _controller.add(asUint8List(characteristic.value));
+          }
+        });
+      } catch (e) {
+        _controller.addError(e);
+      }
+    }, onCancel: () {
+      _subscription?.cancel();
+      //print('onCancel');
+    });
+  }
+}
 
 /// Cached service info
 class _BluezServices {
@@ -57,7 +89,7 @@ class _BluezCharacteristic {
 }
 
 class _BluezService {
-  var connected = false;
+  bool connected = false;
   final BlueZGattService gattService;
   late BleBluetoothService service;
 
@@ -87,6 +119,7 @@ class BluetoothDeviceConnectionBluezImpl extends BluetoothDeviceConnectionBluez
   StreamController<BluetoothDeviceConnectionState>? _connectionStateController;
 
   BluetoothDeviceConnectionBluezImpl(this.device);
+
   @override
   void close() {
     disconnect();
@@ -204,9 +237,8 @@ class BluetoothDeviceConnectionBluezImpl extends BluetoothDeviceConnectionBluez
 
   @override
   Stream<BluetoothDeviceConnectionState> get onConnectionState {
-    _connectionStateController ??= StreamController.broadcast(onListen: () {
-      _checkState();
-    });
+    _connectionStateController ??=
+        StreamController.broadcast(onListen: _checkState);
     return _connectionStateController!.stream;
   }
 
@@ -249,7 +281,7 @@ class BluetoothDeviceConnectionBluezImpl extends BluetoothDeviceConnectionBluez
 
   final _initLock = Lock();
 
-  var expConnectProfile = false;
+  bool expConnectProfile = false;
 
   /// Never throws
   Future<void> _initService(BleBluetoothService service) async {
@@ -314,6 +346,47 @@ class BluetoothDeviceConnectionBluezImpl extends BluetoothDeviceConnectionBluez
     } catch (e) {
       if (debugBluetoothManagerBluez) {
         _log('write characteristic $bcv value error $e');
+      }
+      rethrow;
+    }
+  }
+
+  final _characteristicValueChangedControllers =
+      <BleBluetoothCharacteristicRef, _BluezCharacteristicChangeController>{};
+
+  @override
+  Stream<BleBluetoothCharacteristicValue> onCharacteristicValueChanged(
+      BleBluetoothCharacteristic characteristic) {
+    if (debugBluetoothManagerBluez) {
+      _log('onCharacteristicValueChanged $characteristic');
+    }
+    var bluezCharacteristic = _getBluezCharacteristicOrThrow(characteristic);
+
+    var ref = characteristic.ref;
+    var controller = _characteristicValueChangedControllers[ref] ??=
+        _BluezCharacteristicChangeController(
+            bluezCharacteristic.gattCharacteristic);
+    return controller.stream.map((value) => characteristic.withValue(value));
+  }
+
+  @override
+  Future<void> registerCharacteristic(
+      BleBluetoothCharacteristic characteristic, bool on) async {
+    if (debugBluetoothManagerBluez) {
+      _log('registerCharacteristic $characteristic');
+    }
+    var bluezCharacteristic = _getBluezCharacteristicOrThrow(characteristic);
+
+    try {
+      if (on) {
+        await bluezCharacteristic.gattCharacteristic.startNotify();
+      } else {
+        await bluezCharacteristic.gattCharacteristic.stopNotify();
+      }
+    } catch (e) {
+      if (debugBluetoothManagerBluez) {
+        print(
+            '${on ? 'register' : 'unregister'} characteristic $characteristic value error $e');
       }
       rethrow;
     }

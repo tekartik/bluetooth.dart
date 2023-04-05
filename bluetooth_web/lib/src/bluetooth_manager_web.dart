@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_web_bluetooth/flutter_web_bluetooth.dart' as web;
+import 'package:tekartik_bluetooth/uuid.dart';
 import 'package:tekartik_bluetooth_web/src/bluetooth_device_connection_web.dart';
 import 'package:tekartik_bluetooth_web/src/bluetooth_device_web.dart';
 import 'package:tekartik_bluetooth_web/src/scan_result_web.dart';
@@ -36,7 +37,7 @@ abstract class BluetoothManagerWeb extends BluetoothManager
       [BluetoothRequestDeviceOptionsWeb? options]);
 }
 
-var debugBluetoothManagerWeb = false;
+bool debugBluetoothManagerWeb = false;
 
 class BluetoothManagerWebImpl
     with BluetoothManagerMixin, BluetoothAdminManagerMixin
@@ -104,7 +105,8 @@ class BluetoothManagerWebImpl
   bool? get isIOS => false;
 
   @override
-  Stream<ScanResult> scan({ScanMode scanMode = ScanMode.lowLatency}) {
+  Stream<ScanResult> scan(
+      {ScanMode scanMode = ScanMode.lowLatency, List<Uuid128>? withServices}) {
     scanController?.close();
 
     scanController = StreamController<ScanResult>(onCancel: () {

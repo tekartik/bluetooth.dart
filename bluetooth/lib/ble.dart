@@ -1,8 +1,10 @@
 export 'src/ble.dart'
     show
-        BleCharacteristicPropertyFlag,
         BleBluetoothCharacteristic,
-        BleBluetoothService,
+        BleBluetoothCharacteristicExtension,
+        BleBluetoothCharacteristicRef,
         BleBluetoothCharacteristicValue,
-        BleBluetoothDescriptor;
+        BleBluetoothDescriptor,
+        BleBluetoothService,
+        BleCharacteristicPropertyFlag;
 export 'src/constant.dart';

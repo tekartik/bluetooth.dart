@@ -16,6 +16,9 @@
 
 package com.tekartik.bluetooth_flutter.peripheral;
 
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
+import static com.tekartik.bluetooth_flutter.BfluPluginError.errorCodeStartFailure;
+
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -34,6 +37,9 @@ import android.content.Context;
 import android.os.ParcelUuid;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+
 import com.tekartik.bluetooth_flutter.BluetoothFlutterPlugin;
 import com.tekartik.bluetooth_flutter.PluginRequest;
 
@@ -44,11 +50,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import androidx.annotation.RequiresApi;
-
-import static android.os.Build.VERSION_CODES.LOLLIPOP;
-import static com.tekartik.bluetooth_flutter.BfluPluginError.errorCodeStartFailure;
 
 @RequiresApi(LOLLIPOP)
 public class Peripheral {
@@ -115,29 +116,11 @@ public class Peripheral {
             }
             this.services.addAll(services);
         }
-        //TODO for now include battery
-        // this.services.add(mCurrentService);
-
-        //Log.i(TAG, "init3");
-        mAdvSettings = new AdvertiseSettings.Builder()
-                .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
-                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM)
-                .setConnectable(true)
-                .setTimeout(0)
-                .build();
 
         if (deviceName != null) {
             mBluetoothAdapter.setName(deviceName);
         }
-        mAdvScanResponse = new AdvertiseData.Builder()
-                .setIncludeDeviceName(true)
-                //.addServiceUuid(new ParcelUuid(UUID.randomUUID()))
-                .build();
-
-
-        //Log.i(TAG, "inited");
         return true;
-
     }
 
     class AddServiceData {
@@ -151,6 +134,7 @@ public class Peripheral {
             this.services = services;
         }
 
+        @SuppressLint("MissingPermission")
         void next() {
             index++;
             if (index == services.size()) {
@@ -229,6 +213,7 @@ public class Peripheral {
             addServiceData.next();
         }
 
+        @SuppressLint("MissingPermission")
         @Override
         public void onCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset,
                                                 BluetoothGattCharacteristic characteristic) {
@@ -251,14 +236,15 @@ public class Peripheral {
             Log.v(TAG, "Notification sent. Status: " + status);
         }
 
+        @SuppressLint("MissingPermission")
         @Override
         public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId,
                                                  BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded,
                                                  int offset, byte[] value) {
             Log.v(TAG, "Characteristic Write request: " + Arrays.toString(value));
             // Don't call super here...
-            // super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite,
-            //        responseNeeded, offset, value);
+            super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite,
+                    responseNeeded, offset, value);
             //
 
             // Always response true
@@ -287,6 +273,7 @@ public class Peripheral {
             }
         }
 
+        @SuppressLint("MissingPermission")
         @Override
         public void onDescriptorReadRequest(BluetoothDevice device, int requestId,
                                             int offset, BluetoothGattDescriptor descriptor) {
@@ -303,6 +290,7 @@ public class Peripheral {
                     descriptor.getValue());
         }
 
+        @SuppressLint("MissingPermission")
         @Override
         public void onDescriptorWriteRequest(BluetoothDevice device, int requestId,
                                              BluetoothGattDescriptor descriptor, boolean preparedWrite, boolean responseNeeded,
@@ -354,7 +342,8 @@ public class Peripheral {
         }
     };
 
-    public boolean start(final PluginRequest request) {
+    @SuppressLint("MissingPermission")
+    public boolean startAdvertising(final PluginRequest request) {
         Log.i(TAG, "start");
 
         mAdvCallback = new AdvertiseCallback() {
@@ -427,6 +416,7 @@ public class Peripheral {
         return true;
     }
 
+    @SuppressLint("MissingPermission")
     private boolean startAdvertisingWhenServicesAdded(PluginRequest request) {
 
         AdvertiseData.Builder builder =
@@ -436,15 +426,15 @@ public class Peripheral {
         // .addServiceUuid(mCurrentService.getServiceUUID())
 
 
+        Boolean includeDeviceName = request.call.argument("includeDeviceName");
+        AdvertiseData.Builder advertiseDataBuilder = new AdvertiseData.Builder().setIncludeDeviceName(Boolean.TRUE.equals(includeDeviceName));
         List<Map> list = request.call.argument("services");
         if (list != null) {
             for (Map item : list) {
                 String uuidText = (String) item.get("uuid");
                 UUID uuid = UUID.fromString(uuidText);
                 ParcelUuid parcelUuid = new ParcelUuid(uuid);
-                // builder.addServiceUuid(parcelUuid)
-//                        .addServiceData(parcelUuid, new byte[]{1, 2, 3, 4})
-                ;
+                advertiseDataBuilder = advertiseDataBuilder.addServiceUuid(parcelUuid);
             }
         }
         // Use ericson
@@ -452,6 +442,15 @@ public class Peripheral {
 
         mAdvData = builder.build();
 
+        //Log.i(TAG, "init3");
+        mAdvSettings = new AdvertiseSettings.Builder()
+                .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
+                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM)
+                .setConnectable(true)
+                .setTimeout(0)
+                .build();
+
+        mAdvScanResponse = advertiseDataBuilder.build();
 
         // Log.i(TAG, "#3");
         if (mBluetoothAdapter.isMultipleAdvertisementSupported()) {
@@ -476,6 +475,7 @@ public class Peripheral {
         Peripheral.sendError(request, errorCode);
     }
 
+    @SuppressLint("MissingPermission")
     public void stop() {
 
         try {
@@ -497,36 +497,22 @@ public class Peripheral {
     }
 
 
+    @SuppressLint("MissingPermission")
     public void sendNotificationToDevices(BluetoothGattCharacteristic characteristic) {
         boolean indicate = (characteristic.getProperties()
                 & BluetoothGattCharacteristic.PROPERTY_INDICATE)
                 == BluetoothGattCharacteristic.PROPERTY_INDICATE;
         for (BluetoothDevice device : mBluetoothDevices) {
-            // true for indication (acknowledge) and false for notification (unacknowledge).
+            Log.d(TAG, "sending " + characteristic + " to " + device + " confirm " + indicate);
             mGattServer.notifyCharacteristicChanged(device, characteristic, indicate);
         }
     }
 
 
     private void updateConnectedDevicesStatus() {
-    /*
-    final String message = getString(R.string.status_devicesConnected) + " "
-        + mBluetoothManager.getConnectedDevices(BluetoothGattServer.GATT).size();
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        mConnectionStatus.setText(message);
-      }
-    });
-    */
-        //TODO
         Log.d(TAG, "TODO notify updateConnectedDevicesStatus()");
     }
 
-
-    ///////////////////////
-    ////// Bluetooth //////
-    ///////////////////////
     public static BluetoothGattDescriptor getClientCharacteristicConfigurationDescriptor() {
         BluetoothGattDescriptor descriptor = new BluetoothGattDescriptor(
                 CLIENT_CHARACTERISTIC_CONFIGURATION_UUID,
@@ -587,8 +573,6 @@ public class Peripheral {
     }
 
     public boolean setValue(UUID serviceUuid, UUID characteristicUuid, byte[] value) {
-
-
         Characteristic characteristic = getCharacteristic(serviceUuid, characteristicUuid);
         if (characteristic == null) {
             Log.e(TAG, "Service " + serviceUuid + " Characteristic " + characteristicUuid + " not found");
@@ -606,21 +590,21 @@ public class Peripheral {
         return characteristic.getValue();
     }
 
-    public boolean sendNotificationToDevices(UUID serviceUuid, UUID characteristicUuid) {
+
+    @SuppressLint("MissingPermission")
+    public boolean sendNotificationToDevices(UUID serviceUuid, UUID characteristicUuid, @Nullable byte[] value) {
         Characteristic characteristic = getCharacteristic(serviceUuid, characteristicUuid);
         if (characteristic == null) {
             Log.e(TAG, "Service " + serviceUuid + " Characteristic " + characteristicUuid + " not found");
             return false;
+        }
+        // Handle null value
+        if (value == null) {
+            value = new byte[0];
+        }
+        characteristic.bluetoothGattCharacteristic.setValue(value);
+        sendNotificationToDevices(characteristic.bluetoothGattCharacteristic);
 
-        }
-        boolean indicate = (characteristic.bluetoothGattCharacteristic.getProperties()
-                & BluetoothGattCharacteristic.PROPERTY_INDICATE)
-                == BluetoothGattCharacteristic.PROPERTY_INDICATE;
-        for (BluetoothDevice device : mBluetoothDevices) {
-            // true for indication (acknowledge) and false for notification (unacknowledge).
-            //TODO handle failure (??? what should i do if one fails)
-            mGattServer.notifyCharacteristicChanged(device, characteristic.bluetoothGattCharacteristic, indicate);
-        }
         return true;
     }
 

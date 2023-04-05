@@ -48,9 +48,10 @@ public class Utils {
     }
 
     private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
+
     public static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
-        for ( int j = 0; j < bytes.length; j++ ) {
+        for (int j = 0; j < bytes.length; j++) {
             int v = bytes[j] & 0xFF;
             hexChars[j * 2] = hexArray[v >>> 4];
             hexChars[j * 2 + 1] = hexArray[v & 0x0F];
@@ -77,7 +78,7 @@ public class Utils {
         UUID uuid = UUID.fromString((String) map.get("uuid"));
         int properties = parseInt(map.get("properties"));
         int permissions = parseInt(map.get("permissions"));
-        String description = (String)map.get("description");
+        String description = (String) map.get("description");
 
         return new Characteristic(new BluetoothGattCharacteristic(uuid, properties, permissions), description);
 

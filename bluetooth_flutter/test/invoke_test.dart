@@ -11,8 +11,9 @@ void main() {
       ]);
       expect(advertiseData.toMap(), {
         'services': [
-          {'uuid': '36c9159b-6cc6-43b3-b198-ac03cc44949e'}
-        ]
+          {'uuid': '36c9159b-6cc6-43b3-b198-ac03cc44949e'},
+        ],
+        'includeDeviceName': true,
       });
     });
 

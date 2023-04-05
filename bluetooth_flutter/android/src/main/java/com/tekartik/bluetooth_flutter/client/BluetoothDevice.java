@@ -1,10 +1,10 @@
 package com.tekartik.bluetooth_flutter.client;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static com.tekartik.bluetooth_flutter.Constant.ADDRESS_KEY;
 import static com.tekartik.bluetooth_flutter.Constant.NAME_KEY;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class BluetoothDevice {
     public String address;
@@ -16,6 +16,7 @@ public class BluetoothDevice {
         }
         return new BluetoothDevice(bluetoothDevice);
     }
+
     public BluetoothDevice(android.bluetooth.BluetoothDevice bluetoothDevice) {
         address = bluetoothDevice.getAddress();
         name = bluetoothDevice.getName();

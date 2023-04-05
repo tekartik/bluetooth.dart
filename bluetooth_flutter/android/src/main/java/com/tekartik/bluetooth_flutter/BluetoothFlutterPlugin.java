@@ -1,6 +1,9 @@
 package com.tekartik.bluetooth_flutter;
 
+import static com.tekartik.bluetooth_flutter.BfluPluginError.errorUnsupported;
+
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -24,7 +27,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
@@ -35,10 +37,6 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
-
-import static com.tekartik.bluetooth_flutter.BfluPluginError.errorCodeNoPeripheral;
-import static com.tekartik.bluetooth_flutter.BfluPluginError.errorOtherError;
-import static com.tekartik.bluetooth_flutter.BfluPluginError.errorUnsupported;
 
 /**
  * BluetoothFlutterPlugin
@@ -112,6 +110,7 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
     private void createHandler() {
         handler = new Handler();
     }
+
     private void onAttachedToEngine(Context applicationContext, BinaryMessenger messenger) {
         this.mApplicationContext = applicationContext;
 
@@ -263,6 +262,7 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
         }
     }
 
+    @SuppressLint("MissingPermission")
     public void onRequest(PluginRequest request) {
         if (hasVerboseLevel()) {
             Log.d(TAG, "onRequest(" + request.call.method + ", " + request.call.arguments + ")");
@@ -286,20 +286,16 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
             }
         } else if (method.equals("peripheralStartAdvertising")) {
             getPeripheralPlugin().onStartAdvertising(request);
-
         } else if (method.equals("peripheralInit")) {
             getPeripheralPlugin().onInitPeripheral(request);
-
         } else if (method.equals("peripheralSetCharacteristicValue")) {
             getPeripheralPlugin().onPeripheralSetCharacteristicValue(request);
-
         } else if (method.equals("peripheralGetCharacteristicValue")) {
-            onPeripheralGetCharacteristicValue(request);
+            getPeripheralPlugin().onPeripheralGetCharacteristicValue(request);
         } else if (method.equals("peripheralNotifyCharacteristicValue")) {
-            onPeripheralNotifyCharacteristicValue(request);
-
-        } else if (method.equals("stopAdvertising")) {
-            Log.i(TAG, "stopAdvertising");
+            getPeripheralPlugin().onPeripheralNotifyCharacteristicValue(request);
+        } else if (method.equals("peripheralStopAdvertising")) {
+            Log.i(TAG, "peripheralStopAdvertising");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 if (getPeripheral() != null) {
                     getPeripheral().stop();
@@ -328,8 +324,7 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
         } else if (method.equals("getInfo")) {
             // deprecated
             onGetInfo(request);
-        }
-        else if (method.equals("getAdminInfo")) {
+        } else if (method.equals("getAdminInfo")) {
             onGetAdminInfo(request);
         } else if (method.equals("getConnectedDevices")) {
             onGetConnectedDevices(request);
@@ -347,7 +342,7 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
     }
 
     private void onGetConnectedDevices(PluginRequest request) {
-        List<BluetoothDevice> devices = bluetoothManager.getConnectedDevices(BluetoothProfile.GATT);
+        @SuppressLint("MissingPermission") List<BluetoothDevice> devices = bluetoothManager.getConnectedDevices(BluetoothProfile.GATT);
         List<Map<String, Object>> list = new ArrayList<>();
         if (devices != null) {
             for (BluetoothDevice androidBluetoothDevice : devices) {
@@ -393,6 +388,7 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
         request.result.success(null);
     }
 
+    @SuppressLint("MissingPermission")
     private void onEnableBluetooth(PluginRequest request) {
         if (!bluetoothAdapter.isEnabled()) {
             Integer requestCode = request.call.argument("androidRequestCode");
@@ -427,47 +423,6 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
         }
     }
 
-
-    private void onPeripheralGetCharacteristicValue(PluginRequest request) {
-        if (hasVerboseLevel()) {
-            Log.i(TAG, "peripheralGetCharacteristicValue");
-        }
-        if (getPeripheral() == null) {
-            sendError(request, errorCodeNoPeripheral);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-
-            UUID serviceUuid = UUID.fromString((String) request.call.argument("service"));
-            UUID characteristicUuid = UUID.fromString((String) request.call.argument("characteristic"));
-
-            byte[] value = getPeripheral().getValue(serviceUuid, characteristicUuid);
-            request.sendSuccess(value);
-
-        } else {
-            sendError(request, errorUnsupported);
-        }
-    }
-
-    private void onPeripheralNotifyCharacteristicValue(PluginRequest request) {
-        if (hasVerboseLevel()) {
-            Log.i(TAG, "peripheralNotifyCharacteristicValue");
-        }
-        if (getPeripheral() == null) {
-            sendError(request, errorCodeNoPeripheral);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-
-            UUID serviceUuid = UUID.fromString((String) request.call.argument("service"));
-            UUID characteristicUuid = UUID.fromString((String) request.call.argument("characteristic"));
-
-            if (getPeripheral().sendNotificationToDevices(serviceUuid, characteristicUuid)) {
-                request.sendSuccess();
-            } else {
-                sendError(request, errorOtherError);
-            }
-
-        } else {
-            sendError(request, errorUnsupported);
-        }
-    }
 
     public void sendError(PluginRequest request, int errorCode) {
         if (hasVerboseLevel()) {
@@ -531,7 +486,7 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
         for (String permission : permissions) {
             int grantResult = ContextCompat.checkSelfPermission(activityBinding.getActivity(), permission);
             if (hasVerboseLevel()) {
-                Log.i(TAG, "permission " + permission + ": "+ (
+                Log.i(TAG, "permission " + permission + ": " + (
                         (grantResult == PackageManager.PERMISSION_GRANTED) ? "ok" : ("error (" + grantResult + ")")));
             }
             if (grantResult

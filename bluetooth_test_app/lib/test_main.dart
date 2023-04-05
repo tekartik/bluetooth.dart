@@ -91,11 +91,6 @@ void main() {
     });
 
     menu('Flutter blue', () {
-      item('Enable bluetooth', () async {
-        var state = await fbl.FlutterBluePlus.instance.state.first;
-        write('state: $state');
-      });
-
       item('Current state', () async {
         var state = await fbl.FlutterBluePlus.instance.state.first;
         write('state: $state');

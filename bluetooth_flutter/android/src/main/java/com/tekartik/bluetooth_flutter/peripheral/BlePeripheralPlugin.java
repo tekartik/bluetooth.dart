@@ -1,5 +1,9 @@
 package com.tekartik.bluetooth_flutter.peripheral;
 
+import static com.tekartik.bluetooth_flutter.BfluPluginError.errorCodeNoPeripheral;
+import static com.tekartik.bluetooth_flutter.BfluPluginError.errorOtherError;
+import static com.tekartik.bluetooth_flutter.BfluPluginError.errorUnsupported;
+
 import android.os.Build;
 import android.util.Log;
 
@@ -9,10 +13,6 @@ import com.tekartik.bluetooth_flutter.PluginRequest;
 
 import java.util.Map;
 import java.util.UUID;
-
-import static com.tekartik.bluetooth_flutter.BfluPluginError.errorCodeNoPeripheral;
-import static com.tekartik.bluetooth_flutter.BfluPluginError.errorOtherError;
-import static com.tekartik.bluetooth_flutter.BfluPluginError.errorUnsupported;
 
 public class BlePeripheralPlugin {
     public static final String TAG = "BfluPluginPral";
@@ -32,7 +32,9 @@ public class BlePeripheralPlugin {
             PeripheralDefinition definition = Utils.peripheralDefinitionFromMap((Map) request.call.arguments);
             Peripheral newPeripheral = new Peripheral(bfluPlugin);
             Log.d(TAG, definition.services.toString());
-            if (newPeripheral.init(definition.services, (String) request.call.argument("deviceName"))) {
+            String deviceName = (String) request.call.argument("deviceName");
+
+            if (newPeripheral.init(definition.services, deviceName)) {
                 Log.i(TAG, "init success");
                 setPeripheral(newPeripheral);
                 request.sendSuccess();
@@ -47,7 +49,6 @@ public class BlePeripheralPlugin {
             bfluPlugin.sendError(request, errorUnsupported);
         }
     }
-
 
     public void onStartAdvertising(PluginRequest request) {
         if (hasVerboseLevel()) {
@@ -66,7 +67,7 @@ public class BlePeripheralPlugin {
                     return;
                 }
             }
-            if (!getPeripheral().start(request)) {
+            if (!getPeripheral().startAdvertising(request)) {
                 sendError(request, BfluPluginError.errorCodeNotEnabled);
             }
 
@@ -94,6 +95,24 @@ public class BlePeripheralPlugin {
     }
 
 
+    public void onPeripheralGetCharacteristicValue(PluginRequest request) {
+        if (hasVerboseLevel()) {
+            Log.i(TAG, "peripheralGetCharacteristicValue");
+        }
+        if (getPeripheral() == null) {
+            sendError(request, errorCodeNoPeripheral);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            UUID serviceUuid = UUID.fromString((String) request.call.argument("service"));
+            UUID characteristicUuid = UUID.fromString((String) request.call.argument("characteristic"));
+
+            byte[] value = getPeripheral().getValue(serviceUuid, characteristicUuid);
+            request.sendSuccess(value);
+
+        } else {
+            sendError(request, errorUnsupported);
+        }
+    }
 
     public void onPeripheralSetCharacteristicValue(PluginRequest request) {
         if (hasVerboseLevel()) {
@@ -116,4 +135,29 @@ public class BlePeripheralPlugin {
             sendError(request, errorUnsupported);
         }
     }
+
+
+    public void onPeripheralNotifyCharacteristicValue(PluginRequest request) {
+        if (hasVerboseLevel()) {
+            Log.i(TAG, "peripheralNotifyCharacteristicValue");
+        }
+        if (getPeripheral() == null) {
+            sendError(request, errorCodeNoPeripheral);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            UUID serviceUuid = UUID.fromString((String) request.call.argument("service"));
+            UUID characteristicUuid = UUID.fromString((String) request.call.argument("characteristic"));
+            byte[] value = request.call.argument("value");
+
+            if (getPeripheral().sendNotificationToDevices(serviceUuid, characteristicUuid, value)) {
+                request.sendSuccess();
+            } else {
+                sendError(request, errorOtherError);
+            }
+
+        } else {
+            sendError(request, errorUnsupported);
+        }
+    }
+
 }

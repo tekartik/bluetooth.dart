@@ -1,5 +1,12 @@
 package com.tekartik.bluetooth_flutter.client;
 
+import static com.tekartik.bluetooth_flutter.BfluPluginError.errorCodeConnectionNotFound;
+import static com.tekartik.bluetooth_flutter.BfluPluginError.errorOtherError;
+import static com.tekartik.bluetooth_flutter.BfluPluginError.errorUnsupported;
+import static com.tekartik.bluetooth_flutter.BluetoothFlutterPlugin.TAG;
+import static com.tekartik.bluetooth_flutter.Constant.CONNECTION_ID_KEY;
+import static com.tekartik.bluetooth_flutter.LogLevel.hasVerboseLevel;
+
 import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGatt;
@@ -19,13 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import static com.tekartik.bluetooth_flutter.BfluPluginError.errorCodeConnectionNotFound;
-import static com.tekartik.bluetooth_flutter.BfluPluginError.errorOtherError;
-import static com.tekartik.bluetooth_flutter.BfluPluginError.errorUnsupported;
-import static com.tekartik.bluetooth_flutter.BluetoothFlutterPlugin.TAG;
-import static com.tekartik.bluetooth_flutter.Constant.CONNECTION_ID_KEY;
-import static com.tekartik.bluetooth_flutter.LogLevel.hasVerboseLevel;
 
 public class BleClientPlugin {
 
@@ -72,7 +72,6 @@ public class BleClientPlugin {
         // parameter to false.
         // sendError(request, errorUnsupported);
         // New request, connect and add gattServer to Map
-        BluetoothGatt gattServer;
         int connectionId = newConnectionId();
         DeviceConnection connection = new DeviceConnection(this, connectionId, device);
         connections.put(connectionId, connection);
@@ -98,7 +97,6 @@ public class BleClientPlugin {
         }
 
 
-
     }
 
     int mLastConnectionId = 0;
@@ -115,16 +113,16 @@ public class BleClientPlugin {
         DeviceConnection deviceConnection = getConnectionOrError(request);
         if (deviceConnection != null) {
             connections.remove(deviceConnection.connectionId);
-                try {
-                    deviceConnection.gattServer.disconnect();
-                } catch (Exception e) {
-                    Log.e(TAG, "disconnect failed for " + deviceConnection);
-                }
-                try {
-                    deviceConnection.gattServer.close();
-                } catch (Exception e) {
-                    Log.e(TAG, "close failed for " + deviceConnection);
-                }
+            try {
+                deviceConnection.gattServer.disconnect();
+            } catch (Exception e) {
+                Log.e(TAG, "disconnect failed for " + deviceConnection);
+            }
+            try {
+                deviceConnection.gattServer.close();
+            } catch (Exception e) {
+                Log.e(TAG, "close failed for " + deviceConnection);
+            }
 
             bfluPlugin.sendSuccess(request, null);
         }

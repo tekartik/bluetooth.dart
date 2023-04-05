@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:tekartik_bluetooth/ble.dart';
 import 'package:tekartik_bluetooth/bluetooth_service.dart';
 import 'package:tekartik_bluetooth/uuid.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
@@ -150,6 +151,32 @@ class BluetoothGattService {
   }
 }
 
+/// find helpers.
+extension BluetoothGattServiceExtension on BluetoothGattService {
+  BluetoothGattCharacteristic? findGattCharacteristic(
+      BleBluetoothCharacteristic bc) {
+    for (var characteristic in characteristics) {
+      if (bc.uuid == characteristic.uuid) {
+        return characteristic;
+      }
+    }
+    return null;
+  }
+}
+
+/// find helpers.
+extension BluetoothGattServiceListExtension on Iterable<BluetoothGattService> {
+  BluetoothGattCharacteristic? findGattCharacteristic(
+      BleBluetoothCharacteristic bc) {
+    for (var service in this) {
+      if (service.uuid == bc.service.uuid) {
+        return service.findGattCharacteristic(bc);
+      }
+    }
+    return null;
+  }
+}
+
 class AdvertiseDataService {
   final Uuid128? uuid;
 
@@ -162,9 +189,10 @@ class AdvertiseDataService {
 }
 
 class AdvertiseData {
+  final bool includeDeviceName;
   final List<AdvertiseDataService>? services;
 
-  AdvertiseData({this.services});
+  AdvertiseData({this.services, this.includeDeviceName = true});
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{};
@@ -172,9 +200,15 @@ class AdvertiseData {
       map['services'] =
           services!.map((service) => service.toMap()).toList(growable: false);
     }
+    if (includeDeviceName) {
+      map['includeDeviceName'] = true;
+    }
     // devPrint(map);
     return map;
   }
+
+  @override
+  String toString() => toMap().toString();
 }
 
 class BluetoothPeripheralWriteCharacteristicEvent {
@@ -211,7 +245,7 @@ class BluetoothPeripheral {
     //assert(_isSupported, 'call bluetoothState first');
 
     await _bluetoothFlutterPlugin!.methodChannel
-        .invokeMethod('stopAdvertising', null);
+        .invokeMethod('peripheralStopAdvertising', null);
   }
 
   BluetoothPeripheral(
@@ -260,14 +294,15 @@ class BluetoothPeripheral {
     });
   }
 
-  //TODO check if value should be passed here...
   Future notifyCharacteristicValue(
       {required Uuid128 serviceUuid,
-      required Uuid128? characteristicUuid}) async {
+      required Uuid128? characteristicUuid,
+      Uint8List? value}) async {
     await _bluetoothFlutterPlugin!.methodChannel
         .invokeMethod('peripheralNotifyCharacteristicValue', {
       'service': serviceUuid.toString(),
       'characteristic': characteristicUuid.toString(),
+      'value': value,
     });
   }
 

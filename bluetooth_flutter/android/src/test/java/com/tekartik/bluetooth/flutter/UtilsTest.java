@@ -1,9 +1,5 @@
 package com.tekartik.bluetooth.flutter;
 
-import android.bluetooth.BluetoothGattService;
-
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -11,7 +7,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Constants between dart & Java world

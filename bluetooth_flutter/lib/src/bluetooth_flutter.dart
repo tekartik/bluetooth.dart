@@ -74,6 +74,7 @@ class BluetoothFlutter {
     _isSupported ??= await _isSupportedReady;
     assert(_isSupported!, 'call bluetoothState first');
 
+    // print('startAdvertising: $advertiseData');
     await _channel.invokeMethod(
         'peripheralStartAdvertising', advertiseData?.toMap());
   }
@@ -82,7 +83,7 @@ class BluetoothFlutter {
     _isSupported ??= await _isSupportedReady;
     assert(_isSupported!, 'call bluetoothState first');
 
-    await _channel.invokeMethod('stopAdvertising', null);
+    await _channel.invokeMethod('peripheralStopAdvertising', null);
   }
 
   static Future requireBluetoothAdmin({int? requestCode}) async {

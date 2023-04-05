@@ -1,14 +1,14 @@
 package com.tekartik.bluetooth_flutter.client;
 
+import static com.tekartik.bluetooth_flutter.Constant.DEVICE_KEY;
+import static com.tekartik.bluetooth_flutter.Constant.RSSI_KEY;
+
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.tekartik.bluetooth_flutter.Constant.DEVICE_KEY;
-import static com.tekartik.bluetooth_flutter.Constant.RSSI_KEY;
 
 public class ScanResult {
     public BluetoothDevice device;

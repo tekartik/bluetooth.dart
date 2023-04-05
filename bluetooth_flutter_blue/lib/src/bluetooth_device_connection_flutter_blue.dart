@@ -7,6 +7,7 @@ import 'package:tekartik_bluetooth_flutter_blue/src/import_bluetooth.dart';
 import 'package:tekartik_bluetooth_flutter_blue/utils/guid_utils.dart';
 
 import 'flutter_blue_import.dart' as native;
+import 'import.dart';
 
 BluetoothDeviceConnectionState connectionStateFromBluetoothDeviceState(
     native.BluetoothDeviceState state) {
@@ -101,6 +102,7 @@ class BluetoothDeviceConnectionFlutterBlue
       } catch (e) {
         // ignore: avoid_print
         print('error $e for ${native.uuid}');
+        // devPrint(st);
       }
     }
     return map;

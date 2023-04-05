@@ -2,6 +2,7 @@ import 'package:bluez/bluez.dart';
 import 'package:dbus/dbus.dart';
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/src/mixin.dart'; // ignore: implementation_imports
+import 'package:tekartik_bluetooth/uuid.dart';
 import 'package:tekartik_bluetooth_bluez/src/connection_bluez.dart';
 import 'package:tekartik_bluetooth_bluez/src/scan_bluez.dart';
 
@@ -10,9 +11,9 @@ import 'import.dart';
 abstract class BluetoothManagerBluez extends BluetoothManager
     implements BluetoothAdminManager {}
 
-var debugBluetoothManagerBluez = false;
-var systemBus = DBusClient.system();
-var bluezClient = BlueZClient(bus: systemBus);
+bool debugBluetoothManagerBluez = false;
+DBusClient systemBus = DBusClient.system();
+BlueZClient bluezClient = BlueZClient(bus: systemBus);
 
 class BluetoothManagerBluezImpl
     with BluetoothManagerMixin, BluetoothAdminManagerMixin
@@ -32,6 +33,16 @@ class BluetoothManagerBluezImpl
   }
 
   @override
+  Future<BluetoothAdminInfo> getAdminInfo() async {
+    await _ready();
+    return BluetoothAdminInfoImpl(
+        hasBluetooth: true,
+        hasBluetoothBle: true,
+        isBluetoothEnabled: bluezClient.adapters.isNotEmpty);
+  }
+
+  // Old
+  @override
   Future<BluetoothInfo> getInfo() async {
     await _ready();
     return BluetoothInfoImpl(
@@ -42,15 +53,14 @@ class BluetoothManagerBluezImpl
   }
 
   @override
-  // TODO: implement isAndroid
   bool? get isAndroid => false;
 
   @override
-  // TODO: implement isIOS
   bool? get isIOS => false;
 
   @override
-  Stream<ScanResult> scan({ScanMode scanMode = ScanMode.lowLatency}) {
+  Stream<ScanResult> scan(
+      {ScanMode scanMode = ScanMode.lowLatency, List<Uuid128>? withServices}) {
     scanController?.close();
 
     scanController = StreamController<ScanResult>(onCancel: () {

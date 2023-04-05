@@ -10,7 +10,7 @@ public class Utils {
         if (object instanceof Integer) {
             return (Integer) object;
         } else if (object instanceof Long) {
-            return (int)(long)object;
+            return (int) (long) object;
         }
         return null;
     }

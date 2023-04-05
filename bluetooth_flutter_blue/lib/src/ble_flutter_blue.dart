@@ -24,7 +24,7 @@ class BluetoothCharacteristicFlutterBlue {
 
   /// Value changed
   Stream<List<int>> get value {
-    return nativeImpl.value;
+    return nativeImpl.onValueChangedStream;
   }
 }
 

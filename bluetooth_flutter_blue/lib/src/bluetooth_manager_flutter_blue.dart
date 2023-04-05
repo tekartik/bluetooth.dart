@@ -2,7 +2,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
+import 'package:tekartik_bluetooth/uuid.dart';
 import 'package:tekartik_bluetooth_flutter_blue/src/bluetooth_device_connection_flutter_blue.dart';
+import 'package:tekartik_bluetooth_flutter_blue/src/import.dart';
+import 'package:tekartik_bluetooth_flutter_blue/utils/guid_utils.dart';
 
 import 'bluetooth_device_flutter_blue.dart';
 import 'flutter_blue_import.dart' as native;
@@ -112,13 +115,17 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
   StreamSubscription? scannerSubscription;
 
   @override
-  Stream<ScanResult> scan({ScanMode scanMode = ScanMode.lowLatency}) {
+  Stream<ScanResult> scan(
+      {ScanMode scanMode = ScanMode.lowLatency, List<Uuid128>? withServices}) {
     scannerSubscription?.cancel();
     scannerSubscription = null;
     StreamController<ScanResult>? ctlr;
+    var nativeServices =
+        withServices?.map((e) => guidFromUuid(e)).toList() ?? <Guid>[];
     ctlr = StreamController<ScanResult>(onListen: () {
-      scannerSubscription ??=
-          native.FlutterBlue.instance.scan().listen((nativeResult) {
+      scannerSubscription ??= native.FlutterBlue.instance
+          .scan(withServices: nativeServices)
+          .listen((nativeResult) {
         var scanResult = ScanResultFlutter(nativeResult);
 
         // cache
