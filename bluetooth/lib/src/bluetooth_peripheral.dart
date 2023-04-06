@@ -36,6 +36,9 @@ class BluetoothFlutterSlaveConnection {
     address = map['address']?.toString();
     connected = parseBool(map['connected']) == true;
   }
+
+  @override
+  String toString() => 'address $address connected $connected';
 }
 
 class BluetoothGattCharacteristic {
@@ -211,6 +214,25 @@ class AdvertiseData {
   String toString() => toMap().toString();
 }
 
+class BluetoothPeripheralInitData {
+  final String? deviceName;
+  final List<BluetoothGattService>? services;
+
+  BluetoothPeripheralInitData({this.deviceName, this.services});
+
+  Map<String, dynamic> toMap() {
+    var map = <String, dynamic>{};
+    if (deviceName != null) {
+      map['deviceName'] = deviceName;
+    }
+    if (services != null) {
+      map['services'] =
+          services!.map((service) => service.toMap()).toList(growable: false);
+    }
+    return map;
+  }
+}
+
 class BluetoothPeripheralWriteCharacteristicEvent {
   Uuid128? serviceUuid;
   Uuid128? characteristicUuid;
@@ -246,6 +268,11 @@ class BluetoothPeripheral {
 
     await _bluetoothFlutterPlugin!.methodChannel
         .invokeMethod('peripheralStopAdvertising', null);
+  }
+
+  Future<void> close() async {
+    await _bluetoothFlutterPlugin!.methodChannel
+        .invokeMethod('peripheralClose', null);
   }
 
   BluetoothPeripheral(

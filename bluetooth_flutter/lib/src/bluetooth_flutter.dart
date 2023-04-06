@@ -70,6 +70,7 @@ class BluetoothFlutter {
         .map((buffer) => BluetoothSlaveConnection()..fromMap(buffer as Map));
   }
 
+  // @Deprecated('Use Peripheral.startAdvertising')
   static Future startAdvertising({AdvertiseData? advertiseData}) async {
     _isSupported ??= await _isSupportedReady;
     assert(_isSupported!, 'call bluetoothState first');
@@ -79,6 +80,7 @@ class BluetoothFlutter {
         'peripheralStartAdvertising', advertiseData?.toMap());
   }
 
+  // @Deprecated('Use Peripheral.stopAdvertising')
   static Future stopAdvertising() async {
     _isSupported ??= await _isSupportedReady;
     assert(_isSupported!, 'call bluetoothState first');
@@ -113,12 +115,14 @@ class BluetoothFlutter {
     _isSupported ??= await _isSupportedReady;
     assert(_isSupported!, 'call bluetoothStatus first');
 
+    var initData =
+        BluetoothPeripheralInitData(services: services, deviceName: deviceName);
     var peripheral = BluetoothPeripheral(
         services: services,
         deviceName: deviceName,
         plugin: bluetoothFlutterPlugin);
 
-    await _channel.invokeMethod('peripheralInit', peripheral.toMap());
+    await _channel.invokeMethod('peripheralInit', initData.toMap());
     return peripheral;
   }
 }

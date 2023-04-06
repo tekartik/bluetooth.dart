@@ -7,6 +7,7 @@ export 'src/bluetooth_peripheral.dart'
         BluetoothGattServiceExtension,
         BluetoothGattServiceListExtension,
         BluetoothPeripheral,
+        BluetoothPeripheralInitData,
         BluetoothPeripheralPlugin,
         BluetoothPeripheralWriteCharacteristicEvent,
         BluetoothSlaveConnection,

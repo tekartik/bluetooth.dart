@@ -2,6 +2,8 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart' as fbl;
 import 'package:tekartik_app_platform/app_platform.dart';
 import 'package:tekartik_bluetooth_test_app/ble/app_ble.dart';
 import 'package:tekartik_bluetooth_test_app/import/common_import.dart';
+import 'package:tekartik_bluetooth_test_app/page/peripheral_screen.dart';
+import 'package:tekartik_bluetooth_test_app/page/start_screen.dart';
 import 'package:tekartik_bluetooth_test_app/src/ble_setup.dart';
 import 'package:tekartik_platform_io/context_io.dart';
 
@@ -58,6 +60,13 @@ void main() {
       });
     });
     item('Start app', () {
+      app_main.main();
+    });
+
+    item('Simple peripheral', () {
+      startScreenAutoStartFunction = (context) async {
+        await goToPeripheralScreen(context);
+      };
       app_main.main();
     });
 
