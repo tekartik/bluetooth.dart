@@ -1,5 +1,5 @@
+import 'package:cv/cv.dart';
 import 'package:tekartik_common_utils/bool_utils.dart';
-import 'package:tekartik_common_utils/model/model_v2.dart';
 
 abstract class BluetoothInfo {
   bool? get hasBluetooth;
