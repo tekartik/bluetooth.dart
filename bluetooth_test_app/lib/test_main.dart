@@ -101,7 +101,7 @@ void main() {
 
     menu('Flutter blue', () {
       item('Current state', () async {
-        var state = await fbl.FlutterBluePlus.instance.state.first;
+        var state = await fbl.FlutterBluePlus.adapterState.first;
         write('state: $state');
       });
     });

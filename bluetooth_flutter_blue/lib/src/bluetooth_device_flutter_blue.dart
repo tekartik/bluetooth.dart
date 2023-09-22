@@ -9,7 +9,7 @@ class BluetoothDeviceIdFlutterBlue
   BluetoothDeviceIdFlutterBlue(this.nativeId);
 
   @override
-  String get id => nativeId.id;
+  String get id => nativeId.str;
 }
 
 class BluetoothDeviceFlutterBlue
@@ -20,13 +20,13 @@ class BluetoothDeviceFlutterBlue
   BluetoothDeviceFlutterBlue(this.nativeImpl);
 
   @override
-  String get address => nativeImpl.id.id;
+  String get address => nativeImpl.remoteId.str;
 
   @override
-  BluetoothDeviceId get id => BluetoothDeviceIdFlutterBlue(nativeImpl.id);
+  BluetoothDeviceId get id => BluetoothDeviceIdFlutterBlue(nativeImpl.remoteId);
 
   @override
-  String get name => nativeImpl.name;
+  String get name => nativeImpl.localName;
 
   @override
   BluetoothDeviceType get type =>

@@ -246,10 +246,14 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage>
                                 // ignore: use_build_context_synchronously
                                 snackInfo(context, 'Write $bcv success');
                               } catch (e) {
-                                snackError(context, 'Write $bcv error $e');
+                                if (context.mounted) {
+                                  snackError(context, 'Write $bcv error $e');
+                                }
                               }
                             } catch (e) {
-                              snackError(context, 'Cannot parse data');
+                              if (context.mounted) {
+                                snackError(context, 'Cannot parse data');
+                              }
                             }
                           },
                           text: 'Write')

@@ -76,7 +76,7 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
 
   @override
   Future<List<BluetoothDevice>> getConnectedDevices() async {
-    var devices = await native.FlutterBluePlus.instance.connectedDevices;
+    var devices = await native.FlutterBluePlus.connectedSystemDevices;
     var blueDevices =
         devices.map((native) => BluetoothDeviceFlutterBlue(native)).toList();
     // cache
@@ -123,8 +123,8 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
     var nativeServices =
         withServices?.map((e) => guidFromUuid(e)).toList() ?? <Guid>[];
     ctlr = StreamController<ScanResult>(onListen: () {
-      scannerSubscription ??= native.FlutterBlue.instance
-          .scan(withServices: nativeServices)
+      scannerSubscription ??= native.FlutterBluePlusPrvExt.scanAndStreamResults(
+              withServices: nativeServices)
           .listen((nativeResult) {
         var scanResult = ScanResultFlutter(nativeResult);
 
@@ -134,7 +134,7 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
         ctlr!.add(scanResult);
       });
     }, onCancel: () {
-      native.FlutterBlue.instance.stopScan();
+      native.FlutterBlue.stopScan();
       scannerSubscription?.cancel();
       ctlr?.close();
     });
@@ -143,7 +143,7 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
 
   @override
   Future stop() async {
-    await native.FlutterBlue.instance.stopScan();
+    await native.FlutterBlue.stopScan();
     /*
     unawaited(scannerSubscription?.cancel());
     scannerSubscription = null;
