@@ -25,7 +25,7 @@ void menuFlutterBlue() {
           var id = result.device.remoteId.str;
           if (!deviceIds.contains(id)) {
             write(
-                '[${_devices.length}] scan_$name: ${result.device.remoteId} ${result.device.localName} ${result.rssi}');
+                '[${_devices.length}] scan_$name: ${result.device.remoteId} ${result.device.platformName} ${result.rssi}');
             deviceIds.add(id);
             _devices[id] = result.device;
           }
@@ -38,7 +38,7 @@ void menuFlutterBlue() {
 
         for (int i = 0; i < deviceIds.length; i++) {
           var device = _devices[deviceIds[i]]!;
-          write('[$i]: ${device.remoteId} ${device.localName}');
+          write('[$i]: ${device.remoteId} ${device.platformName}');
         }
         int? index = parseInt(await prompt('Enter connect_$name index'));
         if (index != null) {
@@ -111,7 +111,7 @@ void menuFlutterBlue() {
                 timeout: Duration(seconds: 30))
             .listen((result) {
           write(
-              'scan_$name: ${result.device.remoteId} ${result.device.localName} ${result.rssi}');
+              'scan_$name: ${result.device.remoteId} ${result.device.platformName} ${result.rssi}');
         }, onDone: () {
           write('scan_$name: done');
         }, onError: (e, st) {

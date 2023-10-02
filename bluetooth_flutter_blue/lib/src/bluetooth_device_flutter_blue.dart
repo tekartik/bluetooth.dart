@@ -26,16 +26,8 @@ class BluetoothDeviceFlutterBlue
   BluetoothDeviceId get id => BluetoothDeviceIdFlutterBlue(nativeImpl.remoteId);
 
   @override
-  String get name => nativeImpl.localName;
+  String get name => nativeImpl.platformName;
 
   @override
-  BluetoothDeviceType get type =>
-      _deviceTypeMap[nativeImpl.type] ?? BluetoothDeviceType.unknown;
+  BluetoothDeviceType get type => BluetoothDeviceType.le;
 }
-
-var _deviceTypeMap = {
-  native.BluetoothDeviceType.le: BluetoothDeviceType.le,
-  native.BluetoothDeviceType.unknown: BluetoothDeviceType.unknown,
-  native.BluetoothDeviceType.classic: BluetoothDeviceType.classic,
-  native.BluetoothDeviceType.dual: BluetoothDeviceType.dual
-};
