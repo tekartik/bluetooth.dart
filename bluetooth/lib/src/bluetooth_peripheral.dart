@@ -311,7 +311,7 @@ class BluetoothPeripheral {
 
   Future setCharacteristicValue(
       {required Uuid128 serviceUuid,
-      required Uuid128? characteristicUuid,
+      required Uuid128 characteristicUuid,
       required Uint8List? value}) async {
     await _bluetoothFlutterPlugin!.methodChannel
         .invokeMethod('peripheralSetCharacteristicValue', {

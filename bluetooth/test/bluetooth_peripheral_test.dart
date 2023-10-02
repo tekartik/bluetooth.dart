@@ -10,7 +10,7 @@ var _characteristic2Uuid = Uuid128('56adb822-7a90-4d45-90ec-b8710207282a');
 
 void main() {
   group('BluetoothGattService', () {
-    test('findGettServices', () {
+    test('findGattServices', () {
       var gattServices = [
         BluetoothGattService(
             uuid: _service1Uuid,

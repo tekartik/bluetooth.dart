@@ -34,7 +34,10 @@ class BluetoothInfoImpl implements BluetoothInfo {
   bool? isScanning;
 
   BluetoothInfoImpl(
-      {this.hasBluetooth, this.hasBluetoothBle, this.isBluetoothEnabled});
+      {this.hasBluetooth,
+      this.hasBluetoothBle,
+      this.isBluetoothEnabled,
+      this.isScanning});
 
   void fromMap(Map result) {
     var model = asModel(result);
@@ -86,5 +89,25 @@ class BluetoothAdminInfoImpl implements BluetoothAdminInfo {
       ..setValue('hasBluetoothBle', hasBluetoothBle)
       ..setValue('isBluetoothEnabled', isBluetoothEnabled);
     return model;
+  }
+
+  @override
+  int get hashCode => toString().hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    if (other is BluetoothAdminInfoImpl) {
+      if (other.hasBluetooth != hasBluetooth) {
+        return false;
+      }
+      if (other.hasBluetoothBle != hasBluetoothBle) {
+        return false;
+      }
+      if (other.isBluetoothEnabled != isBluetoothEnabled) {
+        return false;
+      }
+      return true;
+    }
+    return false;
   }
 }

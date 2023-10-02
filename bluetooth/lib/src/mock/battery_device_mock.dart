@@ -25,19 +25,6 @@ class BatteryRemoteDeviceMock extends BatteryRemoteDevice {
         BluetoothPeripheralMock(deviceName: 'Battery', services: gattServices);
   }
 
-  //static var deviceId = const DeviceIdentifier('noveo_lumi_android');
-
-  /*
-  @override
-  Future init(Prefs prefs) async {
-    /// An id is generate and saved in prefs
-    // var deviceIdText =
-    initId(prefs);
-
-    await initValues(prefs);
-  }
-  */
-
   final characteristicValueMap =
       <BleBluetoothCharacteristic?, CharacteristicMock>{};
 
