@@ -55,6 +55,8 @@ void main() {
       var mock = BluetoothManagerMock(peripheral: peripheral);
       var scanResult = await mock.scan().first;
       expect(scanResult.device.name, 'Mock');
+      expect(scanResult.device.id.id, 'mock');
+      expect(scanResult.device.address, 'mock_address');
       await mock.close();
     });
     test('manager with advertising', () async {

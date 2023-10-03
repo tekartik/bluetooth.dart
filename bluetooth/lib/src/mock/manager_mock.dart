@@ -59,6 +59,7 @@ class BluetoothManagerMock
         var device = BluetoothDeviceImpl();
         device.id = BluetoothDeviceIdImpl('mock');
         device.name = 'Mock';
+        device.address = 'mock_address';
         yield ScanResultMock(device: device, rssi: 50);
       }
     } catch (_) {
