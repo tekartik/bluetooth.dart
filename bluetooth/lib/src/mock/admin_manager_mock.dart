@@ -7,22 +7,15 @@ class BluetoothAdminManagerMock
     with BluetoothAdminManagerMixin, BluetoothManagerPlatformCompatMixin
     implements BluetoothAdminManager {
   @override
-  Future<bool> checkCoarseLocationPermission({int? androidRequestCode}) {
-    // TODO: implement checkCoarseLocationPermission
-    throw UnimplementedError();
+  Future<bool> checkCoarseLocationPermission({int? androidRequestCode}) async {
+    return true;
   }
 
   @override
-  Future disable() {
-    // TODO: implement disable
-    throw UnimplementedError();
-  }
+  Future disable() async {}
 
   @override
-  Future enable({int? requestCode, int? androidRequestCode}) {
-    // TODO: implement enable
-    throw UnimplementedError();
-  }
+  Future enable({int? requestCode, int? androidRequestCode}) async {}
 
   @override
   Future<T> invokeMethod<T>(String method, [Object? arguments]) {
@@ -31,16 +24,7 @@ class BluetoothAdminManagerMock
   }
 
   @override
-  // TODO: implement isAndroid
-  bool? get isAndroid => throw UnimplementedError();
-
-  @override
-  // TODO: implement isIOS
-  bool? get isIOS => throw UnimplementedError();
-
-  @override
-  // TODO: implement supportsEnable
-  bool? get supportsEnable => throw UnimplementedError();
+  bool? get supportsEnable => false;
 
   @override
   Future<BluetoothAdminInfo> getAdminInfo() async {
