@@ -22,6 +22,14 @@ void main() {
       await remoteMock.stop();
     });
 
+    test('check permission', () async {
+      var mock = BluetoothAdminManagerMock();
+      expect(await mock.checkBluetoothPermissions(), true);
+    });
+    test('check coarse', () async {
+      var mock = BluetoothAdminManagerMock();
+      expect(await mock.checkCoarseLocationPermission(), true);
+    });
     test('admin manager', () async {
       var mock = BluetoothAdminManagerMock();
       expect(

@@ -12,6 +12,12 @@ class BluetoothAdminManagerMock
   }
 
   @override
+  Future<bool> checkBluetoothPermissions(
+      {int? androidRequestCode, BluetoothPermissionsOptions? options}) async {
+    return true;
+  }
+
+  @override
   Future disable() async {}
 
   @override
