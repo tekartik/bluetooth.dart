@@ -49,6 +49,14 @@ void main() {
       expect(scanResult.device.name, 'Mock');
       await mock.close();
     });
+    test('manager with advertising', () async {
+      var peripheral = BluetoothPeripheralMock(deviceName: 'mock');
+      await peripheral.startAdvertising();
+      var mock = BluetoothManagerMock(peripheral: peripheral);
+      var scanResult = await mock.scan().first;
+      expect(scanResult.device.name, 'Mock');
+      await mock.close();
+    });
     test('manager with peripheral services', () async {
       var peripheral =
           BluetoothPeripheralMock(deviceName: 'mock', services: []);

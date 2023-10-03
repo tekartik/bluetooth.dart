@@ -67,14 +67,12 @@ class BluetoothManagerMock
   }
 
   @override
-  Future stop() {
-    // TODO: implement stop
-    throw UnimplementedError();
+  Future stop() async {
+    isScanning = false;
   }
 
   @override
-  // TODO: implement supportsEnable
-  bool? get supportsEnable => throw UnimplementedError();
+  bool? get supportsEnable => false;
 
   @override
   Future<T> invokeMethod<T>(String method, [Object? arguments]) =>
