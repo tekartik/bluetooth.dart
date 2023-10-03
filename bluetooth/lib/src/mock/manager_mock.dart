@@ -1,5 +1,6 @@
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/src/bluetooth_device.dart';
+import 'package:tekartik_bluetooth/src/common/platform_mixin.dart';
 import 'package:tekartik_bluetooth/src/device_id.dart';
 import 'package:tekartik_bluetooth/src/import.dart';
 import 'package:tekartik_bluetooth/src/mixin.dart';
@@ -7,7 +8,6 @@ import 'package:tekartik_bluetooth/src/mock/device_connection_mock.dart';
 import 'package:tekartik_bluetooth/src/mock/peripheral_mock.dart';
 import 'package:tekartik_bluetooth/src/uuid.dart';
 
-import 'admin_manager_mock.dart';
 import 'scan_result_mock.dart';
 
 class BluetoothManagerMock

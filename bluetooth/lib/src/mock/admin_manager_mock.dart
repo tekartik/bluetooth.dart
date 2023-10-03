@@ -1,14 +1,7 @@
-import 'dart:io';
-
 import 'package:tekartik_bluetooth/bluetooth.dart';
+import 'package:tekartik_bluetooth/src/common/platform_mixin.dart';
 import 'package:tekartik_bluetooth/src/import.dart';
 import 'package:tekartik_bluetooth/src/mixin.dart';
-
-mixin BluetoothManagerPlatformCompatMixin {
-  bool? get isAndroid => isRunningAsJavascript ? false : Platform.isAndroid;
-
-  bool? get isIOS => isRunningAsJavascript ? false : Platform.isIOS;
-}
 
 class BluetoothAdminManagerMock
     with BluetoothAdminManagerMixin, BluetoothManagerPlatformCompatMixin

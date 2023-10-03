@@ -1,37 +1,46 @@
+import 'package:rxdart/rxdart.dart';
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/bluetooth_peripheral.dart';
 import 'package:tekartik_bluetooth/src/ble.dart';
 import 'package:tekartik_bluetooth/src/mock/manager_mock.dart';
 import 'package:tekartik_bluetooth/src/mock/peripheral_mock.dart';
+import 'package:tekartik_bluetooth/src/rx_utils.dart';
 
 import '../../uuid.dart';
 
 class BluetoothDeviceConnectionMock implements BluetoothDeviceConnection {
   final BluetoothManagerMock manager;
 
+  /// Where to post notification to be sent
+  final _bleNotificationWrapper =
+      PublishSubjectWrapper<BleBluetoothCharacteristicValue>();
+
+  SubjectInterface<BleBluetoothCharacteristicValue> get bleNotification =>
+      _bleNotificationWrapper;
+  final _bleConnectionStateWrapper =
+      BehaviorSubject<BluetoothDeviceConnectionState>.seeded(
+          BluetoothDeviceConnectionState.disconnected);
+
   BluetoothDeviceConnectionMock({required this.manager});
   @override
   void close() {
-    // TODO: implement close
+    disconnect();
   }
 
   @override
-  Future connect() {
-    // TODO: implement connect
-    throw UnimplementedError();
+  Future<void> connect() async {
+    _bleConnectionStateWrapper.sink
+        .add(BluetoothDeviceConnectionState.connected);
   }
 
   @override
-  Future disconnect() {
-    // TODO: implement disconnect
-    throw UnimplementedError();
+  Future disconnect() async {
+    _bleConnectionStateWrapper.sink
+        .add(BluetoothDeviceConnectionState.disconnected);
   }
 
   @override
-  Future<void> discoverServices() {
-    // TODO: implement discoverServices
-    throw UnimplementedError();
-  }
+  Future<void> discoverServices() async {}
 
   BluetoothPeripheralMock get peripheral => manager.peripheral!;
 
@@ -65,14 +74,15 @@ class BluetoothDeviceConnectionMock implements BluetoothDeviceConnection {
   @override
   Stream<BleBluetoothCharacteristicValue> onCharacteristicValueChanged(
       BleBluetoothCharacteristic characteristic) {
-    // TODO: implement onCharacteristicValueChanged
-    throw UnimplementedError();
+    return _bleNotificationWrapper.stream.where((event) =>
+        event.service.uuid == characteristic.service.uuid &&
+        event.uuid == characteristic.uuid);
   }
 
   @override
   // TODO: implement onConnectionState
   Stream<BluetoothDeviceConnectionState> get onConnectionState =>
-      throw UnimplementedError();
+      _bleConnectionStateWrapper.stream;
 
   BleBluetoothService getService(Uuid128 uuid) {
     var gattServices = manager.peripheral!.services!;
@@ -112,15 +122,22 @@ class BluetoothDeviceConnectionMock implements BluetoothDeviceConnection {
 
   @override
   Future<void> registerCharacteristic(
-      BleBluetoothCharacteristic characteristic, bool on) {
-    // TODO: implement registerCharacteristic
-    throw UnimplementedError();
+      BleBluetoothCharacteristic characteristic, bool on) async {
+    peripheral.bleNotification.stream.listen((event) {
+      if (event.serviceUuid == characteristic.service.uuid &&
+          event.characteristicUuid == characteristic.uuid) {
+        _bleNotificationWrapper.sink.add(BleBluetoothCharacteristicValue(
+            service: BleBluetoothService(uuid: event.serviceUuid),
+            value: event.value!,
+            uuid: event.characteristicUuid));
+      }
+    });
   }
 
   @override
   Future<void> writeCharacteristic(
       BleBluetoothCharacteristicValue characteristicValue) async {
-    await peripheral.setCharacteristicValue(
+    await peripheral.writeCharacteristicValue(
         serviceUuid: characteristicValue.service.uuid,
         characteristicUuid: characteristicValue.uuid,
         value: characteristicValue.value);

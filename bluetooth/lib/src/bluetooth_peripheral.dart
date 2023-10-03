@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:collection/collection.dart';
+import 'package:cv/cv.dart';
 import 'package:tekartik_bluetooth/ble.dart';
 import 'package:tekartik_bluetooth/bluetooth_service.dart';
 import 'package:tekartik_bluetooth/uuid.dart';
@@ -238,6 +240,8 @@ class BluetoothPeripheralWriteCharacteristicEvent {
   Uuid128? characteristicUuid;
   Uint8List? value;
 
+  BluetoothPeripheralWriteCharacteristicEvent(
+      {this.serviceUuid, this.characteristicUuid, this.value});
   void fromMap(Map map) {
     serviceUuid = Uuid128(map['service'].toString());
     characteristicUuid = Uuid128(map['characteristic'].toString());
@@ -247,6 +251,27 @@ class BluetoothPeripheralWriteCharacteristicEvent {
   @override
   String toString() =>
       '$serviceUuid $characteristicUuid ${value != null ? toHexString(value) : null}';
+
+  Model toMap() {
+    return Model.from({
+      'serviceUuid': serviceUuid?.toString(),
+      'characteristicUuid': characteristicUuid?.toString(),
+      'value': value != null ? toHexString(value) : null
+    });
+  }
+
+  @override
+  int get hashCode => toString().hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    if (other is BluetoothPeripheralWriteCharacteristicEvent) {
+      return other.serviceUuid == serviceUuid &&
+          other.characteristicUuid == characteristicUuid &&
+          const ListEquality<int>().equals(other.value, value);
+    }
+    return false;
+  }
 }
 
 class BluetoothPeripheral {
@@ -323,7 +348,7 @@ class BluetoothPeripheral {
 
   Future notifyCharacteristicValue(
       {required Uuid128 serviceUuid,
-      required Uuid128? characteristicUuid,
+      required Uuid128 characteristicUuid,
       Uint8List? value}) async {
     await _bluetoothFlutterPlugin!.methodChannel
         .invokeMethod('peripheralNotifyCharacteristicValue', {
@@ -333,9 +358,23 @@ class BluetoothPeripheral {
     });
   }
 
+  Future setAndNotifyCharacteristicValue(
+      {required Uuid128 serviceUuid,
+      required Uuid128 characteristicUuid,
+      required Uint8List? value}) async {
+    await setCharacteristicValue(
+        serviceUuid: serviceUuid,
+        characteristicUuid: characteristicUuid,
+        value: value);
+    await notifyCharacteristicValue(
+        serviceUuid: serviceUuid,
+        characteristicUuid: characteristicUuid,
+        value: value);
+  }
+
   Future<Uint8List> getCharacteristicValue({
     required Uuid128 serviceUuid,
-    required Uuid128? characteristicUuid,
+    required Uuid128 characteristicUuid,
   }) async {
     var bytes = (await _bluetoothFlutterPlugin!.methodChannel
         .invokeMethod('peripheralGetCharacteristicValue', {
