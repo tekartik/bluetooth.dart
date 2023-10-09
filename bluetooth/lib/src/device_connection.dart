@@ -26,10 +26,14 @@ class BluetoothDeviceConnectionState {
 
   static const disconnected = BluetoothDeviceConnectionState(
       bluetoothDeviceConnectionStateDisconnected);
+
+  /// No longer supported on Android and iOS
   static const connecting =
       BluetoothDeviceConnectionState(bluetoothDeviceConnectionStateConnecting);
   static const connected =
       BluetoothDeviceConnectionState(bluetoothDeviceConnectionStateConnected);
+
+  /// No longer supported on Android and iOS
   static const disconnecting = BluetoothDeviceConnectionState(
       bluetoothDeviceConnectionStateDisconnecting);
   static const unknown =

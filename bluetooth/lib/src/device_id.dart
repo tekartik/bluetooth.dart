@@ -7,7 +7,7 @@ abstract class BluetoothDeviceId {
   factory BluetoothDeviceId(String id) => BluetoothDeviceIdImpl(id);
 }
 
-abstract class BluetoothDeviceIdMixin implements BluetoothDeviceId {
+abstract mixin class BluetoothDeviceIdMixin implements BluetoothDeviceId {
   @override
   int get hashCode => id.toLowerCase().hashCode;
 

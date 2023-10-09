@@ -1,5 +1,6 @@
 //import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+// ignore: implementation_imports
+import 'package:tekartik_bluetooth_flutter_blue/src/flutter_blue_import.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_test_menu_flutter/test.dart';
 
@@ -18,13 +19,13 @@ void menuFlutterBlue() {
 
       item('connect_$name', () async {
         scanSubscription?.cancel();
-        scanSubscription = FlutterBluePlus.instance
-            .scan(timeout: Duration(seconds: 30))
+        scanSubscription = FlutterBluePlusPrvExt.scanAndStreamResults(
+                timeout: Duration(seconds: 30))
             .listen((result) {
-          var id = result.device.id.id;
+          var id = result.device.remoteId.str;
           if (!deviceIds.contains(id)) {
             write(
-                '[${_devices.length}] scan_$name: ${result.device.id} ${result.device.name} ${result.rssi}');
+                '[${_devices.length}] scan_$name: ${result.device.remoteId} ${result.device.platformName} ${result.rssi}');
             deviceIds.add(id);
             _devices[id] = result.device;
           }
@@ -37,7 +38,7 @@ void menuFlutterBlue() {
 
         for (int i = 0; i < deviceIds.length; i++) {
           var device = _devices[deviceIds[i]]!;
-          write('[$i]: ${device.id} ${device.name}');
+          write('[$i]: ${device.remoteId} ${device.platformName}');
         }
         int? index = parseInt(await prompt('Enter connect_$name index'));
         if (index != null) {
@@ -45,15 +46,15 @@ void menuFlutterBlue() {
           var device = _devices[deviceId]!;
           _cancelScanSubscription();
           stateChangeSubscription?.cancel();
-          stateChangeSubscription = device.state.listen((state) {
+          stateChangeSubscription = device.connectionState.listen((state) {
             write('onStateChanged_$name $state');
           }, onDone: () {
             write('onStateChanged_$name done');
           });
-          write('get_state_$name ${await device.state.first}');
+          write('get_state_$name ${await device.connectionState.first}');
 
-          write('connecting ${device.id}');
-          connectSubscription = device.state.listen((state) {
+          write('connecting ${device.remoteId}');
+          connectSubscription = device.connectionState.listen((state) {
             write('state_$name: $state');
           }, onDone: () {
             write('scan_$name: connect done');
@@ -80,10 +81,10 @@ void menuFlutterBlue() {
   menu('flutter_blue_scan', () {
     StreamSubscription? stateSubscription;
     item('get_bt_state', () async {
-      write('get_state: ${await FlutterBluePlus.instance.state.first}');
+      write('get_state: ${await FlutterBluePlus.adapterState.first}');
     });
     item('register_bt_state', () {
-      FlutterBluePlus.instance.state.listen((state) {
+      FlutterBluePlus.adapterState.listen((state) {
         write('state: $state');
       }, onDone: () {
         write('register_bt_state done');
@@ -106,11 +107,11 @@ void menuFlutterBlue() {
 
       item('scan_$name', () {
         scanSubscription?.cancel();
-        scanSubscription = FlutterBluePlus.instance
-            .scan(timeout: Duration(seconds: 30))
+        scanSubscription = FlutterBluePlusPrvExt.scanAndStreamResults(
+                timeout: Duration(seconds: 30))
             .listen((result) {
           write(
-              'scan_$name: ${result.device.id} ${result.device.name} ${result.rssi}');
+              'scan_$name: ${result.device.remoteId} ${result.device.platformName} ${result.rssi}');
         }, onDone: () {
           write('scan_$name: done');
         }, onError: (e, st) {

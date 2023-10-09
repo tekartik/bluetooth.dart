@@ -15,7 +15,7 @@ version: 1.0.0+1
 publish_to: none
 
 environment:
-  sdk: '>=2.18.0 <3.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -23,7 +23,7 @@ dependencies:
   tekartik_app_platform:
     git:
       url: https://github.com/tekartik/app_flutter_utils.dart
-      ref: dart2_3
+      ref: dart3a
       path: app_platform
     version: '>=0.1.0'
   # The following adds the Cupertino Icons font to your application.
@@ -33,13 +33,13 @@ dependencies:
   tekartik_platform_io:
     git:
       url: https://github.com/tekartik/platform.dart
-      ref: dart2_3
+      ref: dart3a
       path: platform_io
   tekartik_bluetooth_web:
     git:
       url: https://github.com/tekartik/bluetooth.dart
       path: bluetooth_web
-      ref: dart2_3
+      ref: dart3a
   flutter_blue_plus:
 dev_dependencies:
   flutter_test:
@@ -50,30 +50,30 @@ dev_dependencies:
     git:
       url: https://github.com/tekartik/bluetooth.dart
       path: bluetooth_flutter_blue
-      ref: dart2_3
+      ref: dart3a
     version: '>=0.2.1'
   tekartik_bluetooth_bluez:
     git:
       url: https://github.com/tekartik/bluetooth.dart
       path: bluetooth_bluez
-      ref: dart2_3
+      ref: dart3a
     version: '>=0.2.1'
   tekartik_test_menu_flutter:
     git:
       url: https://github.com/tekartik/test_menu_flutter
-      ref: dart2_3
+      ref: dart3a
       path: test_menu_flutter
     version: '>=0.2.5'
   tekartik_lints_flutter:
     git:
       url: https://github.com/tekartik/common_flutter.dart
-      ref: dart2_3
+      ref: dart3a
       path: packages/lints_flutter
     version: '>=0.1.0'
   tekartik_build_menu_flutter:
     git:
       url: https://github.com/tekartik/build_flutter.dart
-      ref: dart2_3
+      ref: dart3a
       path: packages/build_menu_flutter
     version: '>=0.1.0'
 dependency_overrides:

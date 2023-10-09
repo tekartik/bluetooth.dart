@@ -9,17 +9,22 @@ import 'package:tekartik_bluetooth_flutter_blue/utils/guid_utils.dart';
 import 'flutter_blue_import.dart' as native;
 import 'import.dart';
 
-BluetoothDeviceConnectionState connectionStateFromBluetoothDeviceState(
-    native.BluetoothDeviceState state) {
+BluetoothDeviceConnectionState connectionStateFromBluetoothConnectionState(
+    native.BluetoothConnectionState state) {
   switch (state) {
-    case native.BluetoothDeviceState.connecting:
-      return BluetoothDeviceConnectionState.connecting;
-    case native.BluetoothDeviceState.connected:
+    case native.BluetoothConnectionState.connected:
       return BluetoothDeviceConnectionState.connected;
-    case native.BluetoothDeviceState.disconnected:
+    case native.BluetoothConnectionState.disconnected:
       return BluetoothDeviceConnectionState.disconnected;
-    case native.BluetoothDeviceState.disconnecting:
+    /*
+    No longer supported in iOS and Android
+    case native.BluetoothConnectionState.connecting:
+      return BluetoothDeviceConnectionState.connecting;
+    case native.BluetoothConnectionState.disconnecting:
       return BluetoothDeviceConnectionState.disconnecting;
+      */
+    default:
+      return BluetoothDeviceConnectionState.disconnected;
   }
 }
 
@@ -129,8 +134,8 @@ class BluetoothDeviceConnectionFlutterBlue
   @override
   Stream<BluetoothDeviceConnectionState> get onConnectionState {
     var nativeImpl = device.nativeImpl;
-    return nativeImpl.state
-        .map((native) => connectionStateFromBluetoothDeviceState(native));
+    return nativeImpl.connectionState
+        .map((native) => connectionStateFromBluetoothConnectionState(native));
   }
 
   BluetoothCharacteristicFlutterBlue? findCharacteristic(

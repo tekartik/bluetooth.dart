@@ -1,4 +1,4 @@
-import 'package:tekartik_common_utils/model/model_v2.dart';
+import 'package:cv/cv.dart';
 
 const methodStartScan = 'startScan';
 const methodStopScan = 'stopScan';

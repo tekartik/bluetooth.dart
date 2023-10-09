@@ -8,5 +8,6 @@ abstract class BluetoothStateService {
       {@Deprecated('Use androidRequestCode') int? requestCode,
       int? androidRequestCode});
 
+  /// No longer working on Android SDK33
   Future disable();
 }

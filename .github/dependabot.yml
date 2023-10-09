@@ -1,0 +1,80 @@
+# Dependabot configuration file.
+# See https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
+version: 2
+
+enable-beta-ecosystems: true
+updates:
+  - package-ecosystem: "pub"
+    directory: "bluetooth"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "bluetooth_bluez"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "bluetooth_flutter"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "bluetooth_flutter/example"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "bluetooth_flutter_blue"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "bluetooth_flutter_blue/example"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "bluetooth_server"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "bluetooth_server_app"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "bluetooth_server_flutter"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "bluetooth_test"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "bluetooth_test_app"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "bluetooth_web"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "example/java_objc_app"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "repo_support"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"

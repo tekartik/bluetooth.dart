@@ -25,12 +25,13 @@ class BluetoothAdminManagerFlutterBlue implements BluetoothAdminManager {
 
   @override
   Future disable() async {
-    await FlutterBluePlus.instance.turnOff();
+    // No longer supported...
+    // await FlutterBluePlus.turnOff();
   }
 
   @override
   Future enable({int? requestCode, int? androidRequestCode}) async {
-    await FlutterBluePlus.instance.turnOn();
+    await FlutterBluePlus.turnOn();
     if (!((await getAdminInfo()).isBluetoothEnabled ?? false)) {
       throw StateError('Manual setup needed');
     }
@@ -43,17 +44,17 @@ class BluetoothAdminManagerFlutterBlue implements BluetoothAdminManager {
     bool? available;
     bool? on;
     try {
-      var instance = FlutterBluePlus.instance;
+      BluetoothAdapterState? state;
       try {
-        await instance.state.first;
-        available = await instance.isAvailable;
+        state = await FlutterBluePlus.adapterState.first;
+        available = await FlutterBluePlus.isAvailable;
         // devPrint('blue available $available');
       } catch (e) {
         // ignore: avoid_print
         print('error $e getting flutter blue available');
       }
       try {
-        on = await instance.isOn;
+        on = state == BluetoothAdapterState.on;
       } catch (e) {
         // ignore: avoid_print
         print('error $e getting flutter blue on');

@@ -1,6 +1,6 @@
+import 'package:cv/cv.dart';
 import 'package:tekartik_bluetooth/src/common/device_mixin.dart';
 import 'package:tekartik_bluetooth/src/device_id.dart';
-import 'package:tekartik_common_utils/model/model_v2.dart';
 
 /// Bluetooth device type.
 enum BluetoothDeviceType { unknown, classic, le, dual }

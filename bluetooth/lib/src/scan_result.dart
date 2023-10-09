@@ -1,5 +1,5 @@
+import 'package:cv/cv.dart';
 import 'package:tekartik_common_utils/int_utils.dart';
-import 'package:tekartik_common_utils/model/model_v2.dart';
 
 import 'bluetooth_device.dart';
 

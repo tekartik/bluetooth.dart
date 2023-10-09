@@ -1,13 +1,5 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
-export 'src/platform_channel.dart'
-    show
-        EventChannel,
-        EventChannelMixin,
-        MethodCall,
-        MethodCallMixin,
-        MethodChannel,
-        MethodChannelMixin;
 
 /// An command object representing the invocation of a named method.
 @immutable

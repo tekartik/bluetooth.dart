@@ -8,7 +8,6 @@ import 'package:tekartik_bluetooth_flutter/src/import.dart';
 import 'package:tekartik_bluetooth_flutter/src/import_bluetooth.dart';
 import 'package:tekartik_bluetooth_flutter/src/mixin.dart';
 import 'package:tekartik_bluetooth_flutter/utils/model_utils.dart';
-
 // abstract class BluetoothDeviceConnection {}
 export 'package:tekartik_bluetooth/src/device_connection.dart';
 
