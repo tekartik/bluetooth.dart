@@ -13,7 +13,7 @@ dependencies:
       path: bluetooth
       ref: dart3a
     version: '>=0.2.1'
-  bluez:
+  bluez: '>=0.8.1'
   dbus:
 
 dev_dependencies:

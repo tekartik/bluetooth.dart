@@ -47,7 +47,7 @@ class BluetoothAdminManagerFlutterBlue implements BluetoothAdminManager {
       BluetoothAdapterState? state;
       try {
         state = await FlutterBluePlus.adapterState.first;
-        available = await FlutterBluePlus.isAvailable;
+        available = await FlutterBluePlus.isSupported;
         // devPrint('blue available $available');
       } catch (e) {
         // ignore: avoid_print

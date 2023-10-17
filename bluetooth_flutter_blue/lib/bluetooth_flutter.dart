@@ -19,7 +19,7 @@ class BluetoothFlutterBlue {
   static bool? _isSupported;
 
   static Future<bool> get _isSupportedReady async {
-    return _isSupported ??= await FlutterBluePlus.isAvailable;
+    return _isSupported ??= await FlutterBluePlus.isSupported;
   }
 
   static Future<BluetoothAdapterState> get bluetoothState async {
