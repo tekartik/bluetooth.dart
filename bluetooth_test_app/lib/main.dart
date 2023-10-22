@@ -27,7 +27,7 @@ Future<void> main() async {
 }
 
 class BleTestApp extends StatelessWidget {
-  const BleTestApp({Key? key}) : super(key: key);
+  const BleTestApp({super.key});
 
   // This widget is the root of your application.
   @override

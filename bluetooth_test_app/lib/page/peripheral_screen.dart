@@ -5,7 +5,7 @@ import 'package:tekartik_bluetooth_test_app/ble/simple_peripheral.dart';
 import 'package:tekartik_bluetooth_test_app/import/common_import.dart';
 
 class PeripheralScreen extends StatefulWidget {
-  const PeripheralScreen({Key? key}) : super(key: key);
+  const PeripheralScreen({super.key});
 
   @override
   State<PeripheralScreen> createState() => _PeripheralScreenState();

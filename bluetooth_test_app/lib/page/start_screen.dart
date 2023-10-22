@@ -14,7 +14,7 @@ typedef StartScreenAutoStartFunction = Future<void> Function(
 StartScreenAutoStartFunction? startScreenAutoStartFunction;
 
 class StartScreen extends StatefulWidget {
-  const StartScreen({Key? key, this.title}) : super(key: key);
+  const StartScreen({super.key, this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect

@@ -4,8 +4,7 @@ class BodyContainer extends StatelessWidget {
   final Widget? child;
   final double width;
 
-  const BodyContainer({Key? key, this.child, this.width = 840})
-      : super(key: key);
+  const BodyContainer({super.key, this.child, this.width = 840});
   @override
   Widget build(BuildContext context) {
     return Center(

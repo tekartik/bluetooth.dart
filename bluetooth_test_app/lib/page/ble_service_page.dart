@@ -13,8 +13,7 @@ class AppBleService {
 class BleServicePage extends StatefulWidget {
   final AppBleService appBleService;
 
-  const BleServicePage({Key? key, required this.appBleService})
-      : super(key: key);
+  const BleServicePage({super.key, required this.appBleService});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -57,7 +56,7 @@ class _BleServicePageState extends State<BleServicePage> {
                   }();
                 },
               );
-            }).toList(growable: false)
+            })
           ],
         );
       }),

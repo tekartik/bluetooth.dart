@@ -10,7 +10,7 @@ import 'package:tekartik_bluetooth_test_app/page/ble_service_page.dart';
 class DevicePage extends StatefulWidget {
   final BluetoothDeviceId deviceId;
 
-  const DevicePage({Key? key, required this.deviceId}) : super(key: key);
+  const DevicePage({super.key, required this.deviceId});
 
   @override
   // ignore: library_private_types_in_public_api

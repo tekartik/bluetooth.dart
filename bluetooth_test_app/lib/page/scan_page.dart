@@ -10,7 +10,7 @@ import 'package:tekartik_bluetooth_test_app/import/import_bluetooth.dart';
 import 'package:tekartik_bluetooth_test_app/src/ble_setup.dart';
 
 class ScanPage extends StatefulWidget {
-  const ScanPage({Key? key}) : super(key: key);
+  const ScanPage({super.key});
 
   @override
   // ignore: library_private_types_in_public_api

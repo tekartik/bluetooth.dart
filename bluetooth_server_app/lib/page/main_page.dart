@@ -7,7 +7,7 @@ import 'package:tekartik_bluetooth_server_app/src/import.dart';
 import 'package:tekartik_bluetooth_server_app/src/prefs.dart';
 
 class BluetoothServerHomePage extends StatefulWidget {
-  const BluetoothServerHomePage({Key? key, this.title}) : super(key: key);
+  const BluetoothServerHomePage({super.key, this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect

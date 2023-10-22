@@ -59,8 +59,7 @@ class _NotifyState {
 class BleCharacteristicPage extends StatefulWidget {
   final AppBleCharacteristic? appBleCharacteristic;
 
-  const BleCharacteristicPage({Key? key, this.appBleCharacteristic})
-      : super(key: key);
+  const BleCharacteristicPage({super.key, this.appBleCharacteristic});
 
   @override
   // ignore: library_private_types_in_public_api

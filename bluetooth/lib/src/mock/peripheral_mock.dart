@@ -42,9 +42,9 @@ class BluetoothPeripheralMock extends BluetoothPeripheral {
       _bleNotificationWrapper;
   BluetoothPeripheralMock(
       { // Needed?
-      String? deviceName,
-      List<BluetoothGattService>? services})
-      : super(plugin: null, deviceName: deviceName, services: services);
+      super.deviceName,
+      super.services})
+      : super(plugin: null);
 
   /// Current advertiseData
   AdvertiseData? advertiseData;
