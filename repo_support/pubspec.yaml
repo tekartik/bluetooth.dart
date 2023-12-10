@@ -9,7 +9,7 @@ environment:
 dev_dependencies:
   path:
   process_run: '>=0.11.0+2'
-  dev_test: '>=0.13.4-dev.2'
+  dev_build: '>=0.13.4-dev.2'
   test:
   tekartik_lints:
     git:
