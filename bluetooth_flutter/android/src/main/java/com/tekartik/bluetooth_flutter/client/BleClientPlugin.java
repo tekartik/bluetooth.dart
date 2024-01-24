@@ -7,6 +7,7 @@ import static com.tekartik.bluetooth_flutter.BluetoothFlutterPlugin.TAG;
 import static com.tekartik.bluetooth_flutter.Constant.CONNECTION_ID_KEY;
 import static com.tekartik.bluetooth_flutter.LogLevel.hasVerboseLevel;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGatt;
@@ -105,6 +106,7 @@ public class BleClientPlugin {
         return ++mLastConnectionId;
     }
 
+    @SuppressLint("MissingPermission")
     public void onDisconnect(PluginRequest request) {
         if (hasVerboseLevel(bfluPlugin.logLevel)) {
             Log.i(TAG, "disconnect");
