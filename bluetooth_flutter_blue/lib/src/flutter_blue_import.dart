@@ -19,7 +19,11 @@ extension FlutterBluePlusPrvExt on FlutterBluePlus {
     final controller = StreamController<ScanResult>();
 
     var subscription = FlutterBluePlus.scanResults.listen(
-      (r) => controller.add(r.first),
+      (r) {
+        for (var scanResult in r) {
+          controller.add(scanResult);
+        }
+      },
       onError: (Object e, StackTrace? stackTrace) =>
           controller.addError(e, stackTrace),
     );
