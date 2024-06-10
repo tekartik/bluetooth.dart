@@ -14,7 +14,7 @@ void main() {
   BluetoothDevice? bleDevice;
   BluetoothDeviceConnection? bleConnection;
 
-  mainMenu(() {
+  mainMenuFlutter(() {
     enter(() async {
       if (platformContextIo.io?.isLinux ?? false) {
         write('Using bluez');

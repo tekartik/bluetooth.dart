@@ -10,7 +10,7 @@ Future<void> main() async {
   await bluetoothAdminManagerFlutter
       // ignore: deprecated_member_use
       .devSetOptions(BluetoothOptions(logLevel: bluetoothLogLevelVerbose));
-  mainMenu(() {
+  mainMenuFlutter(() {
     item('app', () {
       app_main.main();
     });
