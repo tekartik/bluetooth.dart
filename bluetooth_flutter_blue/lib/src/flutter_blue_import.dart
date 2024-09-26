@@ -36,8 +36,7 @@ extension FlutterBluePlusPrvExt on FlutterBluePlus {
       androidUsesFineLocation: androidUsesFineLocation,
     );
 
-    Future scanComplete =
-        FlutterBluePlus.isScanning.where((e) => !e).first;
+    Future scanComplete = FlutterBluePlus.isScanning.where((e) => !e).first;
 
     scanComplete.whenComplete(() {
       subscription.cancel();

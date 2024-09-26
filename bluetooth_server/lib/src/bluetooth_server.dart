@@ -10,7 +10,6 @@ import 'package:tekartik_bluetooth_server/src/constant.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_web_socket_io/web_socket_io.dart';
 
-
 typedef BluetoothServerNotifyCallback = void Function(
     bool response, String method, dynamic params);
 
