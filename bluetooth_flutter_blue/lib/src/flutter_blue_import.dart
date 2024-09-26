@@ -37,7 +37,7 @@ extension FlutterBluePlusPrvExt on FlutterBluePlus {
     );
 
     Future scanComplete =
-        FlutterBluePlus.isScanning.where((e) => e == false).first;
+        FlutterBluePlus.isScanning.where((e) => !e).first;
 
     scanComplete.whenComplete(() {
       subscription.cancel();

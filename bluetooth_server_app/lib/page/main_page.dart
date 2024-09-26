@@ -197,7 +197,7 @@ class _BluetoothServerHomePageState extends State<BluetoothServerHomePage> {
     try {
       var server = await app.startServer(port,
           notifyCallback: (bool response, String method, dynamic param) {
-        if (response == false) {
+        if (!response) {
           if (method == methodBluetooth) {
             var paramsMap = param as Map;
             var bluetoothMethod = paramsMap['method'] as String?;
