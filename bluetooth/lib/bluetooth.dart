@@ -1,4 +1,4 @@
-library tekartik_bluetooth;
+library;
 
 export 'package:tekartik_bluetooth/src/device_connection.dart';
 export 'package:tekartik_bluetooth/src/info.dart';

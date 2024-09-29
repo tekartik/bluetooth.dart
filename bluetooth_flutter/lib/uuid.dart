@@ -1,4 +1,4 @@
 @Deprecated("import 'package:tekartik_bluetooth/uuid.dart'")
-library tekartik_bluetooth_flutter.uuid;
+library;
 
 export 'package:tekartik_bluetooth/uuid.dart';
