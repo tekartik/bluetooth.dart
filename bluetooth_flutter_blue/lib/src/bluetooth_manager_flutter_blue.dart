@@ -76,7 +76,7 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
 
   @override
   Future<List<BluetoothDevice>> getConnectedDevices() async {
-    var devices = await native.FlutterBluePlus.systemDevices;
+    var devices = native.FlutterBluePlus.connectedDevices;
     var blueDevices =
         devices.map((native) => BluetoothDeviceFlutterBlue(native)).toList();
     // cache
