@@ -30,6 +30,7 @@ allprojects {
 apply plugin: 'com.android.library'
 
 android {
+    namespace "com.tekartik.bluetooth.flutter"
     compileSdkVersion 33
 
     defaultConfig {
