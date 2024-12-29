@@ -27,8 +27,8 @@ dependencies:
     version: '>=0.2.1'
 
 dev_dependencies:
-  test:
-  process_run:
+  test: ">=1.24.0"
+  process_run: ">=1.2.1+1"
 
 dependency_overrides:
   tekartik_bluetooth:

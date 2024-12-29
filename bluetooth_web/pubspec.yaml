@@ -23,10 +23,10 @@ dependency_overrides:
     path: ../bluetooth
 
 dev_dependencies:
-  lints:
-  test:
-  build_runner:
-  build_web_compilers:
+  lints: ">=5.0.0"
+  test: ">=1.24.0"
+  build_runner: ">=2.4.13"
+  build_web_compilers: ">=4.0.11"
   tekartik_test_menu_browser:
     git:
       url: https://github.com/tekartik/test_menu.dart
