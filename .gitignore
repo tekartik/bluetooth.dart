@@ -12,3 +12,4 @@ build/
 # local
 .local/
 /bluetooth_test_app/.metadata
+*Package.swift

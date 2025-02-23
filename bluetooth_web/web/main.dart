@@ -1,5 +1,5 @@
 import 'package:flutter_web_bluetooth/flutter_web_bluetooth.dart';
-import 'package:tekartik_test_menu_browser/test_menu_mdl_browser.dart';
+import 'package:tekartik_test_menu_browser/test_menu_browser.dart';
 
 Future main() async {
   await initTestMenuBrowser();
