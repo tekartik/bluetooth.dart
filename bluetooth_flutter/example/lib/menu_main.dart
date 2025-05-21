@@ -8,8 +8,8 @@ import 'menu_ble.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await bluetoothAdminManagerFlutter
-      // ignore: deprecated_member_use
-      .devSetOptions(BluetoothOptions(logLevel: bluetoothLogLevelVerbose));
+  // ignore: deprecated_member_use
+  .devSetOptions(BluetoothOptions(logLevel: bluetoothLogLevelVerbose));
   mainMenuFlutter(() {
     item('app', () {
       app_main.main();

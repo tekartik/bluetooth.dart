@@ -8,7 +8,8 @@ void main() {
     test('init', () async {
       WebSocketChannelFactory factory = webSocketChannelFactoryMemory;
       var server = await BluetoothServer.serve(
-          webSocketChannelServerFactory: factory.server);
+        webSocketChannelServerFactory: factory.server,
+      );
       var client = await BluetoothServerClient.connect(
         server.url,
         webSocketChannelClientFactory: factory.client,

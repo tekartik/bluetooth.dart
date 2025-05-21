@@ -27,7 +27,7 @@ abstract class BehaviorSubjectInterface<T>
 class BehaviorSubjectWrapper<T> extends _SubjectWrapper<T?>
     implements BehaviorSubjectInterface<T?> {
   BehaviorSubjectWrapper({T? seedValue})
-      : super(BehaviorSubject<T?>.seeded(seedValue));
+    : super(BehaviorSubject<T?>.seeded(seedValue));
 
   @override
   T? get value => (_subject as BehaviorSubject<T?>).value;

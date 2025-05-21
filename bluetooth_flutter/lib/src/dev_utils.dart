@@ -41,7 +41,8 @@ T? devDebugOnly<T>(T Function() action, {String? message}) {
   if (isDebug) {
     // ignore: avoid_print
     print(
-        '[DEBUG_ONLY]${message != null ? ' $message' : ' debug only behavior'}');
+      '[DEBUG_ONLY]${message != null ? ' $message' : ' debug only behavior'}',
+    );
     return action();
   } else {
     return null;

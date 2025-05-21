@@ -34,7 +34,7 @@ class BluetoothFlutter {
     try {
       return _isSupported ??=
           (await bluetoothAdminManagerFlutter.getAdminInfo()).hasBluetoothBle ??
-              false;
+          false;
     } catch (_) {
       return false;
     }
@@ -58,16 +58,17 @@ class BluetoothFlutter {
     _isSupported ??= await _isSupportedReady;
     assert(_isSupported!, 'call bluetoothState first');
     await _enableLock.synchronized(() async {
-      await _channel.invokeMethod(
-          'enableBluetooth', <String, dynamic>{'requestCode': requestCode});
+      await _channel.invokeMethod('enableBluetooth', <String, dynamic>{
+        'requestCode': requestCode,
+      });
     });
   }
 
   /// Occurs when the bluetooth state has changed
   static Stream<BluetoothSlaveConnection> onSlaveConnectionChanged() {
-    return _connectionChannel
-        .receiveBroadcastStream()
-        .map((buffer) => BluetoothSlaveConnection()..fromMap(buffer as Map));
+    return _connectionChannel.receiveBroadcastStream().map(
+      (buffer) => BluetoothSlaveConnection()..fromMap(buffer as Map),
+    );
   }
 
   // @Deprecated('Use Peripheral.startAdvertising')
@@ -77,7 +78,9 @@ class BluetoothFlutter {
 
     // print('startAdvertising: $advertiseData');
     await _channel.invokeMethod(
-        'peripheralStartAdvertising', advertiseData?.toMap());
+      'peripheralStartAdvertising',
+      advertiseData?.toMap(),
+    );
   }
 
   // @Deprecated('Use Peripheral.stopAdvertising')
@@ -92,8 +95,9 @@ class BluetoothFlutter {
     _isSupported ??= await _isSupportedReady;
     assert(_isSupported!, 'call bluetoothState first');
     await _enableLock.synchronized(() async {
-      await _channel.invokeMethod(
-          'enableBluetooth', <String, dynamic>{'requestCode': requestCode});
+      await _channel.invokeMethod('enableBluetooth', <String, dynamic>{
+        'requestCode': requestCode,
+      });
     });
   }
 
@@ -110,17 +114,22 @@ class BluetoothFlutter {
     await _channel.invokeMethod('connect', map);
   }
 
-  static Future<BluetoothPeripheral> initPeripheral(
-      {List<BluetoothGattService>? services, String? deviceName}) async {
+  static Future<BluetoothPeripheral> initPeripheral({
+    List<BluetoothGattService>? services,
+    String? deviceName,
+  }) async {
     _isSupported ??= await _isSupportedReady;
     assert(_isSupported!, 'call bluetoothStatus first');
 
-    var initData =
-        BluetoothPeripheralInitData(services: services, deviceName: deviceName);
+    var initData = BluetoothPeripheralInitData(
+      services: services,
+      deviceName: deviceName,
+    );
     var peripheral = BluetoothPeripheral(
-        services: services,
-        deviceName: deviceName,
-        plugin: bluetoothFlutterPlugin);
+      services: services,
+      deviceName: deviceName,
+      plugin: bluetoothFlutterPlugin,
+    );
 
     await _channel.invokeMethod('peripheralInit', initData.toMap());
     return peripheral;

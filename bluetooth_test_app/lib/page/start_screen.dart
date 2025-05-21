@@ -8,8 +8,8 @@ import 'package:tekartik_bluetooth_test_app/page/scan_page.dart';
 
 import '../test_main.dart' as test_main;
 
-typedef StartScreenAutoStartFunction = Future<void> Function(
-    BuildContext context);
+typedef StartScreenAutoStartFunction =
+    Future<void> Function(BuildContext context);
 
 StartScreenAutoStartFunction? startScreenAutoStartFunction;
 
@@ -78,7 +78,7 @@ class _StartScreenState extends State<StartScreen> {
             onTap: () {
               test_main.main();
             },
-          )
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -98,18 +98,21 @@ class _StartScreenState extends State<StartScreen> {
     if (initBluetoothManager.isAndroid ?? false) {
       // devPrint('Check permission');
       if (!await initBluetoothManager.checkBluetoothPermissions(
-          androidRequestCode: 1234)) {
+        androidRequestCode: 1234,
+      )) {
         // devPrint('Permissions denied');
         return;
       }
     }
     // ignore: use_build_context_synchronously
     var deviceId = await Navigator.of(context).push<BluetoothDeviceId>(
-        MaterialPageRoute(builder: (_) => const ScanPage()));
+      MaterialPageRoute(builder: (_) => const ScanPage()),
+    );
     if (deviceId != null) {
       // ignore: use_build_context_synchronously
       await Navigator.of(context).push<String>(
-          MaterialPageRoute(builder: (_) => DevicePage(deviceId: deviceId)));
+        MaterialPageRoute(builder: (_) => DevicePage(deviceId: deviceId)),
+      );
     }
   }
 }

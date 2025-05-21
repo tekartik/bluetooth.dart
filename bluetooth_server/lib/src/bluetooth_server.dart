@@ -10,8 +10,8 @@ import 'package:tekartik_bluetooth_server/src/constant.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_web_socket_io/web_socket_io.dart';
 
-typedef BluetoothServerNotifyCallback = void Function(
-    bool response, String method, dynamic params);
+typedef BluetoothServerNotifyCallback =
+    void Function(bool response, String method, dynamic params);
 
 /// Web socket server
 class BluetoothServer {
@@ -25,11 +25,12 @@ class BluetoothServer {
   final List<BluetoothServerChannel> _channels = [];
   final WebSocketChannelServer<String> _webSocketChannelServer;
 
-  static Future<BluetoothServer> serve(
-      {WebSocketChannelServerFactory? webSocketChannelServerFactory,
-      dynamic address,
-      int? port,
-      BluetoothServerNotifyCallback? notifyCallback}) async {
+  static Future<BluetoothServer> serve({
+    WebSocketChannelServerFactory? webSocketChannelServerFactory,
+    dynamic address,
+    int? port,
+    BluetoothServerNotifyCallback? notifyCallback,
+  }) async {
     webSocketChannelServerFactory ??= webSocketChannelServerFactoryIo;
     var webSocketChannelServer = await webSocketChannelServerFactory
         .serve<String>(address: address, port: port);
@@ -50,10 +51,11 @@ class BluetoothServerChannel {
   // List<int> _openDatabaseIds = [];
 
   BluetoothServerChannel(this._server, WebSocketChannel<String> channel)
-      : _rpcServer = json_rpc.Server(channel) {
+    : _rpcServer = json_rpc.Server(channel) {
     // Specific method for getting server info upon start
-    _rpcServer.registerMethod(methodGetServerInfo,
-        (json_rpc.Parameters parameters) {
+    _rpcServer.registerMethod(methodGetServerInfo, (
+      json_rpc.Parameters parameters,
+    ) {
       if (_notifyCallback != null) {
         _notifyCallback!(false, methodGetServerInfo, parameters.value);
       }
@@ -68,8 +70,9 @@ class BluetoothServerChannel {
     });
 
     // Generic method
-    _rpcServer.registerMethod(methodBluetooth,
-        (json_rpc.Parameters parameters) async {
+    _rpcServer.registerMethod(methodBluetooth, (
+      json_rpc.Parameters parameters,
+    ) async {
       if (_notifyCallback != null) {
         _notifyCallback!(false, methodBluetooth, parameters.value);
       }
@@ -79,9 +82,9 @@ class BluetoothServerChannel {
       var method = map[keyMethod] as String;
       var param = map[keyParam];
 
-      dynamic result =
-          await (serverBluetoothManager as BluetoothServiceInvokable)
-              .invokeMethod<dynamic>(method, param);
+      dynamic result = await (serverBluetoothManager
+              as BluetoothServiceInvokable)
+          .invokeMethod<dynamic>(method, param);
       if (_notifyCallback != null) {
         _notifyCallback!(true, methodBluetooth, result);
       }

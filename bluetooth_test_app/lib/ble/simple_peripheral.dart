@@ -5,40 +5,49 @@ import 'package:tekartik_bluetooth_test_app/import/import_bluetooth.dart';
 
 final simpleServiceUuid128 = Uuid128('583df901-b22a-4b8b-aada-24b9517949cd');
 
-final simpleCharacteristicWriteUuid128 =
-    Uuid128('ce724d50-7471-41e1-b60a-0e3c1bf0179a');
-final simpleCharacteristicReadUuid128 =
-    Uuid128('1755e4e0-179b-4e28-bcb7-b2544203ac04');
-final simpleCharacteristicTimeIndicateUuid128 =
-    Uuid128('48766b55-436e-430e-a1b6-86b0e0b45a94');
-final simpleCharacteristicTimeNotifyUuid128 =
-    Uuid128('040473f7-2b60-450a-ae9d-36fb630e8a89');
+final simpleCharacteristicWriteUuid128 = Uuid128(
+  'ce724d50-7471-41e1-b60a-0e3c1bf0179a',
+);
+final simpleCharacteristicReadUuid128 = Uuid128(
+  '1755e4e0-179b-4e28-bcb7-b2544203ac04',
+);
+final simpleCharacteristicTimeIndicateUuid128 = Uuid128(
+  '48766b55-436e-430e-a1b6-86b0e0b45a94',
+);
+final simpleCharacteristicTimeNotifyUuid128 = Uuid128(
+  '040473f7-2b60-450a-ae9d-36fb630e8a89',
+);
 
 List<BluetoothGattService> gattServices = <BluetoothGattService>[
   BluetoothGattService(
-      uuid: simpleServiceUuid128,
-      characteristics: <BluetoothGattCharacteristic>[
-        BluetoothGattCharacteristic(
-            uuid: simpleCharacteristicWriteUuid128,
-            properties: BluetoothGattCharacteristic.propertyWrite,
-            permissions: BluetoothGattCharacteristic.permissionWrite,
-            description: 'SimpleWrite'),
-        BluetoothGattCharacteristic(
-            uuid: simpleCharacteristicReadUuid128,
-            properties: BluetoothGattCharacteristic.propertyRead,
-            permissions: BluetoothGattCharacteristic.permissionRead,
-            description: 'SimpleRead'),
-        BluetoothGattCharacteristic(
-            uuid: simpleCharacteristicTimeIndicateUuid128,
-            properties: BluetoothGattCharacteristic.propertyIndicate,
-            permissions: 0,
-            description: 'TimeIndicate'),
-        BluetoothGattCharacteristic(
-            uuid: simpleCharacteristicTimeNotifyUuid128,
-            properties: BluetoothGattCharacteristic.propertyNotify,
-            permissions: 0,
-            description: 'TimeNotify'),
-      ])
+    uuid: simpleServiceUuid128,
+    characteristics: <BluetoothGattCharacteristic>[
+      BluetoothGattCharacteristic(
+        uuid: simpleCharacteristicWriteUuid128,
+        properties: BluetoothGattCharacteristic.propertyWrite,
+        permissions: BluetoothGattCharacteristic.permissionWrite,
+        description: 'SimpleWrite',
+      ),
+      BluetoothGattCharacteristic(
+        uuid: simpleCharacteristicReadUuid128,
+        properties: BluetoothGattCharacteristic.propertyRead,
+        permissions: BluetoothGattCharacteristic.permissionRead,
+        description: 'SimpleRead',
+      ),
+      BluetoothGattCharacteristic(
+        uuid: simpleCharacteristicTimeIndicateUuid128,
+        properties: BluetoothGattCharacteristic.propertyIndicate,
+        permissions: 0,
+        description: 'TimeIndicate',
+      ),
+      BluetoothGattCharacteristic(
+        uuid: simpleCharacteristicTimeNotifyUuid128,
+        properties: BluetoothGattCharacteristic.propertyNotify,
+        permissions: 0,
+        description: 'TimeNotify',
+      ),
+    ],
+  ),
 ];
 
 class SimplePeripheral {
@@ -63,9 +72,13 @@ class SimplePeripheral {
       // If we include the device name we get:
       // ADVERTISE_FAILED_DATA_TOO_LARGE
       await bluetoothPeripheral?.startAdvertising(
-          advertiseData: AdvertiseData(services: <AdvertiseDataService>[
-        AdvertiseDataService(uuid: simpleServiceUuid128)
-      ], includeDeviceName: false));
+        advertiseData: AdvertiseData(
+          services: <AdvertiseDataService>[
+            AdvertiseDataService(uuid: simpleServiceUuid128),
+          ],
+          includeDeviceName: false,
+        ),
+      );
     } catch (e) {
       print(e); // ignore: avoid_print
     }
@@ -92,9 +105,11 @@ class SimplePeripheral {
   Future<void> init({bool startAdvertisting = true}) async {
     try {
       if (bluetoothPeripheral == null) {
-        var peripheral = bluetoothPeripheral =
-            await BluetoothFlutter.initPeripheral(
-                services: gattServices, deviceName: deviceName);
+        var peripheral =
+            bluetoothPeripheral = await BluetoothFlutter.initPeripheral(
+              services: gattServices,
+              deviceName: deviceName,
+            );
         peripheral.onWriteCharacteristic().listen((event) {
           print('onWriteCharacteristic: $event'); // ignore: avoid_print
           _onWrittenController.add(event.value);
@@ -139,16 +154,19 @@ class SimplePeripheral {
     print(text);
     var value = asUint8List(text);
     bluetoothPeripheral!.notifyCharacteristicValue(
-        serviceUuid: simpleServiceUuid128,
-        characteristicUuid: simpleCharacteristicTimeIndicateUuid128,
-        value: value);
+      serviceUuid: simpleServiceUuid128,
+      characteristicUuid: simpleCharacteristicTimeIndicateUuid128,
+      value: value,
+    );
     bluetoothPeripheral!.notifyCharacteristicValue(
-        serviceUuid: simpleServiceUuid128,
-        characteristicUuid: simpleCharacteristicTimeNotifyUuid128,
-        value: value);
+      serviceUuid: simpleServiceUuid128,
+      characteristicUuid: simpleCharacteristicTimeNotifyUuid128,
+      value: value,
+    );
     bluetoothPeripheral!.setCharacteristicValue(
-        serviceUuid: simpleServiceUuid128,
-        characteristicUuid: simpleCharacteristicReadUuid128,
-        value: value);
+      serviceUuid: simpleServiceUuid128,
+      characteristicUuid: simpleCharacteristicReadUuid128,
+      value: value,
+    );
   }
 }

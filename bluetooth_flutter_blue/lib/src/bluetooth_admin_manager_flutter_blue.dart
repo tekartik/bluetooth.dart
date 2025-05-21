@@ -4,8 +4,10 @@ import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
 
 class BluetoothAdminManagerFlutterBlue implements BluetoothAdminManager {
   @override
-  Future<bool> checkBluetoothPermissions(
-      {int? androidRequestCode, BluetoothPermissionsOptions? options}) async {
+  Future<bool> checkBluetoothPermissions({
+    int? androidRequestCode,
+    BluetoothPermissionsOptions? options,
+  }) async {
     // TODO: implement checkBluetoothPermissions
     throw UnimplementedError();
   }
@@ -64,9 +66,10 @@ class BluetoothAdminManagerFlutterBlue implements BluetoothAdminManager {
       print('error $e getting flutter blue info');
     }
     var info = BluetoothAdminInfoImpl(
-        hasBluetooth: available,
-        hasBluetoothBle: available,
-        isBluetoothEnabled: on);
+      hasBluetooth: available,
+      hasBluetoothBle: available,
+      isBluetoothEnabled: on,
+    );
     return info;
   }
 

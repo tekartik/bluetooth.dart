@@ -6,7 +6,8 @@ Future main() async {
 
   item('isBluetoothApiSupported', () async {
     write(
-        'isBluetoothApiSupported: ${FlutterWebBluetooth.instance.isBluetoothApiSupported}');
+      'isBluetoothApiSupported: ${FlutterWebBluetooth.instance.isBluetoothApiSupported}',
+    );
   });
   item('isAvailable', () async {
     write('waiting for available...');
@@ -14,10 +15,11 @@ Future main() async {
   });
   item('requestDevice', () async {
     final device = await FlutterWebBluetooth.instance.requestDevice(
-        RequestOptionsBuilder.acceptAllDevices(
-            optionalServices: BluetoothDefaultServiceUUIDS.VALUES
-                .map((e) => e.uuid)
-                .toList()));
+      RequestOptionsBuilder.acceptAllDevices(
+        optionalServices:
+            BluetoothDefaultServiceUUIDS.VALUES.map((e) => e.uuid).toList(),
+      ),
+    );
     write('Device got! ${device.name}, ${device.id}');
   });
 }

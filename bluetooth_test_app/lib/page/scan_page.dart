@@ -50,46 +50,53 @@ class _ScanPageState extends State<ScanPage> {
         actions: [
           if (hasOptions)
             PopupMenuButton<String>(
-                itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
-                      if (hasRequestDeviceWeb)
-                        const PopupMenuItem<String>(
-                            value: requestDeviceWeb,
-                            child: Text('Web.requestDevice')),
-                    ],
-                onSelected: (String value) {
-                  if (value == requestDeviceWeb) {
-                    (deviceBluetoothManager as BluetoothManagerWeb)
-                        .webRequestDevice(BluetoothRequestDeviceOptionsWeb(
-                            acceptAllDevices: true,
-                            optionalServices: webOptionalServiceIds));
-                  }
-                }),
+              itemBuilder:
+                  (BuildContext context) => <PopupMenuItem<String>>[
+                    if (hasRequestDeviceWeb)
+                      const PopupMenuItem<String>(
+                        value: requestDeviceWeb,
+                        child: Text('Web.requestDevice'),
+                      ),
+                  ],
+              onSelected: (String value) {
+                if (value == requestDeviceWeb) {
+                  (deviceBluetoothManager as BluetoothManagerWeb)
+                      .webRequestDevice(
+                        BluetoothRequestDeviceOptionsWeb(
+                          acceptAllDevices: true,
+                          optionalServices: webOptionalServiceIds,
+                        ),
+                      );
+                }
+              },
+            ),
         ],
       ),
-      body: Builder(builder: (context) {
-        if (!_inited) {
-          _inited = true;
-          () async {
-            // await bluetoothManager.devSetOptions(BluetoothOptions(logLevel: bluetoothLogLevelVerbose));
-            try {
-              await startScan(context);
-            } finally {
-              setState(() {
-                _initialScanStartDone = true;
-              });
-            }
-          }();
-        }
-        return StreamBuilder<AppScanResults?>(
+      body: Builder(
+        builder: (context) {
+          if (!_inited) {
+            _inited = true;
+            () async {
+              // await bluetoothManager.devSetOptions(BluetoothOptions(logLevel: bluetoothLogLevelVerbose));
+              try {
+                await startScan(context);
+              } finally {
+                setState(() {
+                  _initialScanStartDone = true;
+                });
+              }
+            }();
+          }
+          return StreamBuilder<AppScanResults?>(
             initialData: results.value,
             stream: results,
             builder: (context, snapshot) {
               if (scanSubscription == null) {
-                return ListView(children: const <Widget>[
-                  ListTile(
-                    title: Text('Tap scan for devices'),
-                  )
-                ]);
+                return ListView(
+                  children: const <Widget>[
+                    ListTile(title: Text('Tap scan for devices')),
+                  ],
+                );
               }
               var result = snapshot.data;
               var list = result?.list;
@@ -97,41 +104,47 @@ class _ScanPageState extends State<ScanPage> {
                 return const Center(child: CircularProgressIndicator());
               }
               return ListView.builder(
-                  itemCount: list!.length,
-                  itemBuilder: (builder, index) {
-                    var item = list[index];
-                    var deviceId = item.device.id;
-                    return ListTile(
-                      leading: Text(
-                          item.dateTime.toIso8601String().substring(11, 19)),
-                      title: Text(item.device.name ?? deviceId.id),
-                      subtitle: Text(deviceId.id),
-                      trailing: Text(item.rssi.toString()),
-                      onTap: () {
-                        Navigator.of(context).pop(deviceId);
-                      },
-                    );
-                  });
-            });
-      }),
-      floatingActionButton: _initialScanStartDone
-          ? FloatingActionButton(
-              onPressed: () {
-                () async {
-                  if (scanSubscription == null) {
-                    await startScan(context);
-                  } else {
-                    setState(() {
-                      stopScan();
-                    });
-                  }
-                }();
-              },
-              tooltip: 'Refresh',
-              child:
-                  Icon(scanSubscription == null ? Icons.refresh : Icons.stop),
-            )
-          : null, //
+                itemCount: list!.length,
+                itemBuilder: (builder, index) {
+                  var item = list[index];
+                  var deviceId = item.device.id;
+                  return ListTile(
+                    leading: Text(
+                      item.dateTime.toIso8601String().substring(11, 19),
+                    ),
+                    title: Text(item.device.name ?? deviceId.id),
+                    subtitle: Text(deviceId.id),
+                    trailing: Text(item.rssi.toString()),
+                    onTap: () {
+                      Navigator.of(context).pop(deviceId);
+                    },
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
+      floatingActionButton:
+          _initialScanStartDone
+              ? FloatingActionButton(
+                onPressed: () {
+                  () async {
+                    if (scanSubscription == null) {
+                      await startScan(context);
+                    } else {
+                      setState(() {
+                        stopScan();
+                      });
+                    }
+                  }();
+                },
+                tooltip: 'Refresh',
+                child: Icon(
+                  scanSubscription == null ? Icons.refresh : Icons.stop,
+                ),
+              )
+              : null, //
     );
   }
 
@@ -165,23 +178,28 @@ class _ScanPageState extends State<ScanPage> {
     } else if (!info.isBluetoothEnabled!) {
       if (initBluetoothManager.supportsEnable!) {
         await initBluetoothManager.enable(
-            androidRequestCode: androidEnableBluetoothRequestCode);
+          androidRequestCode: androidEnableBluetoothRequestCode,
+        );
         info = await initBluetoothManager.getAdminInfo();
       }
     }
     if (!info.isBluetoothEnabled!) {
-      const snackBar =
-          SnackBar(content: Text('Please enable Bluetooth on your device'));
+      const snackBar = SnackBar(
+        content: Text('Please enable Bluetooth on your device'),
+      );
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
     }
     if (initBluetoothManager.isAndroid!) {
       if (!await initBluetoothManager.checkBluetoothPermissions(
-          androidRequestCode: androidCheckCoarseLocationPermission)) {
+        androidRequestCode: androidCheckCoarseLocationPermission,
+      )) {
         const snackBar = SnackBar(
-            content: Text(
-                'Please enable location services to scan for nearby devices'));
+          content: Text(
+            'Please enable location services to scan for nearby devices',
+          ),
+        );
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         return;
@@ -195,8 +213,9 @@ class _ScanPageState extends State<ScanPage> {
       var appScanResult = AppScanResult(DateTime.now(), data);
       list =
           (list == null) ? <AppScanResult>[] : List<AppScanResult>.from(list);
-      var index =
-          list.indexWhere((result) => result.device.id == data.device.id);
+      var index = list.indexWhere(
+        (result) => result.device.id == data.device.id,
+      );
       if (index < 0) {
         list.add(appScanResult);
       } else {

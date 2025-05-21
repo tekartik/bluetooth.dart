@@ -54,8 +54,10 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
   }
 
   @Deprecated('Not flutter blue supported here')
-  Future<bool> checkBluetoothPermissions(
-      {int? androidRequestCode, BluetoothPermissionsOptions? options}) {
+  Future<bool> checkBluetoothPermissions({
+    int? androidRequestCode,
+    BluetoothPermissionsOptions? options,
+  }) {
     throw UnimplementedError();
   }
 
@@ -104,7 +106,8 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
 
   @override
   Future<BluetoothDeviceConnection> newConnection(
-      BluetoothDeviceId deviceId) async {
+    BluetoothDeviceId deviceId,
+  ) async {
     var device = _scanCache.getDevice(deviceId);
     if (device == null) {
       throw StateError('Scan first before connecting to $deviceId');
@@ -115,29 +118,35 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
   StreamSubscription? scannerSubscription;
 
   @override
-  Stream<ScanResult> scan(
-      {ScanMode scanMode = ScanMode.lowLatency, List<Uuid128>? withServices}) {
+  Stream<ScanResult> scan({
+    ScanMode scanMode = ScanMode.lowLatency,
+    List<Uuid128>? withServices,
+  }) {
     scannerSubscription?.cancel();
     scannerSubscription = null;
     StreamController<ScanResult>? ctlr;
     var nativeServices =
         withServices?.map((e) => guidFromUuid(e)).toList() ?? <Guid>[];
-    ctlr = StreamController<ScanResult>(onListen: () {
-      scannerSubscription ??= native.FlutterBluePlusPrvExt.scanAndStreamResults(
-              withServices: nativeServices)
-          .listen((nativeResult) {
-        var scanResult = ScanResultFlutter(nativeResult);
+    ctlr = StreamController<ScanResult>(
+      onListen: () {
+        scannerSubscription ??= native
+            .FlutterBluePlusPrvExt.scanAndStreamResults(
+          withServices: nativeServices,
+        ).listen((nativeResult) {
+          var scanResult = ScanResultFlutter(nativeResult);
 
-        // cache
-        _scanCache.addDevice(scanResult.device as BluetoothDeviceFlutterBlue);
+          // cache
+          _scanCache.addDevice(scanResult.device as BluetoothDeviceFlutterBlue);
 
-        ctlr!.add(scanResult);
-      });
-    }, onCancel: () {
-      native.FlutterBlue.stopScan();
-      scannerSubscription?.cancel();
-      ctlr?.close();
-    });
+          ctlr!.add(scanResult);
+        });
+      },
+      onCancel: () {
+        native.FlutterBlue.stopScan();
+        scannerSubscription?.cancel();
+        ctlr?.close();
+      },
+    );
     return ctlr.stream;
   }
 

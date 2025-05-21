@@ -58,14 +58,16 @@ class BluetoothDeviceConnectionWeb
 
   @override
   Future<BleBluetoothCharacteristicValue> readCharacteristic(
-      BleBluetoothCharacteristic characteristic) {
+    BleBluetoothCharacteristic characteristic,
+  ) {
     // TODO: implement readCharacteristic
     throw UnimplementedError('readCharacteristic');
   }
 
   @override
   Future<void> writeCharacteristic(
-      BleBluetoothCharacteristicValue characteristicValue) {
+    BleBluetoothCharacteristicValue characteristicValue,
+  ) {
     // TODO: implement writeCharacteristic
     throw UnimplementedError('writeCharacteristic');
   }

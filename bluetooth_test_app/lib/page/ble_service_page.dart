@@ -24,42 +24,54 @@ class _BleServicePageState extends State<BleServicePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Service'),
-      ),
-      body: Builder(builder: (context) {
-        var service = widget.appBleService.bleService;
-        var characteristics = service.characteristics;
-        if (characteristics.isEmpty) {
-          return ListView(children: const <Widget>[
-            ListTile(title: Text('No characteristics found'))
-          ]);
-        }
-        return ListView(
-          children: [
-            ListTile(
+      appBar: AppBar(title: const Text('Service')),
+      body: Builder(
+        builder: (context) {
+          var service = widget.appBleService.bleService;
+          var characteristics = service.characteristics;
+          if (characteristics.isEmpty) {
+            return ListView(
+              children: const <Widget>[
+                ListTile(title: Text('No characteristics found')),
+              ],
+            );
+          }
+          return ListView(
+            children: [
+              ListTile(
                 title: const Text('Service'),
-                subtitle: Text(uuidText(service.uuid))),
-            ...characteristics.map((characteristic) {
-              var propertiesText = propertiesAsText(characteristic.properties);
-              return ListTile(
-                title: const Text('Characteristic'),
-                subtitle: Text(
-                    '${uuidText(characteristic.uuid, parent: service.uuid)}${propertiesText.isNotEmpty ? '\n$propertiesText' : ''}'),
-                onTap: () {
-                  () async {
-                    await Navigator.of(context).push<String>(MaterialPageRoute(
-                        builder: (_) => BleCharacteristicPage(
-                            appBleCharacteristic: AppBleCharacteristic(
-                                connection: widget.appBleService.connection,
-                                characteristic: characteristic))));
-                  }();
-                },
-              );
-            })
-          ],
-        );
-      }),
+                subtitle: Text(uuidText(service.uuid)),
+              ),
+              ...characteristics.map((characteristic) {
+                var propertiesText = propertiesAsText(
+                  characteristic.properties,
+                );
+                return ListTile(
+                  title: const Text('Characteristic'),
+                  subtitle: Text(
+                    '${uuidText(characteristic.uuid, parent: service.uuid)}${propertiesText.isNotEmpty ? '\n$propertiesText' : ''}',
+                  ),
+                  onTap: () {
+                    () async {
+                      await Navigator.of(context).push<String>(
+                        MaterialPageRoute(
+                          builder:
+                              (_) => BleCharacteristicPage(
+                                appBleCharacteristic: AppBleCharacteristic(
+                                  connection: widget.appBleService.connection,
+                                  characteristic: characteristic,
+                                ),
+                              ),
+                        ),
+                      );
+                    }();
+                  },
+                );
+              }),
+            ],
+          );
+        },
+      ),
     );
   }
 }

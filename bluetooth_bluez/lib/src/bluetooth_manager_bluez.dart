@@ -36,9 +36,10 @@ class BluetoothManagerBluezImpl
   Future<BluetoothAdminInfo> getAdminInfo() async {
     await _ready();
     return BluetoothAdminInfoImpl(
-        hasBluetooth: true,
-        hasBluetoothBle: true,
-        isBluetoothEnabled: bluezClient.adapters.isNotEmpty);
+      hasBluetooth: true,
+      hasBluetoothBle: true,
+      isBluetoothEnabled: bluezClient.adapters.isNotEmpty,
+    );
   }
 
   // Old
@@ -46,10 +47,10 @@ class BluetoothManagerBluezImpl
   Future<BluetoothInfo> getInfo() async {
     await _ready();
     return BluetoothInfoImpl(
-        hasBluetooth: true,
-        hasBluetoothBle: true,
-        isBluetoothEnabled: bluezClient.adapters.isNotEmpty)
-      ..isScanning = _scanService?.isScanning;
+      hasBluetooth: true,
+      hasBluetoothBle: true,
+      isBluetoothEnabled: bluezClient.adapters.isNotEmpty,
+    )..isScanning = _scanService?.isScanning;
   }
 
   @override
@@ -59,20 +60,25 @@ class BluetoothManagerBluezImpl
   bool? get isIOS => false;
 
   @override
-  Stream<ScanResult> scan(
-      {ScanMode scanMode = ScanMode.lowLatency, List<Uuid128>? withServices}) {
+  Stream<ScanResult> scan({
+    ScanMode scanMode = ScanMode.lowLatency,
+    List<Uuid128>? withServices,
+  }) {
     scanController?.close();
 
-    scanController = StreamController<ScanResult>(onCancel: () {
-      _scanBluezSubscription?.cancel();
+    scanController = StreamController<ScanResult>(
+      onCancel: () {
+        _scanBluezSubscription?.cancel();
 
-      scanController?.close();
-    }, onListen: () async {
-      _scanService = ScanServicesBluez();
-      _scanBluezSubscription = _scanService?.startScan().listen((data) {
-        scanController?.add(data);
-      });
-    });
+        scanController?.close();
+      },
+      onListen: () async {
+        _scanService = ScanServicesBluez();
+        _scanBluezSubscription = _scanService?.startScan().listen((data) {
+          scanController?.add(data);
+        });
+      },
+    );
 
     return scanController!.stream;
   }
@@ -80,14 +86,16 @@ class BluetoothManagerBluezImpl
   static int _connectionId = 0;
   @override
   Future<BluetoothDeviceConnection> newConnection(
-      BluetoothDeviceId deviceId) async {
+    BluetoothDeviceId deviceId,
+  ) async {
     var scanResult = _scanService?.getDeviceIdScanResult(deviceId);
     if (scanResult == null) {
       throw StateError('Device id $deviceId not found');
     }
     var connectionId = ++_connectionId;
     var connection = BluetoothDeviceConnectionBluezImpl(
-        scanResult.device as BluetoothDeviceBluezImpl);
+      scanResult.device as BluetoothDeviceBluezImpl,
+    );
 
     connections[connectionId] = connection;
 

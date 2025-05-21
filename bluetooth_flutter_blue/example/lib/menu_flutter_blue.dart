@@ -20,21 +20,26 @@ void menuFlutterBlue() {
       item('connect_$name', () async {
         scanSubscription?.cancel();
         scanSubscription = FlutterBluePlusPrvExt.scanAndStreamResults(
-                timeout: Duration(seconds: 30))
-            .listen((result) {
-          var id = result.device.remoteId.str;
-          if (!deviceIds.contains(id)) {
-            write(
-                '[${_devices.length}] scan_$name: ${result.device.remoteId} ${result.device.platformName} ${result.rssi}');
-            deviceIds.add(id);
-            _devices[id] = result.device;
-          }
-        }, onDone: () {
-          write('scan_$name: done');
-        }, onError: (e, st) {
-          write('scan_$name: error $e');
-          print(st);
-        });
+          timeout: Duration(seconds: 30),
+        ).listen(
+          (result) {
+            var id = result.device.remoteId.str;
+            if (!deviceIds.contains(id)) {
+              write(
+                '[${_devices.length}] scan_$name: ${result.device.remoteId} ${result.device.platformName} ${result.rssi}',
+              );
+              deviceIds.add(id);
+              _devices[id] = result.device;
+            }
+          },
+          onDone: () {
+            write('scan_$name: done');
+          },
+          onError: (e, st) {
+            write('scan_$name: error $e');
+            print(st);
+          },
+        );
 
         for (int i = 0; i < deviceIds.length; i++) {
           var device = _devices[deviceIds[i]]!;
@@ -46,22 +51,29 @@ void menuFlutterBlue() {
           var device = _devices[deviceId]!;
           _cancelScanSubscription();
           stateChangeSubscription?.cancel();
-          stateChangeSubscription = device.connectionState.listen((state) {
-            write('onStateChanged_$name $state');
-          }, onDone: () {
-            write('onStateChanged_$name done');
-          });
+          stateChangeSubscription = device.connectionState.listen(
+            (state) {
+              write('onStateChanged_$name $state');
+            },
+            onDone: () {
+              write('onStateChanged_$name done');
+            },
+          );
           write('get_state_$name ${await device.connectionState.first}');
 
           write('connecting ${device.remoteId}');
-          connectSubscription = device.connectionState.listen((state) {
-            write('state_$name: $state');
-          }, onDone: () {
-            write('scan_$name: connect done');
-          }, onError: (e, st) {
-            write('scan_$name: connect error $e');
-            print(st);
-          });
+          connectSubscription = device.connectionState.listen(
+            (state) {
+              write('state_$name: $state');
+            },
+            onDone: () {
+              write('scan_$name: connect done');
+            },
+            onError: (e, st) {
+              write('scan_$name: connect error $e');
+              print(st);
+            },
+          );
           device.connect(autoConnect: true, timeout: Duration(seconds: 30));
         }
       });
@@ -84,14 +96,18 @@ void menuFlutterBlue() {
       write('get_state: ${await FlutterBluePlus.adapterState.first}');
     });
     item('register_bt_state', () {
-      FlutterBluePlus.adapterState.listen((state) {
-        write('state: $state');
-      }, onDone: () {
-        write('register_bt_state done');
-      }, onError: (e, st) {
-        write('register_bt_state error $e');
-        print(st);
-      });
+      FlutterBluePlus.adapterState.listen(
+        (state) {
+          write('state: $state');
+        },
+        onDone: () {
+          write('register_bt_state done');
+        },
+        onError: (e, st) {
+          write('register_bt_state error $e');
+          print(st);
+        },
+      );
     });
     item('cancel_register_bt_state', () {
       stateSubscription?.cancel();
@@ -108,16 +124,21 @@ void menuFlutterBlue() {
       item('scan_$name', () {
         scanSubscription?.cancel();
         scanSubscription = FlutterBluePlusPrvExt.scanAndStreamResults(
-                timeout: Duration(seconds: 30))
-            .listen((result) {
-          write(
-              'scan_$name: ${result.device.remoteId} ${result.device.platformName} ${result.rssi}');
-        }, onDone: () {
-          write('scan_$name: done');
-        }, onError: (e, st) {
-          write('scan_$name: error $e');
-          print(st);
-        });
+          timeout: Duration(seconds: 30),
+        ).listen(
+          (result) {
+            write(
+              'scan_$name: ${result.device.remoteId} ${result.device.platformName} ${result.rssi}',
+            );
+          },
+          onDone: () {
+            write('scan_$name: done');
+          },
+          onError: (e, st) {
+            write('scan_$name: error $e');
+            print(st);
+          },
+        );
       });
 
       item('stop_scan_$name', _cancelSubscription);

@@ -33,11 +33,12 @@ class BluetoothInfoImpl implements BluetoothInfo {
   @override
   bool? isScanning;
 
-  BluetoothInfoImpl(
-      {this.hasBluetooth,
-      this.hasBluetoothBle,
-      this.isBluetoothEnabled,
-      this.isScanning});
+  BluetoothInfoImpl({
+    this.hasBluetooth,
+    this.hasBluetoothBle,
+    this.isBluetoothEnabled,
+    this.isScanning,
+  });
 
   void fromMap(Map result) {
     var model = asModel(result);
@@ -51,11 +52,12 @@ class BluetoothInfoImpl implements BluetoothInfo {
   String toString() => toDebugMap().toString();
 
   Model toDebugMap() {
-    var model = newModel()
-      ..setValue('hasBluetooth', hasBluetooth)
-      ..setValue('hasBluetoothBle', hasBluetoothBle)
-      ..setValue('isBluetoothEnabled', isBluetoothEnabled)
-      ..setValue('isScanning', isScanning);
+    var model =
+        newModel()
+          ..setValue('hasBluetooth', hasBluetooth)
+          ..setValue('hasBluetoothBle', hasBluetoothBle)
+          ..setValue('isBluetoothEnabled', isBluetoothEnabled)
+          ..setValue('isScanning', isScanning);
     return model;
   }
 }
@@ -70,8 +72,11 @@ class BluetoothAdminInfoImpl implements BluetoothAdminInfo {
   @override
   bool? isBluetoothEnabled;
 
-  BluetoothAdminInfoImpl(
-      {this.hasBluetooth, this.hasBluetoothBle, this.isBluetoothEnabled});
+  BluetoothAdminInfoImpl({
+    this.hasBluetooth,
+    this.hasBluetoothBle,
+    this.isBluetoothEnabled,
+  });
 
   void fromMap(Map result) {
     var model = asModel(result);
@@ -84,10 +89,11 @@ class BluetoothAdminInfoImpl implements BluetoothAdminInfo {
   String toString() => toDebugMap().toString();
 
   Model toDebugMap() {
-    var model = newModel()
-      ..setValue('hasBluetooth', hasBluetooth)
-      ..setValue('hasBluetoothBle', hasBluetoothBle)
-      ..setValue('isBluetoothEnabled', isBluetoothEnabled);
+    var model =
+        newModel()
+          ..setValue('hasBluetooth', hasBluetooth)
+          ..setValue('hasBluetoothBle', hasBluetoothBle)
+          ..setValue('isBluetoothEnabled', isBluetoothEnabled);
     return model;
   }
 

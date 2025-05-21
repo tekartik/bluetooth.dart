@@ -20,10 +20,11 @@ class BluetoothPeripheralNotificationMock {
   final Uuid128 characteristicUuid;
   final Uint8List? value;
 
-  BluetoothPeripheralNotificationMock(
-      {required this.serviceUuid,
-      required this.characteristicUuid,
-      required this.value});
+  BluetoothPeripheralNotificationMock({
+    required this.serviceUuid,
+    required this.characteristicUuid,
+    required this.value,
+  });
 }
 
 class BluetoothPeripheralMock extends BluetoothPeripheral {
@@ -32,7 +33,7 @@ class BluetoothPeripheralMock extends BluetoothPeripheral {
       PublishSubjectWrapper<BluetoothPeripheralWriteCharacteristicEvent>();
 
   SubjectInterface<BluetoothPeripheralWriteCharacteristicEvent>
-      get writeCharacteristicEvent => _writeCharacteristicEvent;
+  get writeCharacteristicEvent => _writeCharacteristicEvent;
 
   /// Where to post notification to be sent
   final _bleNotificationWrapper =
@@ -40,19 +41,20 @@ class BluetoothPeripheralMock extends BluetoothPeripheral {
 
   SubjectInterface<BluetoothPeripheralNotificationMock> get bleNotification =>
       _bleNotificationWrapper;
-  BluetoothPeripheralMock(
-      { // Needed?
-      super.deviceName,
-      super.services})
-      : super(plugin: null);
+  BluetoothPeripheralMock({
+    // Needed?
+    super.deviceName,
+    super.services,
+  }) : super(plugin: null);
 
   /// Current advertiseData
   AdvertiseData? advertiseData;
   final servicesMap = <Uuid128, BluetoothPeripheralServiceMock>{};
 
   BluetoothPeripheralServiceMock getBluetoothPeripheralServiceMock(
-      Uuid128 serviceUuid,
-      {bool createIfMissing = false}) {
+    Uuid128 serviceUuid, {
+    bool createIfMissing = false,
+  }) {
     var service = servicesMap[serviceUuid];
     if (service == null) {
       if (createIfMissing) {
@@ -75,31 +77,37 @@ class BluetoothPeripheralMock extends BluetoothPeripheral {
   }
 
   @override
-  Future setCharacteristicValue(
-      {required Uuid128 serviceUuid,
-      required Uuid128 characteristicUuid,
-      required Uint8List? value}) async {
+  Future setCharacteristicValue({
+    required Uuid128 serviceUuid,
+    required Uuid128 characteristicUuid,
+    required Uint8List? value,
+  }) async {
     var service = servicesMap[serviceUuid] ??= BluetoothPeripheralServiceMock();
     service.characteristicsMap[characteristicUuid] =
         BluetoothPeripheralCharacteristicMock(value: value!);
   }
 
   @override
-  Future notifyCharacteristicValue(
-      {required Uuid128 serviceUuid,
-      required Uuid128 characteristicUuid,
-      Uint8List? value}) async {
+  Future notifyCharacteristicValue({
+    required Uuid128 serviceUuid,
+    required Uuid128 characteristicUuid,
+    Uint8List? value,
+  }) async {
     // TODO: implement notifyCharacteristicValue
-    _bleNotificationWrapper.sink.add(BluetoothPeripheralNotificationMock(
+    _bleNotificationWrapper.sink.add(
+      BluetoothPeripheralNotificationMock(
         serviceUuid: serviceUuid,
         characteristicUuid: characteristicUuid,
-        value: value));
+        value: value,
+      ),
+    );
   }
 
   @override
-  Future<Uint8List> getCharacteristicValue(
-      {required Uuid128 serviceUuid,
-      required Uuid128 characteristicUuid}) async {
+  Future<Uint8List> getCharacteristicValue({
+    required Uuid128 serviceUuid,
+    required Uuid128 characteristicUuid,
+  }) async {
     var service = servicesMap[serviceUuid];
     if (service == null) {
       throw 'service not found $serviceUuid';
@@ -109,18 +117,21 @@ class BluetoothPeripheralMock extends BluetoothPeripheral {
   }
 
   /// From client connection
-  Future<void> writeCharacteristicValue(
-      {required Uuid128 serviceUuid,
-      required Uuid128 characteristicUuid,
-      required Uint8List value}) async {
+  Future<void> writeCharacteristicValue({
+    required Uuid128 serviceUuid,
+    required Uuid128 characteristicUuid,
+    required Uint8List value,
+  }) async {
     await setCharacteristicValue(
-        serviceUuid: serviceUuid,
-        characteristicUuid: characteristicUuid,
-        value: value);
-    _writeCharacteristicEvent.sink
-        .add(BluetoothPeripheralWriteCharacteristicEvent()
-          ..serviceUuid = serviceUuid
-          ..characteristicUuid = characteristicUuid
-          ..value = value);
+      serviceUuid: serviceUuid,
+      characteristicUuid: characteristicUuid,
+      value: value,
+    );
+    _writeCharacteristicEvent.sink.add(
+      BluetoothPeripheralWriteCharacteristicEvent()
+        ..serviceUuid = serviceUuid
+        ..characteristicUuid = characteristicUuid
+        ..value = value,
+    );
   }
 }

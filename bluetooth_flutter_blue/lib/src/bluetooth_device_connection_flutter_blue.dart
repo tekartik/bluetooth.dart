@@ -10,7 +10,8 @@ import 'flutter_blue_import.dart' as native;
 import 'import.dart';
 
 BluetoothDeviceConnectionState connectionStateFromBluetoothConnectionState(
-    native.BluetoothConnectionState state) {
+  native.BluetoothConnectionState state,
+) {
   switch (state) {
     case native.BluetoothConnectionState.connected:
       return BluetoothDeviceConnectionState.connected;
@@ -86,7 +87,8 @@ class BluetoothDeviceConnectionFlutterBlue
   }
 
   Map<BleBluetoothService, DiscoveredServiceFlutterBlue> _wrapServices(
-      List<native.BluetoothService> natives) {
+    List<native.BluetoothService> natives,
+  ) {
     var map = <BleBluetoothService, DiscoveredServiceFlutterBlue>{};
     for (var native in natives) {
       /// Some services can be invalid (crash in uuidFromGuid), simple ignore them
@@ -95,9 +97,10 @@ class BluetoothDeviceConnectionFlutterBlue
         var bleCharacteristics = <BleBluetoothCharacteristic>[];
         for (var nativeCharacteristic in native.characteristics) {
           var bleCharacteristic = BleBluetoothCharacteristic(
-              properties: nativeCharacteristic.properties.getValue(),
-              service: bleService,
-              uuid: uuidFromGuid((nativeCharacteristic.uuid)));
+            properties: nativeCharacteristic.properties.getValue(),
+            service: bleService,
+            uuid: uuidFromGuid((nativeCharacteristic.uuid)),
+          );
           bleCharacteristics.add(bleCharacteristic);
         }
 
@@ -134,12 +137,14 @@ class BluetoothDeviceConnectionFlutterBlue
   @override
   Stream<BluetoothDeviceConnectionState> get onConnectionState {
     var nativeImpl = device.nativeImpl;
-    return nativeImpl.connectionState
-        .map((native) => connectionStateFromBluetoothConnectionState(native));
+    return nativeImpl.connectionState.map(
+      (native) => connectionStateFromBluetoothConnectionState(native),
+    );
   }
 
   BluetoothCharacteristicFlutterBlue? findCharacteristic(
-      BleBluetoothCharacteristic bc) {
+    BleBluetoothCharacteristic bc,
+  ) {
     var service = _discoverMap?[bc.service];
     if (service != null) {
       return service.getCharacteristic(bc.uuid);
@@ -148,7 +153,8 @@ class BluetoothDeviceConnectionFlutterBlue
   }
 
   BluetoothCharacteristicFlutterBlue findCharacteristicOrThrow(
-      BleBluetoothCharacteristic bc) {
+    BleBluetoothCharacteristic bc,
+  ) {
     var fbCharacteristic = findCharacteristic(bc);
     if (fbCharacteristic == null) {
       throw StateError('Characteristic $bc not found');
@@ -161,37 +167,46 @@ class BluetoothDeviceConnectionFlutterBlue
 
   @override
   Future<BleBluetoothCharacteristicValue> readCharacteristic(
-      BleBluetoothCharacteristic bc) async {
+    BleBluetoothCharacteristic bc,
+  ) async {
     var characteristic = findCharacteristicOrThrow(bc);
 
     var value = await characteristic.read().timeout(readCharacteristicTimeout);
 
     var bcv = BleBluetoothCharacteristicValue(
-        bc: bc, value: Uint8List.fromList(value));
+      bc: bc,
+      value: Uint8List.fromList(value),
+    );
     return bcv;
   }
 
   @override
   Stream<BleBluetoothCharacteristicValue> onCharacteristicValueChanged(
-      BleBluetoothCharacteristic characteristic) {
+    BleBluetoothCharacteristic characteristic,
+  ) {
     var nativeCharacteristic = findCharacteristicOrThrow(characteristic);
     return nativeCharacteristic.value.map((value) {
       var bcv = BleBluetoothCharacteristicValue(
-          bc: characteristic, value: Uint8List.fromList(value));
+        bc: characteristic,
+        value: Uint8List.fromList(value),
+      );
       return bcv;
     });
   }
 
   @override
   Future<void> writeCharacteristic(
-      BleBluetoothCharacteristicValue characteristicValue) async {
+    BleBluetoothCharacteristicValue characteristicValue,
+  ) async {
     var characteristic = findCharacteristicOrThrow(characteristicValue.bc);
     await characteristic.write(characteristicValue.value);
   }
 
   @override
   Future<void> registerCharacteristic(
-      BleBluetoothCharacteristic characteristic, bool on) async {
+    BleBluetoothCharacteristic characteristic,
+    bool on,
+  ) async {
     var nativeCharacteristic = findCharacteristicOrThrow(characteristic);
     await nativeCharacteristic.registerNotification(on);
   }

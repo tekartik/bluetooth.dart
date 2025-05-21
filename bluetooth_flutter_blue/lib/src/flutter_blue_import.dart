@@ -24,8 +24,9 @@ extension FlutterBluePlusPrvExt on FlutterBluePlus {
           controller.add(scanResult);
         }
       },
-      onError: (Object e, StackTrace? stackTrace) =>
-          controller.addError(e, stackTrace),
+      onError:
+          (Object e, StackTrace? stackTrace) =>
+              controller.addError(e, stackTrace),
     );
 
     FlutterBluePlus.startScan(

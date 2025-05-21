@@ -19,9 +19,9 @@ void main() {
     _ambiguate(TestDefaultBinaryMessengerBinding.instance)!
         .defaultBinaryMessenger
         .setMockMethodCallHandler(channel, (MethodCall methodCall) async {
-      log.add(methodCall);
-      return response;
-    });
+          log.add(methodCall);
+          return response;
+        });
 
     BluetoothManager? service;
     late BluetoothServer server;
@@ -29,9 +29,12 @@ void main() {
     setUpAll(() async {
       WebSocketChannelFactory factory = webSocketChannelFactoryMemory;
       server = await BluetoothServer.serve(
-          webSocketChannelServerFactory: factory.server);
-      service = await BluetoothServerFlutterService.create(server.url,
-          webSocketChannelClientFactory: factory.client);
+        webSocketChannelServerFactory: factory.server,
+      );
+      service = await BluetoothServerFlutterService.create(
+        server.url,
+        webSocketChannelClientFactory: factory.client,
+      );
     });
 
     test('port', () {

@@ -73,52 +73,55 @@ class ScanServicesBluez {
 
     _lastScanData.clear();
     late StreamController<ScanResultBluez> resultController;
-    resultController = StreamController<ScanResultBluez>(onListen: () async {
-      try {
-        await _stopScan();
-      } catch (_) {}
-
-      /// Start discovery
-      _scanAdapters = <BlueZAdapter>[];
-
-      var adapters = bluezClient.adapters;
-      await bluezClient.connect();
-      for (var adapter in adapters) {
+    resultController = StreamController<ScanResultBluez>(
+      onListen: () async {
         try {
-          /// Add current devices
+          await _stopScan();
+        } catch (_) {}
 
-          await adapter.startDiscovery();
-          _scanAdapters!.add(adapter);
-        } catch (e) {
-          print('startDiscovery error $e');
+        /// Start discovery
+        _scanAdapters = <BlueZAdapter>[];
+
+        var adapters = bluezClient.adapters;
+        await bluezClient.connect();
+        for (var adapter in adapters) {
+          try {
+            /// Add current devices
+
+            await adapter.startDiscovery();
+            _scanAdapters!.add(adapter);
+          } catch (e) {
+            print('startDiscovery error $e');
+          }
         }
-      }
-      isScanning = true;
-      void addDevice(BlueZDevice device) {
-        var deviceBluez = BluetoothDeviceBluezImpl(device);
-        var scanResultBluez = ScanResultBluezImpl(deviceBluez);
-        resultController.add(scanResultBluez);
-        _lastScanData[deviceBluez.id] = scanResultBluez;
-      }
-
-      void addDevices(List<BlueZDevice> devices) {
-        for (var device in devices) {
-          addDevice(device);
+        isScanning = true;
+        void addDevice(BlueZDevice device) {
+          var deviceBluez = BluetoothDeviceBluezImpl(device);
+          var scanResultBluez = ScanResultBluezImpl(deviceBluez);
+          resultController.add(scanResultBluez);
+          _lastScanData[deviceBluez.id] = scanResultBluez;
         }
-      }
 
-      addDevices(bluezClient.devices);
-      addedSubscription = bluezClient.deviceAdded.listen(addDevice);
-      removedSubscription = bluezClient.deviceRemoved.listen((device) {
-        //data.removeDevice(device.address);
-        // resultController.add(data);
-      });
-      // add current data
-    }, onCancel: () async {
-      try {
-        await _stopScan();
-      } catch (_) {}
-    });
+        void addDevices(List<BlueZDevice> devices) {
+          for (var device in devices) {
+            addDevice(device);
+          }
+        }
+
+        addDevices(bluezClient.devices);
+        addedSubscription = bluezClient.deviceAdded.listen(addDevice);
+        removedSubscription = bluezClient.deviceRemoved.listen((device) {
+          //data.removeDevice(device.address);
+          // resultController.add(data);
+        });
+        // add current data
+      },
+      onCancel: () async {
+        try {
+          await _stopScan();
+        } catch (_) {}
+      },
+    );
 
     return resultController.stream;
   }

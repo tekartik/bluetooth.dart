@@ -35,7 +35,7 @@ var _flagToPropertyMap = {
   // TODO BlueZGattCharacteristicFlag.encryptWrite,
   // TODO BlueZGattCharacteristicFlag.encryptAuthenticatedRead,
   // TODO BlueZGattCharacteristicFlag.encryptAuthenticatedWrite,
-//      TODO BlueZGattCharacteristicFlag.secureRead: bleProperty,
+  //      TODO BlueZGattCharacteristicFlag.secureRead: bleProperty,
   BlueZGattCharacteristicFlag.secureWrite: blePropertySignedWrite,
   // TODO BlueZGattCharacteristicFlag.authorize,
 };

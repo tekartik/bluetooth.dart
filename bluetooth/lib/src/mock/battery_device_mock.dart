@@ -21,8 +21,10 @@ class CharacteristicMock {
 
 class BatteryRemoteDeviceMock extends BatteryRemoteDevice {
   BatteryRemoteDeviceMock() : super() {
-    bluetoothPeripheral ??=
-        BluetoothPeripheralMock(deviceName: 'Battery', services: gattServices);
+    bluetoothPeripheral ??= BluetoothPeripheralMock(
+      deviceName: 'Battery',
+      services: gattServices,
+    );
   }
 
   final characteristicValueMap =
@@ -37,7 +39,8 @@ class BatteryRemoteDeviceMock extends BatteryRemoteDevice {
 
   @override
   Future<BleBluetoothCharacteristicValue?> getCharacteristicValue(
-      BleBluetoothCharacteristic bc) async {
+    BleBluetoothCharacteristic bc,
+  ) async {
     var mock = characteristicValueMap[bc];
     return mock?.bcv;
   }

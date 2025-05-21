@@ -36,13 +36,14 @@ class DiscoveredServiceFlutterBlue {
   DiscoveredServiceFlutterBlue(this.nativeImpl) {
     for (var nativeCharacteristic in nativeImpl.characteristics) {
       var uuid = uuidFromGuid(nativeCharacteristic.uuid);
-      var bleCharacteristic =
-          BluetoothCharacteristicFlutterBlue(nativeCharacteristic);
+      var bleCharacteristic = BluetoothCharacteristicFlutterBlue(
+        nativeCharacteristic,
+      );
       _map[uuid] = bleCharacteristic;
     }
   }
 
   BluetoothCharacteristicFlutterBlue? getCharacteristic(Uuid128? uuid) =>
       _map[uuid!];
-//BleBluetoothService service;
+  //BleBluetoothService service;
 }

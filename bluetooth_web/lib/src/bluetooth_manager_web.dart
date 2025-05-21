@@ -14,12 +14,13 @@ class BluetoothRequestDeviceOptionsWeb {
   final List<BluetoothRequestDeviceFilterWeb> filters;
   final List<String> optionalServices;
 
-  BluetoothRequestDeviceOptionsWeb(
-      {required this.acceptAllDevices,
-      this.filters = const <BluetoothRequestDeviceFilterWeb>[],
+  BluetoothRequestDeviceOptionsWeb({
+    required this.acceptAllDevices,
+    this.filters = const <BluetoothRequestDeviceFilterWeb>[],
 
-      /// Valid for both acceptAllDevices and filters
-      this.optionalServices = const <String>[]});
+    /// Valid for both acceptAllDevices and filters
+    this.optionalServices = const <String>[],
+  });
 }
 
 class BluetoothRequestDeviceFilterWeb {
@@ -33,8 +34,9 @@ class BluetoothRequestDeviceFilterWeb {
 /// Web specific interface
 abstract class BluetoothManagerWeb extends BluetoothManager
     implements BluetoothAdminManager {
-  Future<BluetoothDevice> webRequestDevice(
-      [BluetoothRequestDeviceOptionsWeb? options]);
+  Future<BluetoothDevice> webRequestDevice([
+    BluetoothRequestDeviceOptionsWeb? options,
+  ]);
 }
 
 bool debugBluetoothManagerWeb = false;
@@ -52,21 +54,28 @@ class BluetoothManagerWebImpl
 
   /// Web specific API
   @override
-  Future<BluetoothDevice> webRequestDevice(
-      [BluetoothRequestDeviceOptionsWeb? options]) async {
+  Future<BluetoothDevice> webRequestDevice([
+    BluetoothRequestDeviceOptionsWeb? options,
+  ]) async {
     options ??= BluetoothRequestDeviceOptionsWeb(acceptAllDevices: true);
     var nativeDevice = await web.FlutterWebBluetooth.instance.requestDevice(
-        options.acceptAllDevices
-            ? web.RequestOptionsBuilder.acceptAllDevices(
-                optionalServices: options.optionalServices)
-            : web.RequestOptionsBuilder(
-                options.filters
-                    .map((e) => web.RequestFilterBuilder(
-                        name: e.name,
-                        namePrefix: e.namePrefix,
-                        services: e.services))
-                    .toList(),
-                optionalServices: options.optionalServices));
+      options.acceptAllDevices
+          ? web.RequestOptionsBuilder.acceptAllDevices(
+            optionalServices: options.optionalServices,
+          )
+          : web.RequestOptionsBuilder(
+            options.filters
+                .map(
+                  (e) => web.RequestFilterBuilder(
+                    name: e.name,
+                    namePrefix: e.namePrefix,
+                    services: e.services,
+                  ),
+                )
+                .toList(),
+            optionalServices: options.optionalServices,
+          ),
+    );
     _addNativeDevice(nativeDevice);
     return BluetoothDeviceWeb(nativeDevice);
   }
@@ -82,18 +91,20 @@ class BluetoothManagerWebImpl
   Future<BluetoothInfo> getInfo() async {
     var apiSupported = web.FlutterWebBluetooth.instance.isBluetoothApiSupported;
     return BluetoothInfoImpl(
-        hasBluetooth: apiSupported,
-        hasBluetoothBle: apiSupported,
-        isBluetoothEnabled: apiSupported);
+      hasBluetooth: apiSupported,
+      hasBluetoothBle: apiSupported,
+      isBluetoothEnabled: apiSupported,
+    );
   }
 
   @override
   Future<BluetoothAdminInfo> getAdminInfo() async {
     var apiSupported = web.FlutterWebBluetooth.instance.isBluetoothApiSupported;
     return BluetoothAdminInfoImpl(
-        hasBluetooth: apiSupported,
-        hasBluetoothBle: apiSupported,
-        isBluetoothEnabled: apiSupported);
+      hasBluetooth: apiSupported,
+      hasBluetoothBle: apiSupported,
+      isBluetoothEnabled: apiSupported,
+    );
   }
 
   @override
@@ -105,23 +116,31 @@ class BluetoothManagerWebImpl
   bool? get isIOS => false;
 
   @override
-  Stream<ScanResult> scan(
-      {ScanMode scanMode = ScanMode.lowLatency, List<Uuid128>? withServices}) {
+  Stream<ScanResult> scan({
+    ScanMode scanMode = ScanMode.lowLatency,
+    List<Uuid128>? withServices,
+  }) {
     scanController?.close();
 
-    scanController = StreamController<ScanResult>(onCancel: () {
-      _scanWebSubscription?.cancel();
+    scanController = StreamController<ScanResult>(
+      onCancel: () {
+        _scanWebSubscription?.cancel();
 
-      scanController?.close();
-    }, onListen: () async {
-      _scanWebSubscription =
-          web.FlutterWebBluetooth.instance.devices.listen((data) {
-        for (var nativeDevice in data) {
-          _addNativeDevice(nativeDevice);
-          scanController?.add(ScanResultWeb(BluetoothDeviceWeb(nativeDevice)));
-        }
-      });
-    });
+        scanController?.close();
+      },
+      onListen: () async {
+        _scanWebSubscription = web.FlutterWebBluetooth.instance.devices.listen((
+          data,
+        ) {
+          for (var nativeDevice in data) {
+            _addNativeDevice(nativeDevice);
+            scanController?.add(
+              ScanResultWeb(BluetoothDeviceWeb(nativeDevice)),
+            );
+          }
+        });
+      },
+    );
 
     return scanController!.stream;
   }
@@ -129,7 +148,8 @@ class BluetoothManagerWebImpl
   // static int _connectionId = 0;
   @override
   Future<BluetoothDeviceConnection> newConnection(
-      BluetoothDeviceId deviceId) async {
+    BluetoothDeviceId deviceId,
+  ) async {
     var nativeDevice = nativeDeviceMap[deviceId.id];
     if (nativeDevice == null) {
       throw StateError('device id $deviceId not found');

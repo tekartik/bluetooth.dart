@@ -19,10 +19,10 @@ abstract class BleBluetoothService {
   /// Short service number
   int get shortNumber;
 
-  factory BleBluetoothService(
-          {required Uuid128 uuid,
-          List<BleBluetoothCharacteristic>? characteristics}) =>
-      BleBluetoothServiceImpl(uuid: uuid, characteristics: characteristics);
+  factory BleBluetoothService({
+    required Uuid128 uuid,
+    List<BleBluetoothCharacteristic>? characteristics,
+  }) => BleBluetoothServiceImpl(uuid: uuid, characteristics: characteristics);
 }
 
 mixin BleBluetoothServiceMixin implements BleBluetoothService {
@@ -62,9 +62,10 @@ mixin BleBluetoothServiceMixin implements BleBluetoothService {
 class BleBluetoothServiceImpl
     with BleBluetoothServiceMixin
     implements BleBluetoothService {
-  BleBluetoothServiceImpl(
-      {required Uuid128 uuid,
-      List<BleBluetoothCharacteristic>? characteristics}) {
+  BleBluetoothServiceImpl({
+    required Uuid128 uuid,
+    List<BleBluetoothCharacteristic>? characteristics,
+  }) {
     _characteristics = characteristics;
     this.uuid = uuid;
   }
@@ -107,18 +108,19 @@ abstract class BleBluetoothCharacteristic {
   @protected
   set descriptors(List<BleBluetoothDescriptor> descriptor);
 
-  factory BleBluetoothCharacteristic(
-          {required BleBluetoothService service,
-          required Uuid128 uuid,
+  factory BleBluetoothCharacteristic({
+    required BleBluetoothService service,
+    required Uuid128 uuid,
 
-          /// No properties by default
-          int properties = 0x0,
-          List<BleBluetoothDescriptor>? descriptors}) =>
-      BleBluetoothCharacteristicImpl(
-          service: service,
-          uuid: uuid,
-          properties: properties,
-          descriptors: descriptors);
+    /// No properties by default
+    int properties = 0x0,
+    List<BleBluetoothDescriptor>? descriptors,
+  }) => BleBluetoothCharacteristicImpl(
+    service: service,
+    uuid: uuid,
+    properties: properties,
+    descriptors: descriptors,
+  );
 
   BleBluetoothCharacteristicValue withValue(Uint8List value);
 
@@ -172,15 +174,15 @@ abstract class BleBluetoothCharacteristicValue {
   BleBluetoothCharacteristic get bc;
 
   /// Best usage is to use [bc] and [value]
-  factory BleBluetoothCharacteristicValue(
-      {
-      /// Needed if bc is null
-      BleBluetoothService? service,
+  factory BleBluetoothCharacteristicValue({
+    /// Needed if bc is null
+    BleBluetoothService? service,
 
-      /// Needed if bc is null
-      Uuid128? uuid,
-      BleBluetoothCharacteristic? bc,
-      required Uint8List value}) {
+    /// Needed if bc is null
+    Uuid128? uuid,
+    BleBluetoothCharacteristic? bc,
+    required Uint8List value,
+  }) {
     if (bc == null) {
       if (service == null) {
         throw ArgumentError.notNull('service');
@@ -190,8 +192,9 @@ abstract class BleBluetoothCharacteristicValue {
       }
     }
     return BleBluetoothCharacteristicValueImpl(
-        bc: bc ?? BleBluetoothCharacteristic(service: service!, uuid: uuid!),
-        value: value);
+      bc: bc ?? BleBluetoothCharacteristic(service: service!, uuid: uuid!),
+      value: value,
+    );
   }
 }
 
@@ -268,11 +271,12 @@ mixin BleBluetoothCharacteristicValueMixin
 class BleBluetoothCharacteristicImpl
     with BleBluetoothCharacteristicMixin
     implements BleBluetoothCharacteristic {
-  BleBluetoothCharacteristicImpl(
-      {required BleBluetoothService service,
-      required Uuid128 uuid,
-      required int properties,
-      List<BleBluetoothDescriptor>? descriptors}) {
+  BleBluetoothCharacteristicImpl({
+    required BleBluetoothService service,
+    required Uuid128 uuid,
+    required int properties,
+    List<BleBluetoothDescriptor>? descriptors,
+  }) {
     _service = service;
     _uuid = uuid;
     _properties = properties;
@@ -284,8 +288,10 @@ class BleBluetoothCharacteristicImpl
 class BleBluetoothCharacteristicValueImpl
     with BleBluetoothCharacteristicValueMixin
     implements BleBluetoothCharacteristicValue {
-  BleBluetoothCharacteristicValueImpl(
-      {required BleBluetoothCharacteristic bc, required Uint8List value}) {
+  BleBluetoothCharacteristicValueImpl({
+    required BleBluetoothCharacteristic bc,
+    required Uint8List value,
+  }) {
     _bc = bc;
     _value = value;
   }

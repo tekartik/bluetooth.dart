@@ -15,8 +15,8 @@ class Uuid16 {
   String? _text;
 
   Uuid16.fromText(String text)
-      : _text = text,
-        bytes = Uint8List.fromList(parseHexString(text));
+    : _text = text,
+      bytes = Uint8List.fromList(parseHexString(text));
 
   Uuid16.fromBytes(this.bytes);
 
@@ -24,12 +24,12 @@ class Uuid16 {
 
   @Deprecated('Use proper init')
   Uuid16.from({Uint8List? bytes, int? value})
-      : bytes = bytes ?? uint16GetBytes(value!);
+    : bytes = bytes ?? uint16GetBytes(value!);
 
   @Deprecated('Use Uuid16.fromText')
   Uuid16(String text)
-      : _text = text,
-        bytes = Uint8List.fromList(parseHexString(text));
+    : _text = text,
+      bytes = Uint8List.fromList(parseHexString(text));
 
   // The number
   int get value {
@@ -63,8 +63,8 @@ class Uuid32 {
   Uuid32.from({required this.bytes});
 
   Uuid32(String text)
-      : _text = text,
-        bytes = Uint8List.fromList(parseHexString(text));
+    : _text = text,
+      bytes = Uint8List.fromList(parseHexString(text));
 
   @override
   String toString() => _text ??= toHexString(bytes)!.toLowerCase();
@@ -76,16 +76,21 @@ class Uuid128 {
   String? _text;
 
   Uuid128.from({Uint8List? bytes, String? text})
-      : _value = bytes ?? Uint8List.fromList(Uuid.parse(text!)),
-        _text = text;
+    : _value = bytes ?? Uint8List.fromList(Uuid.parse(text!)),
+      _text = text;
 
   /// 16 bytes
   Uuid128.bytes(Uint8List bytes) : _value = bytes;
 
   Uuid128(String text)
-      : _text = text,
-        _value = Uint8List.fromList(Uuid.parse(text,
-            validate: false, validationMode: ValidationMode.nonStrict));
+    : _text = text,
+      _value = Uint8List.fromList(
+        Uuid.parse(
+          text,
+          validate: false,
+          validationMode: ValidationMode.nonStrict,
+        ),
+      );
 
   /// 16 bytes
   Uint8List get bytes => _value;

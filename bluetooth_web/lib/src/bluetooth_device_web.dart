@@ -8,7 +8,7 @@ class BluetoothDeviceWeb with BluetoothDeviceMixin implements BluetoothDevice {
   final BluetoothDeviceId id;
 
   BluetoothDeviceWeb(this.nativeDevice)
-      : id = BluetoothDeviceId(nativeDevice.id);
+    : id = BluetoothDeviceId(nativeDevice.id);
 
   @override
   String? get name => nativeDevice.name;

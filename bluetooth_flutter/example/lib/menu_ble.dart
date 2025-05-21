@@ -12,9 +12,10 @@ import 'package:tekartik_bluetooth_flutter_example/constant.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_test_menu_flutter/test.dart';
 
-void menuBle(
-    {int? androidEnableRequestCode,
-    int? androidCheckCoarseLocationPermissionRequestCode}) {
+void menuBle({
+  int? androidEnableRequestCode,
+  int? androidCheckCoarseLocationPermissionRequestCode,
+}) {
   androidEnableRequestCode ??= 1;
   androidCheckCoarseLocationPermissionRequestCode ??=
       androidEnableRequestCode + 1;
@@ -22,8 +23,8 @@ void menuBle(
   @deprecated
   Future enableLogs() async {
     await bluetoothAdminManagerFlutter
-        // ignore: deprecated_member_use
-        .devSetOptions(BluetoothOptions()..logLevel = bluetoothLogLevelVerbose);
+    // ignore: deprecated_member_use
+    .devSetOptions(BluetoothOptions()..logLevel = bluetoothLogLevelVerbose);
   }
 
   menu('ble_state', () {
@@ -33,8 +34,8 @@ void menuBle(
     });
     item('disable_logs', () async {
       await bluetoothAdminManagerFlutter
-          // ignore: deprecated_member_use
-          .devSetOptions(BluetoothOptions()..logLevel = bluetoothLogLevelNone);
+      // ignore: deprecated_member_use
+      .devSetOptions(BluetoothOptions()..logLevel = bluetoothLogLevelNone);
     });
     item('init', () async {
       // await enableLogs();
@@ -53,12 +54,15 @@ void menuBle(
     item('bt_on', () async {
       var bluetoothStateService = await getBluetoothStateService();
       write('support enable: ${bluetoothStateService.supportsEnable}');
-      await bluetoothStateService.enable().then((_) {
-        write('enable done');
-      }).catchError((e, st) {
-        write('enable error $e');
-        print(st);
-      });
+      await bluetoothStateService
+          .enable()
+          .then((_) {
+            write('enable done');
+          })
+          .catchError((e, st) {
+            write('enable error $e');
+            print(st);
+          });
     });
     item('bt_on_request', () async {
       var bluetoothStateService = await getBluetoothStateService();
@@ -66,20 +70,21 @@ void menuBle(
       await bluetoothStateService
           .enable(androidRequestCode: enableBluetoothRequestCode)
           .then((_) {
-        write('enable with request done');
-      }).catchError((e, st) {
-        write('enable with request error $e');
-        stdout.writeln(st);
-        print(st);
-        write(st);
-      });
+            write('enable with request done');
+          })
+          .catchError((e, st) {
+            write('enable with request error $e');
+            stdout.writeln(st);
+            print(st);
+            write(st);
+          });
     });
     item('checkCoarseLocation', () async {
       var info =
-          // ignore: deprecated_member_use
-          await bluetoothAdminManagerFlutter.checkCoarseLocationPermission(
-              androidRequestCode:
-                  androidCheckCoarseLocationPermissionRequestCode);
+      // ignore: deprecated_member_use
+      await bluetoothAdminManagerFlutter.checkCoarseLocationPermission(
+        androidRequestCode: androidCheckCoarseLocationPermissionRequestCode,
+      );
       write(info.toString());
     });
     item('checkBluetoothPermissions(scan & connect)', () async {
@@ -88,18 +93,22 @@ void menuBle(
     });
     item('checkBluetoothPermissions(advertise)', () async {
       var info = await bluetoothAdminManagerFlutter.checkBluetoothPermissions(
-          options: BluetoothPermissionsOptions(advertise: true));
+        options: BluetoothPermissionsOptions(advertise: true),
+      );
       write(info.toString());
     });
     item('bt_off', () async {
       var bluetoothStateService = await getBluetoothStateService();
       write('support enable: ${bluetoothStateService.supportsEnable}');
-      bluetoothStateService.disable().then((_) {
-        write('disable done');
-      }).catchError((e, st) {
-        write('disable error $e');
-        stdout.writeln(st);
-      });
+      bluetoothStateService
+          .disable()
+          .then((_) {
+            write('disable done');
+          })
+          .catchError((e, st) {
+            write('disable error $e');
+            stdout.writeln(st);
+          });
     });
   });
 
@@ -113,15 +122,20 @@ void menuBle(
 
       item('scan_$name', () {
         scanSubscription?.cancel();
-        scanSubscription = bluetoothManagerFlutter.scan().listen((result) {
-          write(
-              'scan_$name: ${result.device.address} ${result.device.name} ${result.rssi}');
-        }, onDone: () {
-          write('scan_$name: done');
-        }, onError: (e, st) {
-          write('scan_$name: error $e');
-          print(st);
-        });
+        scanSubscription = bluetoothManagerFlutter.scan().listen(
+          (result) {
+            write(
+              'scan_$name: ${result.device.address} ${result.device.name} ${result.rssi}',
+            );
+          },
+          onDone: () {
+            write('scan_$name: done');
+          },
+          onError: (e, st) {
+            write('scan_$name: error $e');
+            print(st);
+          },
+        );
       });
 
       item('stop_scan_$name', _cancelSubscription);
@@ -137,8 +151,9 @@ void menuBle(
     late BluetoothPeripheral peripheral;
     StreamSubscription? subscription;
     enter(() {
-      subscription = BluetoothFlutter.onSlaveConnectionChanged()
-          .listen((BluetoothSlaveConnection connection) {
+      subscription = BluetoothFlutter.onSlaveConnectionChanged().listen((
+        BluetoothSlaveConnection connection,
+      ) {
         write('${connection.address} ${connection.connected}');
       });
     });
@@ -150,21 +165,26 @@ void menuBle(
       write('setting peripheral');
       var services = <BluetoothGattService>[
         BluetoothGattService(
-            uuid: serviceUuid,
-            characteristics: <BluetoothGattCharacteristic>[
-              BluetoothGattCharacteristic(
-                  uuid: characteristicUuid,
-                  properties: BluetoothGattCharacteristic.propertyNotify |
-                      BluetoothGattCharacteristic.propertyRead,
-                  permissions: BluetoothGattCharacteristic.permissionRead)
-            ])
+          uuid: serviceUuid,
+          characteristics: <BluetoothGattCharacteristic>[
+            BluetoothGattCharacteristic(
+              uuid: characteristicUuid,
+              properties:
+                  BluetoothGattCharacteristic.propertyNotify |
+                  BluetoothGattCharacteristic.propertyRead,
+              permissions: BluetoothGattCharacteristic.permissionRead,
+            ),
+          ],
+        ),
       ];
       peripheral = await BluetoothFlutter.initPeripheral(services: services);
       write(jsonPretty(peripheral.toMap())!);
       write('starting');
-      var advertiseData = AdvertiseData(services: [
-        AdvertiseDataService(uuid: Uuid128(demoAdvertiseDataServiceUuid))
-      ]);
+      var advertiseData = AdvertiseData(
+        services: [
+          AdvertiseDataService(uuid: Uuid128(demoAdvertiseDataServiceUuid)),
+        ],
+      );
       await BluetoothFlutter.startAdvertising(advertiseData: advertiseData);
       write('Started');
     });
@@ -177,17 +197,19 @@ void menuBle(
 
     item('setValue [1]', () async {
       var result = await peripheral.setCharacteristicValue(
-          serviceUuid: serviceUuid,
-          characteristicUuid: characteristicUuid,
-          value: Uint8List.fromList([1]));
+        serviceUuid: serviceUuid,
+        characteristicUuid: characteristicUuid,
+        value: Uint8List.fromList([1]),
+      );
       write(result);
     });
 
     item('setValue [2]', () async {
       var result = await peripheral.setCharacteristicValue(
-          serviceUuid: serviceUuid,
-          characteristicUuid: characteristicUuid,
-          value: Uint8List.fromList([2]));
+        serviceUuid: serviceUuid,
+        characteristicUuid: characteristicUuid,
+        value: Uint8List.fromList([2]),
+      );
       write(result);
     });
 
@@ -215,20 +237,25 @@ void menuBle(
 
       item('connect_$name', () async {
         scanSubscription?.cancel();
-        scanSubscription = bluetoothManagerFlutter.scan().listen((result) {
-          var id = result.device.id;
-          if (!deviceIds.contains(id)) {
-            write(
-                '[${_devices.length}] scan_$name: ${result.device.id} ${result.device.name} ${result.rssi}');
-            deviceIds.add(id);
-            _devices[id] = result.device;
-          }
-        }, onDone: () {
-          write('scan_$name: done');
-        }, onError: (e, st) {
-          write('scan_$name: error $e');
-          print(st);
-        });
+        scanSubscription = bluetoothManagerFlutter.scan().listen(
+          (result) {
+            var id = result.device.id;
+            if (!deviceIds.contains(id)) {
+              write(
+                '[${_devices.length}] scan_$name: ${result.device.id} ${result.device.name} ${result.rssi}',
+              );
+              deviceIds.add(id);
+              _devices[id] = result.device;
+            }
+          },
+          onDone: () {
+            write('scan_$name: done');
+          },
+          onError: (e, st) {
+            write('scan_$name: error $e');
+            print(st);
+          },
+        );
 
         for (int i = 0; i < deviceIds.length; i++) {
           var device = _devices[deviceIds[i]]!;
@@ -259,8 +286,9 @@ void menuBle(
           });
            */
           // device.connect(autoConnect: true, timeout: Duration(seconds: 30));
-          deviceConnection =
-              await bluetoothManagerFlutter.newConnection(deviceId);
+          deviceConnection = await bluetoothManagerFlutter.newConnection(
+            deviceId,
+          );
           deviceConnection!.onConnectionState.listen((state) {
             write('connect state: $state');
           });

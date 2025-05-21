@@ -51,7 +51,8 @@ void main() {
 
       item('enablePeripheralPermissions', () async {
         await initBluetoothManager.checkBluetoothPermissions(
-            options: BluetoothPermissionsOptions(advertise: true));
+          options: BluetoothPermissionsOptions(advertise: true),
+        );
         write('success');
       });
       item('enable', () async {
@@ -76,7 +77,8 @@ void main() {
       item('initPeripheral', () async {
         //Periphe
         peripheral = await BluetoothFlutter.initPeripheral(
-            deviceName: 'Test app peripheral');
+          deviceName: 'Test app peripheral',
+        );
         write('initPeripheral: $peripheral');
       });
 
@@ -111,8 +113,9 @@ void main() {
         try {
           await bleConnection?.disconnect();
         } catch (_) {}
-        bleConnection =
-            await deviceBluetoothManager.newConnection(bleDevice!.id);
+        bleConnection = await deviceBluetoothManager.newConnection(
+          bleDevice!.id,
+        );
       }
     });
     item('discover services', () async {

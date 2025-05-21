@@ -14,14 +14,18 @@ export 'package:tekartik_bluetooth/bluetooth_state_service.dart';
 const String bluetoothPluginNamespace = 'com.tekartik.bluetooth_flutter';
 
 class BluetoothPeripheralPlugin {
-  final EventChannel connectionChannel =
-      EventChannel('$bluetoothPluginNamespace/connection');
-  final MethodChannel methodChannel =
-      const MethodChannel('tekartik_bluetooth_flutter');
-  final MethodChannel callbackChannel =
-      const MethodChannel('$bluetoothPluginNamespace/callback');
-  final EventChannel writeCharacteristicChannel =
-      EventChannel('$bluetoothPluginNamespace/writeCharacteristic');
+  final EventChannel connectionChannel = EventChannel(
+    '$bluetoothPluginNamespace/connection',
+  );
+  final MethodChannel methodChannel = const MethodChannel(
+    'tekartik_bluetooth_flutter',
+  );
+  final MethodChannel callbackChannel = const MethodChannel(
+    '$bluetoothPluginNamespace/callback',
+  );
+  final EventChannel writeCharacteristicChannel = EventChannel(
+    '$bluetoothPluginNamespace/writeCharacteristic',
+  );
 
   BluetoothPeripheralPlugin._();
 }
@@ -101,18 +105,19 @@ class BluetoothGattCharacteristic {
   final int properties;
   final int permissions;
 
-  BluetoothGattCharacteristic(
-      {required this.uuid,
-      required this.properties,
-      required this.permissions,
-      this.description});
+  BluetoothGattCharacteristic({
+    required this.uuid,
+    required this.properties,
+    required this.permissions,
+    this.description,
+  });
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
       'properties': properties,
       'permissions': permissions,
       'uuid': uuid.toString(),
-      if (description != null) 'description': description
+      if (description != null) 'description': description,
     };
     return map;
   }
@@ -159,7 +164,8 @@ class BluetoothGattService {
 /// find helpers.
 extension BluetoothGattServiceExtension on BluetoothGattService {
   BluetoothGattCharacteristic? findGattCharacteristic(
-      BleBluetoothCharacteristic bc) {
+    BleBluetoothCharacteristic bc,
+  ) {
     for (var characteristic in characteristics) {
       if (bc.uuid == characteristic.uuid) {
         return characteristic;
@@ -172,7 +178,8 @@ extension BluetoothGattServiceExtension on BluetoothGattService {
 /// find helpers.
 extension BluetoothGattServiceListExtension on Iterable<BluetoothGattService> {
   BluetoothGattCharacteristic? findGattCharacteristic(
-      BleBluetoothCharacteristic bc) {
+    BleBluetoothCharacteristic bc,
+  ) {
     for (var service in this) {
       if (service.uuid == bc.service.uuid) {
         return service.findGattCharacteristic(bc);
@@ -202,8 +209,9 @@ class AdvertiseData {
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{};
     if (services != null) {
-      map['services'] =
-          services!.map((service) => service.toMap()).toList(growable: false);
+      map['services'] = services!
+          .map((service) => service.toMap())
+          .toList(growable: false);
     }
     if (includeDeviceName) {
       map['includeDeviceName'] = true;
@@ -228,8 +236,9 @@ class BluetoothPeripheralInitData {
       map['deviceName'] = deviceName;
     }
     if (services != null) {
-      map['services'] =
-          services!.map((service) => service.toMap()).toList(growable: false);
+      map['services'] = services!
+          .map((service) => service.toMap())
+          .toList(growable: false);
     }
     return map;
   }
@@ -240,8 +249,11 @@ class BluetoothPeripheralWriteCharacteristicEvent {
   Uuid128? characteristicUuid;
   Uint8List? value;
 
-  BluetoothPeripheralWriteCharacteristicEvent(
-      {this.serviceUuid, this.characteristicUuid, this.value});
+  BluetoothPeripheralWriteCharacteristicEvent({
+    this.serviceUuid,
+    this.characteristicUuid,
+    this.value,
+  });
   void fromMap(Map map) {
     serviceUuid = Uuid128(map['service'].toString());
     characteristicUuid = Uuid128(map['characteristic'].toString());
@@ -256,7 +268,7 @@ class BluetoothPeripheralWriteCharacteristicEvent {
     return Model.from({
       'serviceUuid': serviceUuid?.toString(),
       'characteristicUuid': characteristicUuid?.toString(),
-      'value': value != null ? toHexString(value) : null
+      'value': value != null ? toHexString(value) : null,
     });
   }
 
@@ -283,34 +295,41 @@ class BluetoothPeripheral {
     //  _isSupported ??= await _isSupportedReady;
     //  assert(_isSupported, 'call bluetoothState first');
 
-    await _bluetoothFlutterPlugin!.methodChannel
-        .invokeMethod('peripheralStartAdvertising', advertiseData?.toMap());
+    await _bluetoothFlutterPlugin!.methodChannel.invokeMethod(
+      'peripheralStartAdvertising',
+      advertiseData?.toMap(),
+    );
   }
 
   Future<void> stopAdvertising() async {
     //_isSupported ??= await _isSupportedReady;
     //assert(_isSupported, 'call bluetoothState first');
 
-    await _bluetoothFlutterPlugin!.methodChannel
-        .invokeMethod('peripheralStopAdvertising', null);
+    await _bluetoothFlutterPlugin!.methodChannel.invokeMethod(
+      'peripheralStopAdvertising',
+      null,
+    );
   }
 
   Future<void> close() async {
-    await _bluetoothFlutterPlugin!.methodChannel
-        .invokeMethod('peripheralClose', null);
+    await _bluetoothFlutterPlugin!.methodChannel.invokeMethod(
+      'peripheralClose',
+      null,
+    );
   }
 
-  BluetoothPeripheral(
-      {this.services,
-      this.deviceName,
-      required BluetoothPeripheralPlugin? plugin})
-      : _bluetoothFlutterPlugin = plugin;
+  BluetoothPeripheral({
+    this.services,
+    this.deviceName,
+    required BluetoothPeripheralPlugin? plugin,
+  }) : _bluetoothFlutterPlugin = plugin;
 
   Map<String, Object?> toMap() {
     var map = <String, Object?>{};
     if (services != null) {
-      map['services'] =
-          services!.map((service) => service.toMap()).toList(growable: false);
+      map['services'] = services!
+          .map((service) => service.toMap())
+          .toList(growable: false);
     }
     if (deviceName != null) {
       map['deviceName'] = deviceName;
@@ -322,65 +341,76 @@ class BluetoothPeripheral {
   Stream<BluetoothFlutterSlaveConnection> onSlaveConnectionChanged() {
     return _bluetoothFlutterPlugin!.connectionChannel
         .receiveBroadcastStream()
-        .map((buffer) =>
-            BluetoothFlutterSlaveConnection()..fromMap(buffer as Map));
+        .map(
+          (buffer) => BluetoothFlutterSlaveConnection()..fromMap(buffer as Map),
+        );
   }
 
   /// Occurs when a write occurs
   Stream<BluetoothPeripheralWriteCharacteristicEvent> onWriteCharacteristic() {
     return _bluetoothFlutterPlugin!.writeCharacteristicChannel
         .receiveBroadcastStream()
-        .map((buffer) => BluetoothPeripheralWriteCharacteristicEvent()
-          ..fromMap(buffer as Map));
+        .map(
+          (buffer) =>
+              BluetoothPeripheralWriteCharacteristicEvent()
+                ..fromMap(buffer as Map),
+        );
   }
 
-  Future setCharacteristicValue(
-      {required Uuid128 serviceUuid,
-      required Uuid128 characteristicUuid,
-      required Uint8List? value}) async {
+  Future setCharacteristicValue({
+    required Uuid128 serviceUuid,
+    required Uuid128 characteristicUuid,
+    required Uint8List? value,
+  }) async {
     await _bluetoothFlutterPlugin!.methodChannel
         .invokeMethod('peripheralSetCharacteristicValue', {
-      'service': serviceUuid.toString(),
-      'characteristic': characteristicUuid.toString(),
-      'value': value
-    });
+          'service': serviceUuid.toString(),
+          'characteristic': characteristicUuid.toString(),
+          'value': value,
+        });
   }
 
-  Future notifyCharacteristicValue(
-      {required Uuid128 serviceUuid,
-      required Uuid128 characteristicUuid,
-      Uint8List? value}) async {
+  Future notifyCharacteristicValue({
+    required Uuid128 serviceUuid,
+    required Uuid128 characteristicUuid,
+    Uint8List? value,
+  }) async {
     await _bluetoothFlutterPlugin!.methodChannel
         .invokeMethod('peripheralNotifyCharacteristicValue', {
-      'service': serviceUuid.toString(),
-      'characteristic': characteristicUuid.toString(),
-      'value': value,
-    });
+          'service': serviceUuid.toString(),
+          'characteristic': characteristicUuid.toString(),
+          'value': value,
+        });
   }
 
-  Future setAndNotifyCharacteristicValue(
-      {required Uuid128 serviceUuid,
-      required Uuid128 characteristicUuid,
-      required Uint8List? value}) async {
+  Future setAndNotifyCharacteristicValue({
+    required Uuid128 serviceUuid,
+    required Uuid128 characteristicUuid,
+    required Uint8List? value,
+  }) async {
     await setCharacteristicValue(
-        serviceUuid: serviceUuid,
-        characteristicUuid: characteristicUuid,
-        value: value);
+      serviceUuid: serviceUuid,
+      characteristicUuid: characteristicUuid,
+      value: value,
+    );
     await notifyCharacteristicValue(
-        serviceUuid: serviceUuid,
-        characteristicUuid: characteristicUuid,
-        value: value);
+      serviceUuid: serviceUuid,
+      characteristicUuid: characteristicUuid,
+      value: value,
+    );
   }
 
   Future<Uint8List> getCharacteristicValue({
     required Uuid128 serviceUuid,
     required Uuid128 characteristicUuid,
   }) async {
-    var bytes = (await _bluetoothFlutterPlugin!.methodChannel
-        .invokeMethod('peripheralGetCharacteristicValue', {
-      'service': serviceUuid.toString(),
-      'characteristic': characteristicUuid.toString(),
-    })) as Uint8List;
+    var bytes =
+        (await _bluetoothFlutterPlugin!.methodChannel
+                .invokeMethod('peripheralGetCharacteristicValue', {
+                  'service': serviceUuid.toString(),
+                  'characteristic': characteristicUuid.toString(),
+                }))
+            as Uint8List;
     return bytes;
   }
 

@@ -9,13 +9,14 @@ class BluetoothPermissionsOptions {
   final bool scan;
   final bool advertise;
 
-  BluetoothPermissionsOptions(
-      {this.androidRequestCode,
-      this.connect = true,
-      this.scan = true,
+  BluetoothPermissionsOptions({
+    this.androidRequestCode,
+    this.connect = true,
+    this.scan = true,
 
-      /// Advertise is for simulating peripheral
-      this.advertise = false});
+    /// Advertise is for simulating peripheral
+    this.advertise = false,
+  });
 }
 
 abstract class BluetoothManagerCommon {
@@ -34,8 +35,10 @@ abstract class BluetoothAdminManager
   /// Android only
   ///
   /// Look for scan/connect permissiton for Android 12, location before
-  Future<bool> checkBluetoothPermissions(
-      {int? androidRequestCode, BluetoothPermissionsOptions? options});
+  Future<bool> checkBluetoothPermissions({
+    int? androidRequestCode,
+    BluetoothPermissionsOptions? options,
+  });
 
   /// deprecated on purpose to remove from code.
   @Deprecated('Dev only')
@@ -48,11 +51,12 @@ abstract class BluetoothAdminManager
 abstract class BluetoothManager
     implements
         BluetoothManagerCommon,
-
         /// Might be removed in the future...
         BluetoothStateService {
-  Stream<ScanResult> scan(
-      {ScanMode scanMode = ScanMode.lowLatency, List<Uuid128>? withServices});
+  Stream<ScanResult> scan({
+    ScanMode scanMode = ScanMode.lowLatency,
+    List<Uuid128>? withServices,
+  });
 
   /// Good to call on start.
   ///

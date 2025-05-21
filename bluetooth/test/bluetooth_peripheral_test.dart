@@ -13,32 +13,43 @@ void main() {
     test('findGattServices', () {
       var gattServices = [
         BluetoothGattService(
-            uuid: _service1Uuid,
-            characteristics: <BluetoothGattCharacteristic>[
-              BluetoothGattCharacteristic(
-                  uuid: _characteristic1Uuid,
-                  properties: BluetoothGattCharacteristic.propertyWrite,
-                  permissions: BluetoothGattCharacteristic.permissionWrite,
-                  description: 'Command'),
-              BluetoothGattCharacteristic(
-                  uuid: _characteristic2Uuid,
-                  properties: BluetoothGattCharacteristic.propertyIndicate,
-                  permissions: 0,
-                  description: 'Indicate'),
-            ])
+          uuid: _service1Uuid,
+          characteristics: <BluetoothGattCharacteristic>[
+            BluetoothGattCharacteristic(
+              uuid: _characteristic1Uuid,
+              properties: BluetoothGattCharacteristic.propertyWrite,
+              permissions: BluetoothGattCharacteristic.permissionWrite,
+              description: 'Command',
+            ),
+            BluetoothGattCharacteristic(
+              uuid: _characteristic2Uuid,
+              properties: BluetoothGattCharacteristic.propertyIndicate,
+              permissions: 0,
+              description: 'Indicate',
+            ),
+          ],
+        ),
       ];
       expect(
-          gattServices
-              .findGattCharacteristic(BleBluetoothCharacteristic(
-                  service: BleBluetoothService(uuid: _service1Uuid),
-                  uuid: _characteristic1Uuid))!
-              .uuid,
-          _characteristic1Uuid);
+        gattServices
+            .findGattCharacteristic(
+              BleBluetoothCharacteristic(
+                service: BleBluetoothService(uuid: _service1Uuid),
+                uuid: _characteristic1Uuid,
+              ),
+            )!
+            .uuid,
+        _characteristic1Uuid,
+      );
       expect(
-          gattServices.findGattCharacteristic(BleBluetoothCharacteristic(
-              service: BleBluetoothService(uuid: _service2Uuid),
-              uuid: _characteristic1Uuid)),
-          isNull);
+        gattServices.findGattCharacteristic(
+          BleBluetoothCharacteristic(
+            service: BleBluetoothService(uuid: _service2Uuid),
+            uuid: _characteristic1Uuid,
+          ),
+        ),
+        isNull,
+      );
     });
   });
 }

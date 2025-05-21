@@ -31,14 +31,18 @@ class MixinTest with BluetoothManagerMixin {
 mixin BluetoothAdminManagerMixin
     implements BluetoothAdminManager, BluetoothServiceInvokable {
   @override
-  Future<bool> checkBluetoothPermissions(
-      {int? androidRequestCode, BluetoothPermissionsOptions? options}) async {
+  Future<bool> checkBluetoothPermissions({
+    int? androidRequestCode,
+    BluetoothPermissionsOptions? options,
+  }) async {
     androidRequestCode ??= requestCodeCheckBluetoothPermissions;
     return await invokeMethod<bool>(
-        methodCheckBluetoothPermissions, <String, dynamic>{
-      'androidRequestCode': androidRequestCode,
-      if (options?.advertise ?? false) 'advertise': true
-    });
+      methodCheckBluetoothPermissions,
+      <String, dynamic>{
+        'androidRequestCode': androidRequestCode,
+        if (options?.advertise ?? false) 'advertise': true,
+      },
+    );
   }
 
   @override
@@ -133,20 +137,24 @@ mixin BluetoothManagerMixin implements BluetoothManager {
   }
 
   @override
-  Future enable(
-      {@Deprecated('Use androidRequestCode') int? requestCode,
-      int? androidRequestCode}) async {
+  Future enable({
+    @Deprecated('Use androidRequestCode') int? requestCode,
+    int? androidRequestCode,
+  }) async {
     androidRequestCode ??= requestCode ?? requestCodeEnableBluetoothDefault;
     // Using a request code means explaining version
 
-    await invokeMethod<void>('enableBluetooth',
-        <String, dynamic>{'androidRequestCode': androidRequestCode});
+    await invokeMethod<void>('enableBluetooth', <String, dynamic>{
+      'androidRequestCode': androidRequestCode,
+    });
   }
 
   Future<bool> checkCoarseLocationPermission({int? androidRequestCode}) async {
     androidRequestCode ??= requestCodeCheckBluetoothPermissions;
-    return await invokeMethod<bool>('checkCoarseLocationPermission',
-        <String, dynamic>{'androidRequestCode': androidRequestCode});
+    return await invokeMethod<bool>(
+      'checkCoarseLocationPermission',
+      <String, dynamic>{'androidRequestCode': androidRequestCode},
+    );
   }
 
   @override
@@ -161,17 +169,21 @@ mixin BluetoothManagerMixin implements BluetoothManager {
   StreamController<ScanResult>? scanController;
 
   @override
-  Stream<ScanResult> scan(
-      {ScanMode scanMode = ScanMode.lowLatency, List<Uuid128>? withServices}) {
+  Stream<ScanResult> scan({
+    ScanMode scanMode = ScanMode.lowLatency,
+    List<Uuid128>? withServices,
+  }) {
     var param = StartScanParam()..androidScanMode.v = scanMode.value;
     var map = param.toMap();
 
     scanController?.close();
 
-    scanController = StreamController<ScanResult>(onCancel: () async {
-      scanController = null;
-      await invokeStopScan();
-    });
+    scanController = StreamController<ScanResult>(
+      onCancel: () async {
+        scanController = null;
+        await invokeStopScan();
+      },
+    );
     () async {
       await invokeMethod<dynamic>(methodStartScan, map);
     }();

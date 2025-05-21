@@ -77,51 +77,52 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
+        appBar: AppBar(title: const Text('Plugin example app')),
         body: Center(
-          child: Column(children: <Widget>[
-            Text('on: $_statusDate\nBluetooth status $_bluetoothState'),
-            ElevatedButton(
+          child: Column(
+            children: <Widget>[
+              Text('on: $_statusDate\nBluetooth status $_bluetoothState'),
+              ElevatedButton(
                 child: Text('enable'),
                 onPressed: () async {
                   BluetoothFlutter.enableBluetooth(requestCode: 1);
                   await getStatus();
-                }),
-            ElevatedButton(
-              child: Text('enable admin'),
-              onPressed: () async {
-                BluetoothFlutter.enableBluetooth();
-                await getStatus();
-              },
-            ),
-            ElevatedButton(
-              child: Text('disable'),
-              onPressed: () async {
-                BluetoothFlutter.disableBluetooth();
-                await getStatus();
-              },
-            ),
-            ElevatedButton(
-              child: Text('getStatus'),
-              onPressed: () async {
-                await getStatus();
-              },
-            ),
-            ElevatedButton(
-              child: Text('startAdvertising'),
-              onPressed: () async {
-                await BluetoothFlutter.startAdvertising();
-              },
-            ),
-            ElevatedButton(
-              child: Text('stopAdvertising'),
-              onPressed: () async {
-                await BluetoothFlutter.stopAdvertising();
-              },
-            ),
-          ]),
+                },
+              ),
+              ElevatedButton(
+                child: Text('enable admin'),
+                onPressed: () async {
+                  BluetoothFlutter.enableBluetooth();
+                  await getStatus();
+                },
+              ),
+              ElevatedButton(
+                child: Text('disable'),
+                onPressed: () async {
+                  BluetoothFlutter.disableBluetooth();
+                  await getStatus();
+                },
+              ),
+              ElevatedButton(
+                child: Text('getStatus'),
+                onPressed: () async {
+                  await getStatus();
+                },
+              ),
+              ElevatedButton(
+                child: Text('startAdvertising'),
+                onPressed: () async {
+                  await BluetoothFlutter.startAdvertising();
+                },
+              ),
+              ElevatedButton(
+                child: Text('stopAdvertising'),
+                onPressed: () async {
+                  await BluetoothFlutter.stopAdvertising();
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -37,11 +37,13 @@ class BluetoothServerClient {
       var version = Version.parse(serverInfoMap[keyVersion] as String);
       if (version < serverInfoMinVersion) {
         throw StateError(
-            'Bluetooth server version $version not supported, >=$serverInfoMinVersion expected');
+          'Bluetooth server version $version not supported, >=$serverInfoMinVersion expected',
+        );
       }
-      serverInfo = ServerInfo()
-        ..isIOS = parseBool(serverInfoMap[keyIsIOS])
-        ..isAndroid = parseBool(serverInfoMap[keyIsAndroid]);
+      serverInfo =
+          ServerInfo()
+            ..isIOS = parseBool(serverInfoMap[keyIsIOS])
+            ..isAndroid = parseBool(serverInfoMap[keyIsAndroid]);
     } catch (e) {
       await rpcClient.close();
       rethrow;

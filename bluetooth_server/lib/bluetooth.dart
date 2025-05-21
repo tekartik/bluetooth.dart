@@ -20,8 +20,9 @@ final bluetoothServerDefaultUrl = getBluetoothServerUrl();
 Future<BluetoothManager?> initBluetoothClientService() async {
   BluetoothManager? service;
   var envUrl = const String.fromEnvironment(bluetoothServerUrlEnvKey);
-  var envPort =
-      parseInt(const String.fromEnvironment(bluetoothServerPortEnvKey));
+  var envPort = parseInt(
+    const String.fromEnvironment(bluetoothServerPortEnvKey),
+  );
 
   var url = envUrl;
   if (url == '') {
@@ -65,12 +66,16 @@ class BluetoothServerContext implements BluetoothContext {
     return result;
   }
 
-  Future<BluetoothServerClient?> connectClient(String url,
-      {WebSocketChannelClientFactory? webSocketChannelClientFactory}) async {
+  Future<BluetoothServerClient?> connectClient(
+    String url, {
+    WebSocketChannelClientFactory? webSocketChannelClientFactory,
+  }) async {
     BluetoothServerClient client;
     try {
-      client = await BluetoothServerClient.connect(url,
-          webSocketChannelClientFactory: webSocketChannelClientFactory);
+      client = await BluetoothServerClient.connect(
+        url,
+        webSocketChannelClientFactory: webSocketChannelClientFactory,
+      );
       _client = client;
 
       return client;
@@ -82,11 +87,15 @@ class BluetoothServerContext implements BluetoothContext {
 
   //BluetoothServerFlutterService get service => _service;
 
-  static Future<BluetoothServerContext?> connect(String url,
-      {WebSocketChannelClientFactory? webSocketChannelClientFactory}) async {
+  static Future<BluetoothServerContext?> connect(
+    String url, {
+    WebSocketChannelClientFactory? webSocketChannelClientFactory,
+  }) async {
     var context = BluetoothServerContext();
-    var client = await context.connectClient(url,
-        webSocketChannelClientFactory: webSocketChannelClientFactory);
+    var client = await context.connectClient(
+      url,
+      webSocketChannelClientFactory: webSocketChannelClientFactory,
+    );
     if (client == null) {
       var port = parseBluetoothServerUrlPort(url);
       print('''

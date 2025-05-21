@@ -14,10 +14,14 @@ class BluetoothServerService
 
   final BluetoothServerContext context;
 
-  static Future<BluetoothServerService?> create(String url,
-      {WebSocketChannelClientFactory? webSocketChannelClientFactory}) async {
-    var context = await BluetoothServerContext.connect(url,
-        webSocketChannelClientFactory: webSocketChannelClientFactory);
+  static Future<BluetoothServerService?> create(
+    String url, {
+    WebSocketChannelClientFactory? webSocketChannelClientFactory,
+  }) async {
+    var context = await BluetoothServerContext.connect(
+      url,
+      webSocketChannelClientFactory: webSocketChannelClientFactory,
+    );
     if (context != null) {
       return BluetoothServerService(context);
     }

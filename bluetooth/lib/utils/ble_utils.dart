@@ -2,7 +2,8 @@ import 'package:tekartik_bluetooth/ble.dart';
 
 /// 0 if none
 Set<BleCharacteristicPropertyFlag> propertiesValueToPropertyFlags(
-    int propertiesValue) {
+  int propertiesValue,
+) {
   var flags = <BleCharacteristicPropertyFlag>{};
   for (var flag in BleCharacteristicPropertyFlag.values) {
     var value = _propertyFlagToPropertyValue(flag);
@@ -35,7 +36,7 @@ var _flagToPropertyMap = {
   // TODO BlueZGattCharacteristicFlag.encryptWrite,
   // TODO BlueZGattCharacteristicFlag.encryptAuthenticatedRead,
   // TODO BlueZGattCharacteristicFlag.encryptAuthenticatedWrite,
-//      TODO BlueZGattCharacteristicFlag.secureRead: bleProperty,
+  //      TODO BlueZGattCharacteristicFlag.secureRead: bleProperty,
   BleCharacteristicPropertyFlag.secureWrite: blePropertySignedWrite,
   // TODO BlueZGattCharacteristicFlag.authorize,
 };

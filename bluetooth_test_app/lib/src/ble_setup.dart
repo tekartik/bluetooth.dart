@@ -21,8 +21,8 @@ void initWithFlutterBlue() {
   }
   deviceBluetoothManager = bluetoothManagerFlutterBlue;
   initBluetoothManager
-      // ignore: deprecated_member_use
-      .devSetOptions(BluetoothOptions()..logLevel = bluetoothLogLevelVerbose);
+  // ignore: deprecated_member_use
+  .devSetOptions(BluetoothOptions()..logLevel = bluetoothLogLevelVerbose);
 }
 
 void initWithBluez() {

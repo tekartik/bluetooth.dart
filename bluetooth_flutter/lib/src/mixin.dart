@@ -22,7 +22,8 @@ mixin BluetoothFlutterManagerMixin
     implements BluetoothFlutterManager, BluetoothManagerMixin {
   @override
   Future<BluetoothDeviceConnection> newConnection(
-      BluetoothDeviceId deviceId) async {
+    BluetoothDeviceId deviceId,
+  ) async {
     var connection = BluetoothDeviceConnectionFlutterImpl(manager: this);
 
     var map = <String, Object?>{};

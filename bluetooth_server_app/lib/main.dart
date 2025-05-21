@@ -24,7 +24,8 @@ class BluetoothServerApp extends StatelessWidget {
   }
 }
 
-MaterialPageRoute<dynamic> get homePageRoute =>
-    MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-      return const BluetoothServerHomePage(title: 'Bluetooth server');
-    });
+MaterialPageRoute<dynamic> get homePageRoute => MaterialPageRoute<dynamic>(
+  builder: (BuildContext context) {
+    return const BluetoothServerHomePage(title: 'Bluetooth server');
+  },
+);

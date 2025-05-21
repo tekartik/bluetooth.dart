@@ -32,7 +32,7 @@ void main() {
         204,
         68,
         148,
-        158
+        158,
       ]);
       expect(uuid128.toString(), '36c9159b-6cc6-43b3-b198-ac03cc44949e');
 
@@ -54,10 +54,12 @@ void main() {
         204,
         68,
         148,
-        158
+        158,
       ]);
       expect(
-          uuid128WithUuid16.toString(), '36c91234-6cc6-43b3-b198-ac03cc44949e');
+        uuid128WithUuid16.toString(),
+        '36c91234-6cc6-43b3-b198-ac03cc44949e',
+      );
 
       var uuid32 = Uuid32('1234abCd');
       var uuid128WithUuid32 = uuid128.withUuid32(uuid32);
@@ -77,10 +79,12 @@ void main() {
         204,
         68,
         148,
-        158
+        158,
       ]);
       expect(
-          uuid128WithUuid32.toString(), '1234abcd-6cc6-43b3-b198-ac03cc44949e');
+        uuid128WithUuid32.toString(),
+        '1234abcd-6cc6-43b3-b198-ac03cc44949e',
+      );
 
       expect(uuid128WithUuid32.shortNumberUuid16.toString(), 'abcd');
       expect(uuid128WithUuid32.longNumberUuid32.toString(), '1234abcd');

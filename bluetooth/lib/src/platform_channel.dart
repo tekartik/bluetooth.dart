@@ -72,7 +72,8 @@ class MethodChannel {
   /// similarly to what happens if no method call handler has been set.
   /// Any other exception results in an error envelope being sent.
   void setMethodCallHandler(
-      Future<dynamic> Function(MethodCall call)? handler) {
+    Future<dynamic> Function(MethodCall call)? handler,
+  ) {
     throw UnsupportedError('Unsupported');
   }
 }

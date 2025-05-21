@@ -23,19 +23,22 @@ class _DeviceState {
 
   _DeviceState({this.deviceConnectionState, this.discoveringServices});
 
-  _DeviceState clone(
-      {bool? discoveringServices,
-      BluetoothDeviceConnectionState? deviceConnectionState}) {
+  _DeviceState clone({
+    bool? discoveringServices,
+    BluetoothDeviceConnectionState? deviceConnectionState,
+  }) {
     return _DeviceState(
-        deviceConnectionState:
-            deviceConnectionState ?? this.deviceConnectionState,
-        discoveringServices: discoveringServices ?? this.discoveringServices);
+      deviceConnectionState:
+          deviceConnectionState ?? this.deviceConnectionState,
+      discoveringServices: discoveringServices ?? this.discoveringServices,
+    );
   }
 
   @override
-  String toString() => {
+  String toString() =>
+      {
         'state': deviceConnectionState,
-        'discoveringServices': discoveringServices
+        'discoveringServices': discoveringServices,
       }.toString();
 }
 
@@ -67,27 +70,22 @@ class _DevicePageState extends State<DevicePage> {
             },
             itemBuilder: (BuildContext context) {
               return [
-                const PopupMenuItem<int>(
-                  value: 1,
-                  child: Text('Disconnect'),
-                ),
-                const PopupMenuItem<int>(
-                  value: 2,
-                  child: Text('Reconnect'),
-                )
+                const PopupMenuItem<int>(value: 1, child: Text('Disconnect')),
+                const PopupMenuItem<int>(value: 2, child: Text('Reconnect')),
               ];
             },
           ),
         ],
       ),
-      body: Builder(builder: (context) {
-        if (!_inited) {
-          _inited = true;
-          _connect();
-        }
-        return ListView(
-          children: <Widget>[
-            StreamBuilder<_DeviceState?>(
+      body: Builder(
+        builder: (context) {
+          if (!_inited) {
+            _inited = true;
+            _connect();
+          }
+          return ListView(
+            children: <Widget>[
+              StreamBuilder<_DeviceState?>(
                 stream: connectionState,
                 initialData: connectionState.value,
                 builder: (context, snapshot) {
@@ -123,8 +121,9 @@ class _DevicePageState extends State<DevicePage> {
                       },
                     ),
                   );
-                }),
-            StreamBuilder<List<BleBluetoothService>?>(
+                },
+              ),
+              StreamBuilder<List<BleBluetoothService>?>(
                 stream: _deviceServices,
                 initialData: _deviceServices.value,
                 builder: (context, snapshot) {
@@ -133,26 +132,36 @@ class _DevicePageState extends State<DevicePage> {
                     return Container();
                   }
                   return Column(
-                      children: list!
-                          .map((service) => ListTile(
-                                title: const Text('Service'),
-                                subtitle: Text(service.uuid.toString()),
-                                onTap: () {
-                                  () async {
-                                    await Navigator.of(context).push<String>(
-                                        MaterialPageRoute(
-                                            builder: (_) => BleServicePage(
-                                                appBleService: AppBleService(
-                                                    connection: connection,
-                                                    bleService: service))));
-                                  }();
-                                },
-                              ))
-                          .toList(growable: false));
-                })
-          ],
-        );
-      }),
+                    children: list!
+                        .map(
+                          (service) => ListTile(
+                            title: const Text('Service'),
+                            subtitle: Text(service.uuid.toString()),
+                            onTap: () {
+                              () async {
+                                await Navigator.of(context).push<String>(
+                                  MaterialPageRoute(
+                                    builder:
+                                        (_) => BleServicePage(
+                                          appBleService: AppBleService(
+                                            connection: connection,
+                                            bleService: service,
+                                          ),
+                                        ),
+                                  ),
+                                );
+                              }();
+                            },
+                          ),
+                        )
+                        .toList(growable: false),
+                  );
+                },
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -173,8 +182,9 @@ class _DevicePageState extends State<DevicePage> {
   Future _refreshServices() async {
     _deviceServices.add(null);
     try {
-      connectionState
-          .add(connectionState.value?.clone(discoveringServices: true));
+      connectionState.add(
+        connectionState.value?.clone(discoveringServices: true),
+      );
       print('Discovering services');
       await connection!.discoverServices();
       // devPrint('getting services');
@@ -196,8 +206,9 @@ class _DevicePageState extends State<DevicePage> {
     } catch (e) {
       print(e);
     }
-    connectionState
-        .add(connectionState.value?.clone(discoveringServices: false));
+    connectionState.add(
+      connectionState.value?.clone(discoveringServices: false),
+    );
   }
 
   Future _connect() async {
@@ -211,8 +222,9 @@ class _DevicePageState extends State<DevicePage> {
     stateSubscription?.cancel().unawait();
     stateSubscription = connection!.onConnectionState.listen((state) {
       print('onConnectionState: $state');
-      connectionState
-          .add(connectionState.value?.clone(deviceConnectionState: state));
+      connectionState.add(
+        connectionState.value?.clone(deviceConnectionState: state),
+      );
     });
     try {
       await connection!.connect();

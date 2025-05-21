@@ -19,7 +19,8 @@ class BluetoothDeviceConnectionMock implements BluetoothDeviceConnection {
       _bleNotificationWrapper;
   final _bleConnectionStateWrapper =
       BehaviorSubject<BluetoothDeviceConnectionState>.seeded(
-          BluetoothDeviceConnectionState.disconnected);
+        BluetoothDeviceConnectionState.disconnected,
+      );
 
   BluetoothDeviceConnectionMock({required this.manager});
   @override
@@ -29,14 +30,16 @@ class BluetoothDeviceConnectionMock implements BluetoothDeviceConnection {
 
   @override
   Future<void> connect() async {
-    _bleConnectionStateWrapper.sink
-        .add(BluetoothDeviceConnectionState.connected);
+    _bleConnectionStateWrapper.sink.add(
+      BluetoothDeviceConnectionState.connected,
+    );
   }
 
   @override
   Future disconnect() async {
-    _bleConnectionStateWrapper.sink
-        .add(BluetoothDeviceConnectionState.disconnected);
+    _bleConnectionStateWrapper.sink.add(
+      BluetoothDeviceConnectionState.disconnected,
+    );
   }
 
   @override
@@ -45,7 +48,8 @@ class BluetoothDeviceConnectionMock implements BluetoothDeviceConnection {
   BluetoothPeripheralMock get peripheral => manager.peripheral!;
 
   BleBluetoothService serviceFromPeripheralService(
-      BluetoothGattService gattService) {
+    BluetoothGattService gattService,
+  ) {
     var service = BleBluetoothServiceImpl(uuid: gattService.uuid);
     var characteristics = gattService.characteristics.map((e) {
       var characteristic = characteristicFromGattCharacteristic(service, e);
@@ -56,12 +60,14 @@ class BluetoothDeviceConnectionMock implements BluetoothDeviceConnection {
   }
 
   BleBluetoothCharacteristic characteristicFromGattCharacteristic(
-      BleBluetoothService service,
-      BluetoothGattCharacteristic gattCharacteristic) {
+    BleBluetoothService service,
+    BluetoothGattCharacteristic gattCharacteristic,
+  ) {
     var characteristic = BleBluetoothCharacteristicImpl(
-        service: service,
-        uuid: gattCharacteristic.uuid,
-        properties: gattCharacteristic.properties);
+      service: service,
+      uuid: gattCharacteristic.uuid,
+      properties: gattCharacteristic.properties,
+    );
     return characteristic;
   }
 
@@ -73,10 +79,13 @@ class BluetoothDeviceConnectionMock implements BluetoothDeviceConnection {
 
   @override
   Stream<BleBluetoothCharacteristicValue> onCharacteristicValueChanged(
-      BleBluetoothCharacteristic characteristic) {
-    return _bleNotificationWrapper.stream.where((event) =>
-        event.service.uuid == characteristic.service.uuid &&
-        event.uuid == characteristic.uuid);
+    BleBluetoothCharacteristic characteristic,
+  ) {
+    return _bleNotificationWrapper.stream.where(
+      (event) =>
+          event.service.uuid == characteristic.service.uuid &&
+          event.uuid == characteristic.uuid,
+    );
   }
 
   @override
@@ -96,7 +105,9 @@ class BluetoothDeviceConnectionMock implements BluetoothDeviceConnection {
   }
 
   BleBluetoothCharacteristic getCharacteristic(
-      Uuid128 serviceUuid, Uuid128 uuid) {
+    Uuid128 serviceUuid,
+    Uuid128 uuid,
+  ) {
     var service = getService(serviceUuid);
 
     for (var characteristic in service.characteristics) {
@@ -109,37 +120,51 @@ class BluetoothDeviceConnectionMock implements BluetoothDeviceConnection {
 
   @override
   Future<BleBluetoothCharacteristicValue> readCharacteristic(
-      BleBluetoothCharacteristic characteristic) async {
+    BleBluetoothCharacteristic characteristic,
+  ) async {
     var service = getService(characteristic.service.uuid);
-    var bleCharacteristic =
-        getCharacteristic(characteristic.service.uuid, characteristic.uuid);
+    var bleCharacteristic = getCharacteristic(
+      characteristic.service.uuid,
+      characteristic.uuid,
+    );
     var value = await peripheral.getCharacteristicValue(
-        serviceUuid: characteristic.service.uuid,
-        characteristicUuid: characteristic.uuid);
+      serviceUuid: characteristic.service.uuid,
+      characteristicUuid: characteristic.uuid,
+    );
     return BleBluetoothCharacteristicValue(
-        service: service, value: value, bc: bleCharacteristic);
+      service: service,
+      value: value,
+      bc: bleCharacteristic,
+    );
   }
 
   @override
   Future<void> registerCharacteristic(
-      BleBluetoothCharacteristic characteristic, bool on) async {
+    BleBluetoothCharacteristic characteristic,
+    bool on,
+  ) async {
     peripheral.bleNotification.stream.listen((event) {
       if (event.serviceUuid == characteristic.service.uuid &&
           event.characteristicUuid == characteristic.uuid) {
-        _bleNotificationWrapper.sink.add(BleBluetoothCharacteristicValue(
+        _bleNotificationWrapper.sink.add(
+          BleBluetoothCharacteristicValue(
             service: BleBluetoothService(uuid: event.serviceUuid),
             value: event.value!,
-            uuid: event.characteristicUuid));
+            uuid: event.characteristicUuid,
+          ),
+        );
       }
     });
   }
 
   @override
   Future<void> writeCharacteristic(
-      BleBluetoothCharacteristicValue characteristicValue) async {
+    BleBluetoothCharacteristicValue characteristicValue,
+  ) async {
     await peripheral.writeCharacteristicValue(
-        serviceUuid: characteristicValue.service.uuid,
-        characteristicUuid: characteristicValue.uuid,
-        value: characteristicValue.value);
+      serviceUuid: characteristicValue.service.uuid,
+      characteristicUuid: characteristicValue.uuid,
+      value: characteristicValue.value,
+    );
   }
 }

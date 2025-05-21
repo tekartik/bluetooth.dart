@@ -7,7 +7,7 @@ class MethodCallFlutter implements MethodCall {
   final flutter.MethodCall _native;
 
   MethodCallFlutter(String method, [dynamic arguments])
-      : _native = flutter.MethodCall(method, arguments);
+    : _native = flutter.MethodCall(method, arguments);
 
   @override
   dynamic get arguments => _native.arguments;
@@ -49,17 +49,21 @@ class EventChannelFlutter implements EventChannel {
 
 class BluetoothPeripheralFlutterPlugin implements BluetoothPeripheralPlugin {
   @override
-  final EventChannel connectionChannel =
-      EventChannelFlutter('$bluetoothPluginNamespace/connection');
+  final EventChannel connectionChannel = EventChannelFlutter(
+    '$bluetoothPluginNamespace/connection',
+  );
   @override
-  final MethodChannel methodChannel =
-      MethodChannelFlutter('tekartik_bluetooth_flutter');
+  final MethodChannel methodChannel = MethodChannelFlutter(
+    'tekartik_bluetooth_flutter',
+  );
   @override
-  final MethodChannel callbackChannel =
-      MethodChannelFlutter('$bluetoothPluginNamespace/callback');
+  final MethodChannel callbackChannel = MethodChannelFlutter(
+    '$bluetoothPluginNamespace/callback',
+  );
   @override
-  final EventChannel writeCharacteristicChannel =
-      EventChannelFlutter('$bluetoothPluginNamespace/writeCharacteristic');
+  final EventChannel writeCharacteristicChannel = EventChannelFlutter(
+    '$bluetoothPluginNamespace/writeCharacteristic',
+  );
 
   BluetoothPeripheralFlutterPlugin._();
 }

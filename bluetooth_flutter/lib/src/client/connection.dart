@@ -26,19 +26,22 @@ class BluetoothDeviceConnectionFlutterImpl
   int? connectionId;
 
   BluetoothDeviceConnectionFlutterImpl({required this.manager}) {
-    controller.stream.listen((call) {
-      if (call.method == 'remoteConnectionState') {
-        // devPrint(call.arguments);
-        onConnectionStateChanged(call.arguments as Map?);
-      }
-    }, onDone: () {
-      () async {
-        // devPrint('done $this');
-        if (connectionId != null) {
-          await disconnect();
+    controller.stream.listen(
+      (call) {
+        if (call.method == 'remoteConnectionState') {
+          // devPrint(call.arguments);
+          onConnectionStateChanged(call.arguments as Map?);
         }
-      }();
-    });
+      },
+      onDone: () {
+        () async {
+          // devPrint('done $this');
+          if (connectionId != null) {
+            await disconnect();
+          }
+        }();
+      },
+    );
     connectionStateController.stream.listen((state) {
       connectionState = state;
     });
@@ -53,7 +56,8 @@ class BluetoothDeviceConnectionFlutterImpl
 
   @override
   Future<BleBluetoothCharacteristicValue> readCharacteristic(
-      BleBluetoothCharacteristic characteristic) async {
+    BleBluetoothCharacteristic characteristic,
+  ) async {
     var map = _baseMap();
 
     var serviceUuid = characteristic.service.uuid.toString();
@@ -66,23 +70,28 @@ class BluetoothDeviceConnectionFlutterImpl
         .where((call) => call.method == 'remoteReadCharacteristicResult')
         .map((call) => asModel(asMap(call.arguments) ?? {}))
         .listen((map) {
-      var readServiceUuid = map[serviceUuidKey] as String?;
-      var readCharacteristicUuid = map[characteristicUuidKey] as String?;
-      if (readServiceUuid == serviceUuid &&
-          readCharacteristicUuid == characteristicUuid) {
-        var status = map[statusKey];
-        if (!completer.isCompleted) {
-          if (status == androidBleGattSuccess) {
-            var value = map[valueKey] as Uint8List;
-            completer.complete(BleBluetoothCharacteristicValue(
-                bc: characteristic, value: value));
-          } else {
-            completer.completeError(
-                BluetoothException('gattStatus $status', status));
+          var readServiceUuid = map[serviceUuidKey] as String?;
+          var readCharacteristicUuid = map[characteristicUuidKey] as String?;
+          if (readServiceUuid == serviceUuid &&
+              readCharacteristicUuid == characteristicUuid) {
+            var status = map[statusKey];
+            if (!completer.isCompleted) {
+              if (status == androidBleGattSuccess) {
+                var value = map[valueKey] as Uint8List;
+                completer.complete(
+                  BleBluetoothCharacteristicValue(
+                    bc: characteristic,
+                    value: value,
+                  ),
+                );
+              } else {
+                completer.completeError(
+                  BluetoothException('gattStatus $status', status),
+                );
+              }
+            }
           }
-        }
-      }
-    });
+        });
     try {
       await manager.invokeMethod<dynamic>('remoteReadCharacteristic', map);
 
@@ -114,9 +123,12 @@ class BluetoothDeviceConnectionFlutterImpl
         if (connectionState?.state != androidBleConnectionStateDisconnecting) {
           await manager.invokeMethod<dynamic>('remoteDisconnect', map);
         }
-        await completer.future.timeout(bleDisconnectedTimeout, onTimeout: () {
-          // devPrint('disconnect timeout');
-        });
+        await completer.future.timeout(
+          bleDisconnectedTimeout,
+          onTimeout: () {
+            // devPrint('disconnect timeout');
+          },
+        );
       } catch (e) {
         // ignore: avoid_print
         print('disconnect $this error $e');
@@ -153,10 +165,10 @@ class BluetoothDeviceConnectionFlutterImpl
         .where((call) => call.method == 'remoteDiscoverServicesResult')
         .map((call) => asModel(asMap(call.arguments) ?? {}))
         .listen((map) {
-      if (!completer.isCompleted) {
-        completer.complete();
-      }
-    });
+          if (!completer.isCompleted) {
+            completer.complete();
+          }
+        });
     try {
       await manager.invokeMethod<dynamic>('remoteDiscoverServices', map);
 
@@ -170,37 +182,50 @@ class BluetoothDeviceConnectionFlutterImpl
   Future<List<BleBluetoothService>> getServices() async {
     var map = _baseMap();
     var list = await invokeMethod<List>('remoteGetServices', map);
-    return list.map((item) {
-      var map = item as Map;
-      var uuidText = map[uuidKey] as String?;
-      var bleService = BleBluetoothService(uuid: Uuid128.from(text: uuidText));
-      var characteristicsMapList = map[characteristicsKey] as List?;
-      var characteristics = characteristicsMapList?.map((item) {
-            var map = item as Map;
-            var uuidText = map[uuidKey] as String?;
-            // devPrint('properties ${map[propertiesKey]}');
-            var properties = (map[propertiesKey] as int?) ?? 0x00;
-            var descriptorMapList = (map[descriptorsKey] as List?)?.cast<Map>();
+    return list
+        .map((item) {
+          var map = item as Map;
+          var uuidText = map[uuidKey] as String?;
+          var bleService = BleBluetoothService(
+            uuid: Uuid128.from(text: uuidText),
+          );
+          var characteristicsMapList = map[characteristicsKey] as List?;
+          var characteristics =
+              characteristicsMapList
+                  ?.map((item) {
+                    var map = item as Map;
+                    var uuidText = map[uuidKey] as String?;
+                    // devPrint('properties ${map[propertiesKey]}');
+                    var properties = (map[propertiesKey] as int?) ?? 0x00;
+                    var descriptorMapList =
+                        (map[descriptorsKey] as List?)?.cast<Map>();
 
-            var characteristic = BleBluetoothCharacteristic(
-                service: bleService,
-                uuid: Uuid128.from(text: uuidText),
-                properties: properties);
-            var descriptors = descriptorMapList
-                ?.map((map) =>
-                    descriptorFromMap(characteristic: characteristic, map: map))
-                .toList(growable: false);
-            // ignore: invalid_use_of_protected_member
-            characteristic.descriptors = <BleBluetoothDescriptor>[
-              ...?descriptors
-            ];
-            return characteristic;
-          }).toList(growable: false) ??
-          <BleBluetoothCharacteristic>[];
-      // ignore: invalid_use_of_protected_member
-      bleService.characteristics = characteristics;
-      return bleService;
-    }).toList(growable: false);
+                    var characteristic = BleBluetoothCharacteristic(
+                      service: bleService,
+                      uuid: Uuid128.from(text: uuidText),
+                      properties: properties,
+                    );
+                    var descriptors = descriptorMapList
+                        ?.map(
+                          (map) => descriptorFromMap(
+                            characteristic: characteristic,
+                            map: map,
+                          ),
+                        )
+                        .toList(growable: false);
+                    // ignore: invalid_use_of_protected_member
+                    characteristic.descriptors = <BleBluetoothDescriptor>[
+                      ...?descriptors,
+                    ];
+                    return characteristic;
+                  })
+                  .toList(growable: false) ??
+              <BleBluetoothCharacteristic>[];
+          // ignore: invalid_use_of_protected_member
+          bleService.characteristics = characteristics;
+          return bleService;
+        })
+        .toList(growable: false);
   }
 
   @override
@@ -254,7 +279,8 @@ class BluetoothDeviceConnectionFlutterImpl
 
   @override
   Future<void> writeCharacteristic(
-      BleBluetoothCharacteristicValue characteristicValue) {
+    BleBluetoothCharacteristicValue characteristicValue,
+  ) {
     // TODO: implement writeCharacteristic
     throw UnimplementedError();
   }

@@ -33,10 +33,11 @@ class BluetoothManagerMock
   @override
   Future<BluetoothInfo> getInfo() async {
     return BluetoothInfoImpl(
-        hasBluetooth: true,
-        hasBluetoothBle: true,
-        isBluetoothEnabled: true,
-        isScanning: isScanning);
+      hasBluetooth: true,
+      hasBluetoothBle: true,
+      isBluetoothEnabled: true,
+      isScanning: isScanning,
+    );
   }
 
   @override
@@ -44,14 +45,16 @@ class BluetoothManagerMock
 
   @override
   Future<BluetoothDeviceConnection> newConnection(
-      BluetoothDeviceId deviceId) async {
+    BluetoothDeviceId deviceId,
+  ) async {
     return BluetoothDeviceConnectionMock(manager: this);
   }
 
   @override
-  Stream<ScanResult> scan(
-      {ScanMode scanMode = ScanMode.lowLatency,
-      List<Uuid128>? withServices}) async* {
+  Stream<ScanResult> scan({
+    ScanMode scanMode = ScanMode.lowLatency,
+    List<Uuid128>? withServices,
+  }) async* {
     try {
       isScanning = true;
       var peripheral = this.peripheral;

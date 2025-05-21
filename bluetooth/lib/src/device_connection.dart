@@ -25,19 +25,24 @@ class BluetoothDeviceConnectionState {
   const BluetoothDeviceConnectionState(this.state);
 
   static const disconnected = BluetoothDeviceConnectionState(
-      bluetoothDeviceConnectionStateDisconnected);
+    bluetoothDeviceConnectionStateDisconnected,
+  );
 
   /// No longer supported on Android and iOS
-  static const connecting =
-      BluetoothDeviceConnectionState(bluetoothDeviceConnectionStateConnecting);
-  static const connected =
-      BluetoothDeviceConnectionState(bluetoothDeviceConnectionStateConnected);
+  static const connecting = BluetoothDeviceConnectionState(
+    bluetoothDeviceConnectionStateConnecting,
+  );
+  static const connected = BluetoothDeviceConnectionState(
+    bluetoothDeviceConnectionStateConnected,
+  );
 
   /// No longer supported on Android and iOS
   static const disconnecting = BluetoothDeviceConnectionState(
-      bluetoothDeviceConnectionStateDisconnecting);
-  static const unknown =
-      BluetoothDeviceConnectionState(bluetoothDeviceConnectionStateUnknown);
+    bluetoothDeviceConnectionStateDisconnecting,
+  );
+  static const unknown = BluetoothDeviceConnectionState(
+    bluetoothDeviceConnectionStateUnknown,
+  );
 
   @override
   int get hashCode => state;
@@ -81,18 +86,23 @@ abstract class BluetoothDeviceConnection {
   Future connect();
 
   Future<BleBluetoothCharacteristicValue> readCharacteristic(
-      BleBluetoothCharacteristic characteristic);
+    BleBluetoothCharacteristic characteristic,
+  );
 
   Future<void> writeCharacteristic(
-      BleBluetoothCharacteristicValue characteristicValue);
+    BleBluetoothCharacteristicValue characteristicValue,
+  );
 
   /// Get value change, cancel subscription to cancel
   Stream<BleBluetoothCharacteristicValue> onCharacteristicValueChanged(
-      BleBluetoothCharacteristic characteristic);
+    BleBluetoothCharacteristic characteristic,
+  );
 
   /// Register for notification
   Future<void> registerCharacteristic(
-      BleBluetoothCharacteristic characteristic, bool on);
+    BleBluetoothCharacteristic characteristic,
+    bool on,
+  );
 
   Future disconnect();
 
@@ -106,8 +116,10 @@ class BluetoothDeviceConnectionImpl
   final BluetoothManager manager;
   final int? connectionId;
 
-  BluetoothDeviceConnectionImpl(
-      {required this.manager, required this.connectionId});
+  BluetoothDeviceConnectionImpl({
+    required this.manager,
+    required this.connectionId,
+  });
 
   @override
   void close() {
@@ -145,14 +157,16 @@ class BluetoothDeviceConnectionImpl
 
   @override
   Future<BleBluetoothCharacteristicValue> readCharacteristic(
-      BleBluetoothCharacteristic characteristic) {
+    BleBluetoothCharacteristic characteristic,
+  ) {
     // TODO: implement readCharacteristic
     throw UnimplementedError();
   }
 
   @override
   Future<void> writeCharacteristic(
-      BleBluetoothCharacteristicValue characteristicValue) {
+    BleBluetoothCharacteristicValue characteristicValue,
+  ) {
     // TODO: implement writeCharacteristic
     throw UnimplementedError();
   }
