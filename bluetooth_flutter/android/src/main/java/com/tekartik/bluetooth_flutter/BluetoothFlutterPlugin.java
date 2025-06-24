@@ -87,18 +87,6 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
         return peripheralPlugin;
     }
 
-
-    //
-    // Plugin registration.
-    //
-    @SuppressWarnings("deprecation")
-    public static void registerWith(io.flutter.plugin.common.PluginRegistry.Registrar registrar) {
-        BluetoothFlutterPlugin sqflitePlugin = new BluetoothFlutterPlugin();
-        sqflitePlugin.onAttachedToEngine(registrar.context(), registrar.messenger());
-
-        registrar.addRequestPermissionsResultListener(sqflitePlugin);
-    }
-
     @Override
     public void onAttachedToEngine(FlutterPluginBinding binding) {
         Log.d(TAG, "onAttachedToEngine");
