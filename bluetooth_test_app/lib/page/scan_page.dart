@@ -50,14 +50,13 @@ class _ScanPageState extends State<ScanPage> {
         actions: [
           if (hasOptions)
             PopupMenuButton<String>(
-              itemBuilder:
-                  (BuildContext context) => <PopupMenuItem<String>>[
-                    if (hasRequestDeviceWeb)
-                      const PopupMenuItem<String>(
-                        value: requestDeviceWeb,
-                        child: Text('Web.requestDevice'),
-                      ),
-                  ],
+              itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
+                if (hasRequestDeviceWeb)
+                  const PopupMenuItem<String>(
+                    value: requestDeviceWeb,
+                    child: Text('Web.requestDevice'),
+                  ),
+              ],
               onSelected: (String value) {
                 if (value == requestDeviceWeb) {
                   (deviceBluetoothManager as BluetoothManagerWeb)
@@ -125,26 +124,25 @@ class _ScanPageState extends State<ScanPage> {
           );
         },
       ),
-      floatingActionButton:
-          _initialScanStartDone
-              ? FloatingActionButton(
-                onPressed: () {
-                  () async {
-                    if (scanSubscription == null) {
-                      await startScan(context);
-                    } else {
-                      setState(() {
-                        stopScan();
-                      });
-                    }
-                  }();
-                },
-                tooltip: 'Refresh',
-                child: Icon(
-                  scanSubscription == null ? Icons.refresh : Icons.stop,
-                ),
-              )
-              : null, //
+      floatingActionButton: _initialScanStartDone
+          ? FloatingActionButton(
+              onPressed: () {
+                () async {
+                  if (scanSubscription == null) {
+                    await startScan(context);
+                  } else {
+                    setState(() {
+                      stopScan();
+                    });
+                  }
+                }();
+              },
+              tooltip: 'Refresh',
+              child: Icon(
+                scanSubscription == null ? Icons.refresh : Icons.stop,
+              ),
+            )
+          : null, //
     );
   }
 
@@ -211,8 +209,9 @@ class _ScanPageState extends State<ScanPage> {
       var scanResults = results.value;
       var list = scanResults?.list;
       var appScanResult = AppScanResult(DateTime.now(), data);
-      list =
-          (list == null) ? <AppScanResult>[] : List<AppScanResult>.from(list);
+      list = (list == null)
+          ? <AppScanResult>[]
+          : List<AppScanResult>.from(list);
       var index = list.indexWhere(
         (result) => result.device.id == data.device.id,
       );

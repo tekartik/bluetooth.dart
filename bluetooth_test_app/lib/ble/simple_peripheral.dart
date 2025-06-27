@@ -105,8 +105,8 @@ class SimplePeripheral {
   Future<void> init({bool startAdvertisting = true}) async {
     try {
       if (bluetoothPeripheral == null) {
-        var peripheral =
-            bluetoothPeripheral = await BluetoothFlutter.initPeripheral(
+        var peripheral = bluetoothPeripheral =
+            await BluetoothFlutter.initPeripheral(
               services: gattServices,
               deviceName: deviceName,
             );

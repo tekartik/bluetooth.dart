@@ -82,9 +82,9 @@ class BluetoothServerChannel {
       var method = map[keyMethod] as String;
       var param = map[keyParam];
 
-      dynamic result = await (serverBluetoothManager
-              as BluetoothServiceInvokable)
-          .invokeMethod<dynamic>(method, param);
+      dynamic result =
+          await (serverBluetoothManager as BluetoothServiceInvokable)
+              .invokeMethod<dynamic>(method, param);
       if (_notifyCallback != null) {
         _notifyCallback!(true, methodBluetooth, result);
       }

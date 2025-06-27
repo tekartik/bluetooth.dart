@@ -19,27 +19,28 @@ void menuFlutterBlue() {
 
       item('connect_$name', () async {
         scanSubscription?.cancel();
-        scanSubscription = FlutterBluePlusPrvExt.scanAndStreamResults(
-          timeout: Duration(seconds: 30),
-        ).listen(
-          (result) {
-            var id = result.device.remoteId.str;
-            if (!deviceIds.contains(id)) {
-              write(
-                '[${_devices.length}] scan_$name: ${result.device.remoteId} ${result.device.platformName} ${result.rssi}',
-              );
-              deviceIds.add(id);
-              _devices[id] = result.device;
-            }
-          },
-          onDone: () {
-            write('scan_$name: done');
-          },
-          onError: (e, st) {
-            write('scan_$name: error $e');
-            print(st);
-          },
-        );
+        scanSubscription =
+            FlutterBluePlusPrvExt.scanAndStreamResults(
+              timeout: Duration(seconds: 30),
+            ).listen(
+              (result) {
+                var id = result.device.remoteId.str;
+                if (!deviceIds.contains(id)) {
+                  write(
+                    '[${_devices.length}] scan_$name: ${result.device.remoteId} ${result.device.platformName} ${result.rssi}',
+                  );
+                  deviceIds.add(id);
+                  _devices[id] = result.device;
+                }
+              },
+              onDone: () {
+                write('scan_$name: done');
+              },
+              onError: (e, st) {
+                write('scan_$name: error $e');
+                print(st);
+              },
+            );
 
         for (int i = 0; i < deviceIds.length; i++) {
           var device = _devices[deviceIds[i]]!;
@@ -123,22 +124,23 @@ void menuFlutterBlue() {
 
       item('scan_$name', () {
         scanSubscription?.cancel();
-        scanSubscription = FlutterBluePlusPrvExt.scanAndStreamResults(
-          timeout: Duration(seconds: 30),
-        ).listen(
-          (result) {
-            write(
-              'scan_$name: ${result.device.remoteId} ${result.device.platformName} ${result.rssi}',
+        scanSubscription =
+            FlutterBluePlusPrvExt.scanAndStreamResults(
+              timeout: Duration(seconds: 30),
+            ).listen(
+              (result) {
+                write(
+                  'scan_$name: ${result.device.remoteId} ${result.device.platformName} ${result.rssi}',
+                );
+              },
+              onDone: () {
+                write('scan_$name: done');
+              },
+              onError: (e, st) {
+                write('scan_$name: error $e');
+                print(st);
+              },
             );
-          },
-          onDone: () {
-            write('scan_$name: done');
-          },
-          onError: (e, st) {
-            write('scan_$name: error $e');
-            print(st);
-          },
-        );
       });
 
       item('stop_scan_$name', _cancelSubscription);

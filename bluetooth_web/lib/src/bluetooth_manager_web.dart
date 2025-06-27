@@ -61,20 +61,20 @@ class BluetoothManagerWebImpl
     var nativeDevice = await web.FlutterWebBluetooth.instance.requestDevice(
       options.acceptAllDevices
           ? web.RequestOptionsBuilder.acceptAllDevices(
-            optionalServices: options.optionalServices,
-          )
+              optionalServices: options.optionalServices,
+            )
           : web.RequestOptionsBuilder(
-            options.filters
-                .map(
-                  (e) => web.RequestFilterBuilder(
-                    name: e.name,
-                    namePrefix: e.namePrefix,
-                    services: e.services,
-                  ),
-                )
-                .toList(),
-            optionalServices: options.optionalServices,
-          ),
+              options.filters
+                  .map(
+                    (e) => web.RequestFilterBuilder(
+                      name: e.name,
+                      namePrefix: e.namePrefix,
+                      services: e.services,
+                    ),
+                  )
+                  .toList(),
+              optionalServices: options.optionalServices,
+            ),
     );
     _addNativeDevice(nativeDevice);
     return BluetoothDeviceWeb(nativeDevice);

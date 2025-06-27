@@ -81,10 +81,10 @@ void menuBle({
     });
     item('checkCoarseLocation', () async {
       var info =
-      // ignore: deprecated_member_use
-      await bluetoothAdminManagerFlutter.checkCoarseLocationPermission(
-        androidRequestCode: androidCheckCoarseLocationPermissionRequestCode,
-      );
+          // ignore: deprecated_member_use
+          await bluetoothAdminManagerFlutter.checkCoarseLocationPermission(
+            androidRequestCode: androidCheckCoarseLocationPermissionRequestCode,
+          );
       write(info.toString());
     });
     item('checkBluetoothPermissions(scan & connect)', () async {

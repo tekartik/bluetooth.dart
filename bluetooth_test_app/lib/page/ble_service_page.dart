@@ -55,13 +55,12 @@ class _BleServicePageState extends State<BleServicePage> {
                     () async {
                       await Navigator.of(context).push<String>(
                         MaterialPageRoute(
-                          builder:
-                              (_) => BleCharacteristicPage(
-                                appBleCharacteristic: AppBleCharacteristic(
-                                  connection: widget.appBleService.connection,
-                                  characteristic: characteristic,
-                                ),
-                              ),
+                          builder: (_) => BleCharacteristicPage(
+                            appBleCharacteristic: AppBleCharacteristic(
+                              connection: widget.appBleService.connection,
+                              characteristic: characteristic,
+                            ),
+                          ),
                         ),
                       );
                     }();

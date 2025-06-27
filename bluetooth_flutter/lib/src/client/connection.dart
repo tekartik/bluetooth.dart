@@ -197,8 +197,8 @@ class BluetoothDeviceConnectionFlutterImpl
                     var uuidText = map[uuidKey] as String?;
                     // devPrint('properties ${map[propertiesKey]}');
                     var properties = (map[propertiesKey] as int?) ?? 0x00;
-                    var descriptorMapList =
-                        (map[descriptorsKey] as List?)?.cast<Map>();
+                    var descriptorMapList = (map[descriptorsKey] as List?)
+                        ?.cast<Map>();
 
                     var characteristic = BleBluetoothCharacteristic(
                       service: bleService,

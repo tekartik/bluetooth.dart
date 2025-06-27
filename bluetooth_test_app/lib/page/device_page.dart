@@ -35,11 +35,10 @@ class _DeviceState {
   }
 
   @override
-  String toString() =>
-      {
-        'state': deviceConnectionState,
-        'discoveringServices': discoveringServices,
-      }.toString();
+  String toString() => {
+    'state': deviceConnectionState,
+    'discoveringServices': discoveringServices,
+  }.toString();
 }
 
 class _DevicePageState extends State<DevicePage> {
@@ -141,13 +140,12 @@ class _DevicePageState extends State<DevicePage> {
                               () async {
                                 await Navigator.of(context).push<String>(
                                   MaterialPageRoute(
-                                    builder:
-                                        (_) => BleServicePage(
-                                          appBleService: AppBleService(
-                                            connection: connection,
-                                            bleService: service,
-                                          ),
-                                        ),
+                                    builder: (_) => BleServicePage(
+                                      appBleService: AppBleService(
+                                        connection: connection,
+                                        bleService: service,
+                                      ),
+                                    ),
                                   ),
                                 );
                               }();

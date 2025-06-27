@@ -84,8 +84,8 @@ class _BluetoothServerHomePageState extends State<BluetoothServerHomePage> {
                   app.bluetoothServerStarted
                       ? 'Bluetooth server listening on ${app.bluetoothServer!.port}'
                       : (_startPending
-                          ? 'Starting listening on $port'
-                          : 'Press START to start Bluetooth server'),
+                            ? 'Starting listening on $port'
+                            : 'Press START to start Bluetooth server'),
                 ),
               ),
               Container(

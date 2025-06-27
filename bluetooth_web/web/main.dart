@@ -16,8 +16,9 @@ Future main() async {
   item('requestDevice', () async {
     final device = await FlutterWebBluetooth.instance.requestDevice(
       RequestOptionsBuilder.acceptAllDevices(
-        optionalServices:
-            BluetoothDefaultServiceUUIDS.VALUES.map((e) => e.uuid).toList(),
+        optionalServices: BluetoothDefaultServiceUUIDS.VALUES
+            .map((e) => e.uuid)
+            .toList(),
       ),
     );
     write('Device got! ${device.name}, ${device.id}');

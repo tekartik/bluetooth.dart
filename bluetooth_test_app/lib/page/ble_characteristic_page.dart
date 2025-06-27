@@ -184,12 +184,11 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage>
                             }();
                           },
                         ),
-                        subtitle:
-                            state == null
-                                ? null
-                                : ((state.exception != null)
-                                    ? Text(state.exception.toString())
-                                    : Text(
+                        subtitle: state == null
+                            ? null
+                            : ((state.exception != null)
+                                  ? Text(state.exception.toString())
+                                  : Text(
                                       value != null
                                           ? '$valuePretty\n$valueInt'
                                           : '[null]',
@@ -245,8 +244,8 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage>
                         child: BodyHPadding(
                           child: AppTextField(
                             labelText: 'Hex data',
-                            controller:
-                                base64Controller ??= TextEditingController(),
+                            controller: base64Controller ??=
+                                TextEditingController(),
                           ),
                         ),
                       ),
@@ -284,8 +283,8 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage>
                         child: BodyHPadding(
                           child: AppTextField(
                             labelText: 'int data',
-                            controller:
-                                intController ??= TextEditingController(),
+                            controller: intController ??=
+                                TextEditingController(),
                           ),
                         ),
                       ),
@@ -312,24 +311,22 @@ class _BleCharacteristicPageState extends State<BleCharacteristicPage>
                       }
                       var list = values ?? <Uint8List>[];
                       return Column(
-                        children:
-                            list.map((value) {
-                              String? valuePretty;
-                              BigInt? valueInt;
-                              try {
-                                valuePretty = hexPretty(value);
-                              } catch (_) {}
-                              try {
-                                valueInt = decodeBigInt(value);
-                              } catch (_) {}
-                              return ListTile(
-                                title: Text('$valuePretty'),
-                                subtitle:
-                                    valueInt == null
-                                        ? null
-                                        : Text(valueInt.toString()),
-                              );
-                            }).toList(),
+                        children: list.map((value) {
+                          String? valuePretty;
+                          BigInt? valueInt;
+                          try {
+                            valuePretty = hexPretty(value);
+                          } catch (_) {}
+                          try {
+                            valueInt = decodeBigInt(value);
+                          } catch (_) {}
+                          return ListTile(
+                            title: Text('$valuePretty'),
+                            subtitle: valueInt == null
+                                ? null
+                                : Text(valueInt.toString()),
+                          );
+                        }).toList(),
                       );
                     },
                   ),

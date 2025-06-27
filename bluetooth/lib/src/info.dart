@@ -52,12 +52,11 @@ class BluetoothInfoImpl implements BluetoothInfo {
   String toString() => toDebugMap().toString();
 
   Model toDebugMap() {
-    var model =
-        newModel()
-          ..setValue('hasBluetooth', hasBluetooth)
-          ..setValue('hasBluetoothBle', hasBluetoothBle)
-          ..setValue('isBluetoothEnabled', isBluetoothEnabled)
-          ..setValue('isScanning', isScanning);
+    var model = newModel()
+      ..setValue('hasBluetooth', hasBluetooth)
+      ..setValue('hasBluetoothBle', hasBluetoothBle)
+      ..setValue('isBluetoothEnabled', isBluetoothEnabled)
+      ..setValue('isScanning', isScanning);
     return model;
   }
 }
@@ -89,11 +88,10 @@ class BluetoothAdminInfoImpl implements BluetoothAdminInfo {
   String toString() => toDebugMap().toString();
 
   Model toDebugMap() {
-    var model =
-        newModel()
-          ..setValue('hasBluetooth', hasBluetooth)
-          ..setValue('hasBluetoothBle', hasBluetoothBle)
-          ..setValue('isBluetoothEnabled', isBluetoothEnabled);
+    var model = newModel()
+      ..setValue('hasBluetooth', hasBluetooth)
+      ..setValue('hasBluetoothBle', hasBluetoothBle)
+      ..setValue('isBluetoothEnabled', isBluetoothEnabled);
     return model;
   }
 

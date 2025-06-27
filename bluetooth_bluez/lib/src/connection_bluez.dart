@@ -84,14 +84,13 @@ class _BluezCharacteristic {
       uuid: uuid,
     );
 
-    var descriptors =
-        gattCharacteristic.descriptors.map((gattDescriptor) {
-          var descriptor = BleBluetoothDescriptor(
-            characteristic: characteristic,
-            uuid: uuidFromBluezUuid(gattDescriptor.uuid),
-          );
-          return descriptor;
-        }).toList();
+    var descriptors = gattCharacteristic.descriptors.map((gattDescriptor) {
+      var descriptor = BleBluetoothDescriptor(
+        characteristic: characteristic,
+        uuid: uuidFromBluezUuid(gattDescriptor.uuid),
+      );
+      return descriptor;
+    }).toList();
     // ignore: invalid_use_of_protected_member
     characteristic.descriptors = descriptors;
   }
@@ -387,11 +386,10 @@ class BluetoothDeviceConnectionBluezImpl extends BluetoothDeviceConnectionBluez
     var bluezCharacteristic = _getBluezCharacteristicOrThrow(characteristic);
 
     var ref = characteristic.ref;
-    var controller =
-        _characteristicValueChangedControllers[ref] ??=
-            _BluezCharacteristicChangeController(
-              bluezCharacteristic.gattCharacteristic,
-            );
+    var controller = _characteristicValueChangedControllers[ref] ??=
+        _BluezCharacteristicChangeController(
+          bluezCharacteristic.gattCharacteristic,
+        );
     return controller.stream.map((value) => characteristic.withValue(value));
   }
 
