@@ -10,6 +10,5 @@ dependencies:
     git:
       url: https://github.com/tekartik/bluetooth.dart
       path: bluetooth_web
-      ref: dart3a
     version: '>=0.2.1'
 ```

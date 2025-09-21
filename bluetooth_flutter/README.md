@@ -11,6 +11,5 @@ dependencies:
     git:
       url: https://github.com/tekartik/bluetooth.dart
       path: bluetooth_flutter
-      ref: dart3a
     version: '>=0.2.1'
 ```
