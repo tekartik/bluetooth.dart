@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:tekartik_bluetooth/ble.dart';
 import 'package:tekartik_bluetooth_flutter_blue/src/ble_flutter_blue.dart';
 import 'package:tekartik_bluetooth_flutter_blue/src/bluetooth_device_flutter_blue.dart';
@@ -77,7 +78,7 @@ class BluetoothDeviceConnectionFlutterBlue
 
     /// Auto connect GATT does not work when working with BLE simulation
     /// on Android
-    await nativeImpl.connect(autoConnect: false);
+    await nativeImpl.connect(license: License.free, autoConnect: false);
   }
 
   @override

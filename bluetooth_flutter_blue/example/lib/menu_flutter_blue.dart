@@ -75,7 +75,11 @@ void menuFlutterBlue() {
               print(st);
             },
           );
-          device.connect(autoConnect: true, timeout: Duration(seconds: 30));
+          device.connect(
+            license: License.free,
+            autoConnect: true,
+            timeout: Duration(seconds: 30),
+          );
         }
       });
 
