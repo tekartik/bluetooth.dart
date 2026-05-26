@@ -24,9 +24,9 @@ BluetoothDeviceConnectionState connectionStateFromBluetoothConnectionState(
       return BluetoothDeviceConnectionState.connecting;
     case native.BluetoothConnectionState.disconnecting:
       return BluetoothDeviceConnectionState.disconnecting;
-      */
     default:
       return BluetoothDeviceConnectionState.disconnected;
+        */
   }
 }
 
