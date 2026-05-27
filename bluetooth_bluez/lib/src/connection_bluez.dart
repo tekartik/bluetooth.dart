@@ -18,6 +18,11 @@ class _BluezCharacteristicChangeController {
   late StreamController<Uint8List> _controller;
   StreamSubscription? _subscription;
 
+  void _log(Object? message) {
+    // ignore: avoid_print
+    print('/bluez $message');
+  }
+
   Stream<Uint8List> get stream => _controller.stream;
 
   _BluezCharacteristicChangeController(this.characteristic) {
@@ -27,7 +32,7 @@ class _BluezCharacteristicChangeController {
           _subscription = characteristic.propertiesChanged.listen((names) {
             // propertiesChanged [Value] [0]
             if (debugBluetoothManagerBluez) {
-              print(
+              _log(
                 'propertiesChanged ($names) characteristic ${characteristic.uuid}',
               );
             }
@@ -180,7 +185,7 @@ class BluetoothDeviceConnectionBluezImpl extends BluetoothDeviceConnectionBluez
       await deviceBluez.disconnect();
     } catch (e) {
       if (debugBluetoothManagerBluez) {
-        print('[debug] expected bluez disconnect error $e');
+        _log('[debug] expected bluez disconnect error $e');
       }
     } finally {
       _checkState();
@@ -292,6 +297,7 @@ class BluetoothDeviceConnectionBluezImpl extends BluetoothDeviceConnectionBluez
   }
 
   void _log(Object? message) {
+    // ignore: avoid_print
     print('/bluez $message');
   }
 
@@ -411,7 +417,7 @@ class BluetoothDeviceConnectionBluezImpl extends BluetoothDeviceConnectionBluez
       }
     } catch (e) {
       if (debugBluetoothManagerBluez) {
-        print(
+        _log(
           '${on ? 'register' : 'unregister'} characteristic $characteristic value error $e',
         );
       }

@@ -94,6 +94,7 @@ void main() {
       try {
         Uuid128('49535343-5d82-6099-9348-7aac4d5fbc51');
       } catch (e) {
+        // ignore: avoid_print
         print(e);
       }
     });

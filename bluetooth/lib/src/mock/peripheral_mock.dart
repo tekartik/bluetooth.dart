@@ -60,7 +60,7 @@ class BluetoothPeripheralMock extends BluetoothPeripheral {
       if (createIfMissing) {
         servicesMap[serviceUuid] = service = BluetoothPeripheralServiceMock();
       } else {
-        throw 'service not found $serviceUuid';
+        throw StateError('service not found $serviceUuid');
       }
     }
     return service;
@@ -110,7 +110,7 @@ class BluetoothPeripheralMock extends BluetoothPeripheral {
   }) async {
     var service = servicesMap[serviceUuid];
     if (service == null) {
-      throw 'service not found $serviceUuid';
+      throw StateError('service not found $serviceUuid');
     }
     return service.characteristicsMap[characteristicUuid]?.value ??
         Uint8List(0);

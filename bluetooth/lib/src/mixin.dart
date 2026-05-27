@@ -16,6 +16,11 @@ const methodCheckBluetoothPermissions = 'checkBluetoothPermissions';
 const requestCodeEnableBluetoothDefault = 30123;
 const requestCodeCheckBluetoothPermissions = 30124;
 
+void _log(Object? message) {
+  // ignore: avoid_print
+  print(message);
+}
+
 class MixinTest with BluetoothManagerMixin {
   @override
   Future<T> invokeMethod<T>(String method, [arguments]) =>
@@ -87,10 +92,10 @@ mixin BluetoothManagerMixin implements BluetoothManager {
       }
       var connectedDevices = await getConnectedDevices();
       if (isDebug) {
-        print(connectedDevices);
+        _log(connectedDevices);
       }
     } catch (e) {
-      print('getInfo failed $e');
+      _log('getInfo failed $e');
     }
   }
 
@@ -103,26 +108,26 @@ mixin BluetoothManagerMixin implements BluetoothManager {
         try {
           await invokeStopScan();
         } catch (e) {
-          print('invokeStopScan failed $e');
+          _log('invokeStopScan failed $e');
         }
         try {
           info = await getInfo();
           // devPrint(info);
         } catch (e) {
-          print('getInfo failed $e');
+          _log('getInfo failed $e');
         }
       }
 
       try {
         var connectedDevices = await getConnectedDevices();
         if (isDebug) {
-          print(connectedDevices);
+          _log(connectedDevices);
         }
       } catch (e) {
-        print('getConnectedDevices failed $e');
+        _log('getConnectedDevices failed $e');
       }
     } catch (e) {
-      print('getInfo failed $e');
+      _log('getInfo failed $e');
     }
   }
 

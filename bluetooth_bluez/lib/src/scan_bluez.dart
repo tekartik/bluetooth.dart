@@ -91,7 +91,7 @@ class ScanServicesBluez {
             await adapter.startDiscovery();
             _scanAdapters!.add(adapter);
           } catch (e) {
-            print('startDiscovery error $e');
+            _log('startDiscovery error $e');
           }
         }
         isScanning = true;
@@ -140,7 +140,7 @@ class ScanServicesBluez {
           try {
             await adapter.stopDiscovery();
           } catch (e) {
-            print('stopDiscovery error $e');
+            _log('stopDiscovery error $e');
           }
         }
       }
@@ -149,5 +149,10 @@ class ScanServicesBluez {
 
   ScanResultBluez? getDeviceIdScanResult(BluetoothDeviceId deviceId) {
     return _lastScanData[deviceId];
+  }
+
+  void _log(Object? message) {
+    // ignore: avoid_print
+    print('/bluez $message');
   }
 }

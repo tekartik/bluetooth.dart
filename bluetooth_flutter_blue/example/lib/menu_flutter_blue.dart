@@ -6,52 +6,52 @@ import 'package:tekartik_test_menu_flutter/test.dart';
 
 void menuFlutterBlue() {
   menu('flutter_blue_connect', () {
-    List<String> deviceIds = [];
-    Map<String, BluetoothDevice> _devices = {};
-    void _menu(String name) {
+    var deviceIds = <String>[];
+    var devices = <String, BluetoothDevice>{};
+    void menu(String name) {
       StreamSubscription? scanSubscription;
       StreamSubscription? connectSubscription;
       StreamSubscription? stateChangeSubscription;
-      void _cancelScanSubscription() {
+      void cancelScanSubscription() {
         scanSubscription?.cancel();
         scanSubscription = null;
       }
 
       item('connect_$name', () async {
-        scanSubscription?.cancel();
+        await scanSubscription?.cancel();
         scanSubscription =
             FlutterBluePlusPrvExt.scanAndStreamResults(
-              timeout: Duration(seconds: 30),
+              timeout: const Duration(seconds: 30),
             ).listen(
               (result) {
                 var id = result.device.remoteId.str;
                 if (!deviceIds.contains(id)) {
                   write(
-                    '[${_devices.length}] scan_$name: ${result.device.remoteId} ${result.device.platformName} ${result.rssi}',
+                    '[${devices.length}] scan_$name: ${result.device.remoteId} ${result.device.platformName} ${result.rssi}',
                   );
                   deviceIds.add(id);
-                  _devices[id] = result.device;
+                  devices[id] = result.device;
                 }
               },
               onDone: () {
                 write('scan_$name: done');
               },
-              onError: (e, st) {
+              onError: (Object e, StackTrace st) {
                 write('scan_$name: error $e');
-                print(st);
+                writeln(st);
               },
             );
 
-        for (int i = 0; i < deviceIds.length; i++) {
-          var device = _devices[deviceIds[i]]!;
+        for (var i = 0; i < deviceIds.length; i++) {
+          var device = devices[deviceIds[i]]!;
           write('[$i]: ${device.remoteId} ${device.platformName}');
         }
-        int? index = parseInt(await prompt('Enter connect_$name index'));
+        var index = parseInt(await prompt('Enter connect_$name index'));
         if (index != null) {
           var deviceId = deviceIds[index];
-          var device = _devices[deviceId]!;
-          _cancelScanSubscription();
-          stateChangeSubscription?.cancel();
+          var device = devices[deviceId]!;
+          cancelScanSubscription();
+          await stateChangeSubscription?.cancel();
           stateChangeSubscription = device.connectionState.listen(
             (state) {
               write('onStateChanged_$name $state');
@@ -70,30 +70,30 @@ void menuFlutterBlue() {
             onDone: () {
               write('scan_$name: connect done');
             },
-            onError: (e, st) {
+            onError: (Object e, StackTrace st) {
               write('scan_$name: connect error $e');
-              print(st);
+              writeln(st);
             },
           );
-          device.connect(
-            license: License.free,
+          await device.connect(
+            license: License.nonprofit,
             autoConnect: true,
-            timeout: Duration(seconds: 30),
+            timeout: const Duration(seconds: 30),
           );
         }
       });
 
       item('disconnect_$name', () {
-        _cancelScanSubscription();
+        cancelScanSubscription();
         connectSubscription?.cancel();
         connectSubscription = null;
       });
 
-      item('stop_scan_$name', _cancelScanSubscription);
+      item('stop_scan_$name', cancelScanSubscription);
     }
 
-    _menu("1");
-    _menu("2");
+    menu('1');
+    menu('2');
   });
   menu('flutter_blue_scan', () {
     StreamSubscription? stateSubscription;
@@ -108,9 +108,9 @@ void menuFlutterBlue() {
         onDone: () {
           write('register_bt_state done');
         },
-        onError: (e, st) {
+        onError: (Object e, StackTrace st) {
           write('register_bt_state error $e');
-          print(st);
+          writeln(st);
         },
       );
     });
@@ -119,9 +119,9 @@ void menuFlutterBlue() {
       stateSubscription = null;
     });
 
-    void _menu(String name) {
+    void menu(String name) {
       StreamSubscription? scanSubscription;
-      void _cancelSubscription() {
+      void cancelSubscription() {
         scanSubscription?.cancel();
         scanSubscription = null;
       }
@@ -130,7 +130,7 @@ void menuFlutterBlue() {
         scanSubscription?.cancel();
         scanSubscription =
             FlutterBluePlusPrvExt.scanAndStreamResults(
-              timeout: Duration(seconds: 30),
+              timeout: const Duration(seconds: 30),
             ).listen(
               (result) {
                 write(
@@ -140,17 +140,17 @@ void menuFlutterBlue() {
               onDone: () {
                 write('scan_$name: done');
               },
-              onError: (e, st) {
+              onError: (Object e, StackTrace st) {
                 write('scan_$name: error $e');
-                print(st);
+                writeln(st);
               },
             );
       });
 
-      item('stop_scan_$name', _cancelSubscription);
+      item('stop_scan_$name', cancelSubscription);
     }
 
-    _menu("1");
-    _menu("2");
+    menu('1');
+    menu('2');
   });
 }

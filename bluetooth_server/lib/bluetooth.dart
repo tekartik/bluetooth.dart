@@ -32,9 +32,11 @@ Future<BluetoothManager?> initBluetoothClientService() async {
   try {
     service = await BluetoothServerService.create(url);
   } catch (e) {
+    // ignore: avoid_print
     print(e);
   }
   if (service == null) {
+    // ignore: avoid_print
     print('''
 bluetooth server not running on $url
 Check that the blueooth_server_app is running on the proper port
@@ -80,6 +82,7 @@ class BluetoothServerContext implements BluetoothContext {
 
       return client;
     } catch (e) {
+      // ignore: avoid_print
       print(e);
     }
     return null;
@@ -98,6 +101,7 @@ class BluetoothServerContext implements BluetoothContext {
     );
     if (client == null) {
       var port = parseBluetoothServerUrlPort(url);
+      // ignore: avoid_print
       print('''
 bluetooth server not running on $url
 Check that the bluetooth_server_app is running on the proper port

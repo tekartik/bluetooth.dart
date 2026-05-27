@@ -4,7 +4,7 @@ version: 0.2.1
 publish_to: none
 
 environment:
-  sdk: ^3.9.0
+  sdk: ^3.11.0
 
 dependencies:
   tekartik_web_socket_io:
@@ -24,7 +24,7 @@ dependencies:
     version: '>=0.2.1'
 
 dev_dependencies:
-  test: ">=1.24.0"
+  test: ">=1.31.0"
   process_run: ">=1.2.1+1"
 
 dependency_overrides:

@@ -1,9 +1,10 @@
-import 'dart:async';
+// ignore_for_file: avoid_print
 
 import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
+import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:test/test.dart';
 
-@deprecated
+@doNotSubmit
 Future devVerbose() async {
   /*
   // ignore: deprecated_member_use
@@ -29,11 +30,11 @@ void main() {
           });
           info = await manager.getInfo();
           print('info $info');
-          await Future.delayed(Duration(milliseconds: 5000));
+          await Future<void>.delayed(const Duration(milliseconds: 5000));
         } catch (e) {
           print('startScan fail $e');
         } finally {
-          scanSubscription?.cancel();
+          await scanSubscription?.cancel();
         }
       }
       info = await manager.getInfo();

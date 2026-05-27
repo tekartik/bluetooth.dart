@@ -78,7 +78,7 @@ class BluetoothDeviceConnectionFlutterBlue
 
     /// Auto connect GATT does not work when working with BLE simulation
     /// on Android
-    await nativeImpl.connect(license: License.free, autoConnect: false);
+    await nativeImpl.connect(license: License.nonprofit, autoConnect: false);
   }
 
   @override

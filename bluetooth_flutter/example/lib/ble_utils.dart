@@ -18,9 +18,7 @@ Future<BluetoothStateService> getBluetoothStateService() async {
     } else {
       bluetoothStateService = BluetoothStateServiceMock();
     }
-    if (_bluetoothStateService == null) {
-      _bluetoothStateService = bluetoothStateService;
-    }
+    _bluetoothStateService ??= bluetoothStateService;
   }
   return _bluetoothStateService!;
 }
@@ -44,8 +42,8 @@ Future<DeviceInfo> getDeviceInfo() async {
   } else {
     return _lock.synchronized(() async {
       if (_deviceInfo == null) {
-        DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-        DeviceInfo deviceInfo = DeviceInfo();
+        var deviceInfoPlugin = DeviceInfoPlugin();
+        var deviceInfo = DeviceInfo();
         if (Platform.isAndroid) {
           deviceInfo.android = await deviceInfoPlugin.androidInfo;
         } else if (Platform.isIOS) {
@@ -75,8 +73,9 @@ RssiStrength getIconDataFromRssi(int rssi) {
     return RssiStrength.ok;
   } else if (rssi >= -80) {
     return RssiStrength.bad;
-  } else
+  } else {
     return RssiStrength.unusable;
+  }
 }
 
 class BluetoothStateServiceMock implements BluetoothStateService {

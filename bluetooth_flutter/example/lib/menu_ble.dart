@@ -20,7 +20,7 @@ void menuBle({
   androidCheckCoarseLocationPermissionRequestCode ??=
       androidEnableRequestCode + 1;
 
-  @deprecated
+  @Deprecated('do not use')
   Future enableLogs() async {
     await bluetoothAdminManagerFlutter
     // ignore: deprecated_member_use
@@ -43,40 +43,40 @@ void menuBle({
     });
     item('get_info', () async {
       var info = await bluetoothManagerFlutter.getInfo();
-      write(info.toString());
+      writeln(info.toString());
     });
     item('get_connected_devices', () async {
       var devices = await bluetoothManagerFlutter.getConnectedDevices();
-      devices.forEach((device) {
-        write(device.toString());
-      });
+      for (var device in devices) {
+        writeln(device.toString());
+      }
     });
     item('bt_on', () async {
       var bluetoothStateService = await getBluetoothStateService();
-      write('support enable: ${bluetoothStateService.supportsEnable}');
+      writeln('support enable: ${bluetoothStateService.supportsEnable}');
       await bluetoothStateService
           .enable()
           .then((_) {
-            write('enable done');
+            writeln('enable done');
           })
-          .catchError((e, st) {
-            write('enable error $e');
-            print(st);
+          .catchError((Object e, StackTrace st) {
+            writeln('enable error $e');
+            writeln(st);
           });
     });
     item('bt_on_request', () async {
       var bluetoothStateService = await getBluetoothStateService();
-      write('support enable: ${bluetoothStateService.supportsEnable}');
+      writeln('support enable: ${bluetoothStateService.supportsEnable}');
       await bluetoothStateService
           .enable(androidRequestCode: enableBluetoothRequestCode)
           .then((_) {
-            write('enable with request done');
+            writeln('enable with request done');
           })
-          .catchError((e, st) {
-            write('enable with request error $e');
+          .catchError((Object e, StackTrace st) {
+            writeln('enable with request error $e');
             stdout.writeln(st);
-            print(st);
-            write(st);
+            writeln(st);
+            writeln(st);
           });
     });
     item('checkCoarseLocation', () async {
@@ -85,37 +85,37 @@ void menuBle({
           await bluetoothAdminManagerFlutter.checkCoarseLocationPermission(
             androidRequestCode: androidCheckCoarseLocationPermissionRequestCode,
           );
-      write(info.toString());
+      writeln(info.toString());
     });
     item('checkBluetoothPermissions(scan & connect)', () async {
       var info = await bluetoothAdminManagerFlutter.checkBluetoothPermissions();
-      write(info.toString());
+      writeln(info.toString());
     });
     item('checkBluetoothPermissions(advertise)', () async {
       var info = await bluetoothAdminManagerFlutter.checkBluetoothPermissions(
         options: BluetoothPermissionsOptions(advertise: true),
       );
-      write(info.toString());
+      writeln(info.toString());
     });
     item('bt_off', () async {
       var bluetoothStateService = await getBluetoothStateService();
-      write('support enable: ${bluetoothStateService.supportsEnable}');
-      bluetoothStateService
+      writeln('support enable: ${bluetoothStateService.supportsEnable}');
+      await bluetoothStateService
           .disable()
           .then((_) {
-            write('disable done');
+            writeln('disable done');
           })
-          .catchError((e, st) {
-            write('disable error $e');
+          .catchError((Object e, StackTrace st) {
+            writeln('disable error $e');
             stdout.writeln(st);
           });
     });
   });
 
   menu('ble_scan', () {
-    void _menu(String name) {
+    void scanMenu(String name) {
       StreamSubscription? scanSubscription;
-      void _cancelSubscription() {
+      void cancelSubscription() {
         scanSubscription?.cancel();
         scanSubscription = null;
       }
@@ -124,25 +124,25 @@ void menuBle({
         scanSubscription?.cancel();
         scanSubscription = bluetoothManagerFlutter.scan().listen(
           (result) {
-            write(
+            writeln(
               'scan_$name: ${result.device.address} ${result.device.name} ${result.rssi}',
             );
           },
           onDone: () {
-            write('scan_$name: done');
+            writeln('scan_$name: done');
           },
-          onError: (e, st) {
-            write('scan_$name: error $e');
-            print(st);
+          onError: (Object e, StackTrace st) {
+            writeln('scan_$name: error $e');
+            writeln(st);
           },
         );
       });
 
-      item('stop_scan_$name', _cancelSubscription);
+      item('stop_scan_$name', cancelSubscription);
     }
 
-    _menu("1");
-    _menu("2");
+    scanMenu('1');
+    scanMenu('2');
   });
 
   menu('ble_peripheral', () {
@@ -154,7 +154,7 @@ void menuBle({
       subscription = BluetoothFlutter.onSlaveConnectionChanged().listen((
         BluetoothSlaveConnection connection,
       ) {
-        write('${connection.address} ${connection.connected}');
+        writeln('${connection.address} ${connection.connected}');
       });
     });
     leave(() {
@@ -162,7 +162,7 @@ void menuBle({
       subscription = null;
     });
     item('startAdvertising', () async {
-      write('setting peripheral');
+      writeln('setting peripheral');
       var services = <BluetoothGattService>[
         BluetoothGattService(
           uuid: serviceUuid,
@@ -178,21 +178,21 @@ void menuBle({
         ),
       ];
       peripheral = await BluetoothFlutter.initPeripheral(services: services);
-      write(jsonPretty(peripheral.toMap())!);
-      write('starting');
+      writeln(jsonPretty(peripheral.toMap())!);
+      writeln('starting');
       var advertiseData = AdvertiseData(
         services: [
           AdvertiseDataService(uuid: Uuid128(demoAdvertiseDataServiceUuid)),
         ],
       );
       await BluetoothFlutter.startAdvertising(advertiseData: advertiseData);
-      write('Started');
+      writeln('Started');
     });
 
     item('stopAdvertising', () async {
-      write('stopping');
+      writeln('stopping');
       await BluetoothFlutter.stopAdvertising();
-      write('Stopped');
+      writeln('Stopped');
     });
 
     item('setValue [1]', () async {
@@ -201,7 +201,7 @@ void menuBle({
         characteristicUuid: characteristicUuid,
         value: Uint8List.fromList([1]),
       );
-      write(result);
+      writeln(result);
     });
 
     item('setValue [2]', () async {
@@ -210,7 +210,7 @@ void menuBle({
         characteristicUuid: characteristicUuid,
         value: Uint8List.fromList([2]),
       );
-      write(result);
+      writeln(result);
     });
 
     item('getValue', () async {
@@ -218,71 +218,71 @@ void menuBle({
         serviceUuid: serviceUuid,
         characteristicUuid: characteristicUuid,
       );
-      write(result);
+      writeln(result);
     });
   });
 
   menu('ble_connect', () {
-    List<BluetoothDeviceId> deviceIds = [];
-    Map<BluetoothDeviceId, BluetoothDevice> _devices = {};
-    void _menu(String name) {
+    var deviceIds = <BluetoothDeviceId>[];
+    var devices0 = <BluetoothDeviceId, BluetoothDevice>{};
+    void scanMenu(String name) {
       StreamSubscription? scanSubscription;
       BluetoothDeviceConnection? deviceConnection;
       // StreamSubscription? stateChangeSubscription;
 
-      void _cancelScanSubscription() {
+      void cancelScanSubscription() {
         scanSubscription?.cancel();
         scanSubscription = null;
       }
 
       item('connect_$name', () async {
-        scanSubscription?.cancel();
+        await scanSubscription?.cancel();
         scanSubscription = bluetoothManagerFlutter.scan().listen(
           (result) {
             var id = result.device.id;
             if (!deviceIds.contains(id)) {
-              write(
-                '[${_devices.length}] scan_$name: ${result.device.id} ${result.device.name} ${result.rssi}',
+              writeln(
+                '[${devices0.length}] scan_$name: ${result.device.id} ${result.device.name} ${result.rssi}',
               );
               deviceIds.add(id);
-              _devices[id] = result.device;
+              devices0[id] = result.device;
             }
           },
           onDone: () {
-            write('scan_$name: done');
+            writeln('scan_$name: done');
           },
-          onError: (e, st) {
-            write('scan_$name: error $e');
-            print(st);
+          onError: (Object e, StackTrace st) {
+            writeln('scan_$name: error $e');
+            writeln(st);
           },
         );
 
-        for (int i = 0; i < deviceIds.length; i++) {
-          var device = _devices[deviceIds[i]]!;
-          write('[$i]: ${device.id} ${device.name}');
+        for (var i = 0; i < deviceIds.length; i++) {
+          var device = devices0[deviceIds[i]]!;
+          writeln('[$i]: ${device.id} ${device.name}');
         }
-        int? index = parseInt(await prompt('Enter connect_$name index'));
+        var index = parseInt(await prompt('Enter connect_$name index'));
         if (index != null) {
           var deviceId = deviceIds[index];
 
-          _cancelScanSubscription();
+          cancelScanSubscription();
           /*
           stateChangeSubscription?.cancel();
           stateChangeSubscription = device.state.listen((state) {
-            write('onStateChanged_$name $state');
+            writeln('onStateChanged_$name $state');
           }, onDone: () {
-            write('onStateChanged_$name done');
+            writeln('onStateChanged_$name done');
           });
-          write('get_state_$name ${await device.state.first}');
+          writeln('get_state_$name ${await device.state.first}');
 
-          write('connecting ${device.id}');
+          writeln('connecting ${device.id}');
           connectSubscription = device.state.listen((state) {
-            write('state_$name: $state');
+            writeln('state_$name: $state');
           }, onDone: () {
-            write('scan_$name: connect done');
-          }, onError: (e, st) {
-            write('scan_$name: connect error $e');
-            print(st);
+            writeln('scan_$name: connect done');
+          }, onError: (Object e, StackTrace st) {
+            writeln('scan_$name: connect error $e');
+            writeln(st);
           });
            */
           // device.connect(autoConnect: true, timeout: Duration(seconds: 30));
@@ -290,26 +290,26 @@ void menuBle({
             deviceId,
           );
           deviceConnection!.onConnectionState.listen((state) {
-            write('connect state: $state');
+            writeln('connect state: $state');
           });
         }
       });
 
       item('disconnect_$name', () async {
-        _cancelScanSubscription();
-        deviceConnection!.disconnect();
+        cancelScanSubscription();
+        await deviceConnection!.disconnect();
       });
 
       item('close $name', () async {
-        _cancelScanSubscription();
+        cancelScanSubscription();
         deviceConnection?.close();
         deviceConnection = null;
       });
 
-      item('stop_scan_$name', _cancelScanSubscription);
+      item('stop_scan_$name', cancelScanSubscription);
     }
 
-    _menu("1");
-    _menu("2");
+    scanMenu('1');
+    scanMenu('2');
   });
 }
