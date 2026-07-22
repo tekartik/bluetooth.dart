@@ -1,12 +1,10 @@
 import 'package:tekartik_bluetooth/src/constant.dart';
 
-///
 /// internal options.
 ///
 /// Used internally.
 ///
 /// deprecated since 1.1.1 for internal usage only
-///
 @Deprecated('Dev only')
 class BluetoothOptions {
   BluetoothOptions({this.logLevel});
