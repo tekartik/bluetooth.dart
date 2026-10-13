@@ -40,7 +40,8 @@ mixin BluetoothAdminManagerMixin
     int? androidRequestCode,
     BluetoothPermissionsOptions? options,
   }) async {
-    androidRequestCode ??= requestCodeCheckBluetoothPermissions;
+    androidRequestCode ??=
+        options?.androidRequestCode ?? requestCodeCheckBluetoothPermissions;
     return await invokeMethod<bool>(
       methodCheckBluetoothPermissions,
       <String, dynamic>{

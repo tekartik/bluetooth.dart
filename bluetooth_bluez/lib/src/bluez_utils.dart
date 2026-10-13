@@ -1,5 +1,6 @@
 import 'package:bluez/bluez.dart';
 import 'package:tekartik_bluetooth/ble.dart';
+import 'package:tekartik_bluetooth/utils/ble_utils.dart';
 import 'package:tekartik_bluetooth/uuid.dart';
 
 import 'import.dart';
@@ -15,30 +16,11 @@ Uuid128 uuidFromBluezUuid(BlueZUUID bluezUuid) {
 }
 
 /// 0 if none
-int bluezFlagToProperty(BlueZGattCharacteristicFlag flag) =>
-    _flagToPropertyMap[flag] ?? 0;
+int bluezFlagToProperty(BlueZGattCharacteristicFlag flag) {
+  var bleFlag = BleCharacteristicPropertyFlag.values.asNameMap()[flag.name];
+  return bleFlag == null ? 0 : propertyFlagsToPropertyValue({bleFlag});
+}
 
-var _flagToPropertyMap = {
-  BlueZGattCharacteristicFlag.write: blePropertyWrite,
-  BlueZGattCharacteristicFlag.read: blePropertyRead,
-  BlueZGattCharacteristicFlag.notify: blePropertyNotify,
-  BlueZGattCharacteristicFlag.broadcast: blePropertyBroadcast,
-
-  BlueZGattCharacteristicFlag.writeWithoutResponse: blePropertyWriteNoResponse,
-
-  BlueZGattCharacteristicFlag.indicate: blePropertyIndicate,
-  BlueZGattCharacteristicFlag.authenticatedSignedWrites: blePropertySignedWrite,
-  BlueZGattCharacteristicFlag.extendedProperties: blePropertyExtendedProps,
-  // TODO BlueZGattCharacteristicFlag.reliableWrite: bleProperty,
-  // TODO BlueZGattCharacteristicFlag.writableAuxiliaries, ,
-  // TODO BlueZGattCharacteristicFlag.encryptRead,
-  // TODO BlueZGattCharacteristicFlag.encryptWrite,
-  // TODO BlueZGattCharacteristicFlag.encryptAuthenticatedRead,
-  // TODO BlueZGattCharacteristicFlag.encryptAuthenticatedWrite,
-  //      TODO BlueZGattCharacteristicFlag.secureRead: bleProperty,
-  BlueZGattCharacteristicFlag.secureWrite: blePropertySignedWrite,
-  // TODO BlueZGattCharacteristicFlag.authorize,
-};
 int bluezFlagsToProperties(Set<BlueZGattCharacteristicFlag> flags) {
   var properties = 0;
   for (var flag in flags) {

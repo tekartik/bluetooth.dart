@@ -243,7 +243,7 @@ void main() {
         uuid: characteristicUuid,
       );
 
-      await device.registerCharacteristic(characteristic, false);
+      await device.registerCharacteristic(characteristic, true);
       var first = device.onCharacteristicValueChanged(characteristic).first;
       await peripheral.setAndNotifyCharacteristicValue(
         serviceUuid: serviceUuid,

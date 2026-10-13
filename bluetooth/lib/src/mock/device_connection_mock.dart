@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:rxdart/rxdart.dart';
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/bluetooth_peripheral.dart';
@@ -22,9 +24,16 @@ class BluetoothDeviceConnectionMock implements BluetoothDeviceConnection {
         BluetoothDeviceConnectionState.disconnected,
       );
 
+  /// Registered characteristic notifications, by service and characteristic.
+  final _registeredSubscriptions = <String, StreamSubscription<Object?>>{};
+
   BluetoothDeviceConnectionMock({required this.manager});
   @override
   void close() {
+    for (var subscription in _registeredSubscriptions.values) {
+      subscription.cancel();
+    }
+    _registeredSubscriptions.clear();
     disconnect();
   }
 
@@ -143,7 +152,17 @@ class BluetoothDeviceConnectionMock implements BluetoothDeviceConnection {
     BleBluetoothCharacteristic characteristic,
     bool on,
   ) async {
-    peripheral.bleNotification.stream.listen((event) {
+    var key = '${characteristic.service.uuid}/${characteristic.uuid}';
+    if (!on) {
+      await _registeredSubscriptions.remove(key)?.cancel();
+      return;
+    }
+    if (_registeredSubscriptions.containsKey(key)) {
+      return;
+    }
+    _registeredSubscriptions[key] = peripheral.bleNotification.stream.listen((
+      event,
+    ) {
       if (event.serviceUuid == characteristic.service.uuid &&
           event.characteristicUuid == characteristic.uuid) {
         _bleNotificationWrapper.sink.add(

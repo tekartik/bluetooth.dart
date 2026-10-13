@@ -59,7 +59,7 @@ class BluetoothFlutter {
     assert(_isSupported!, 'call bluetoothState first');
     await _enableLock.synchronized(() async {
       await _channel.invokeMethod('enableBluetooth', <String, dynamic>{
-        'requestCode': requestCode,
+        'androidRequestCode': requestCode,
       });
     });
   }
@@ -96,7 +96,7 @@ class BluetoothFlutter {
     assert(_isSupported!, 'call bluetoothState first');
     await _enableLock.synchronized(() async {
       await _channel.invokeMethod('enableBluetooth', <String, dynamic>{
-        'requestCode': requestCode,
+        'androidRequestCode': requestCode,
       });
     });
   }

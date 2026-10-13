@@ -34,8 +34,8 @@ class BluetoothServerService
   }
 
   @override
-  Future<T> invokeMethod<T>(String method, [Object? arguments]) async =>
-      (await context.invoke<T>(method, arguments))!;
+  Future<T> invokeMethod<T>(String method, [Object? arguments]) =>
+      context.invoke<T>(method, arguments);
 
   /*
   @override

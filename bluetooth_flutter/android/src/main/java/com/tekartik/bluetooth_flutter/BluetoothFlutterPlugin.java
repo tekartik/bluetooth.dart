@@ -268,9 +268,14 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
         } else if (call.method.equals("enableBluetooth")) {
             onEnableBluetooth(request);
         } else if (method.equals("disableBluetooth")) {
-            if (bluetoothAdapter.isEnabled()) {
-                // Requires admin permission
-                bluetoothAdapter.disable();
+            try {
+                if (bluetoothAdapter.isEnabled()) {
+                    // Requires admin permission
+                    bluetoothAdapter.disable();
+                }
+                result.success(null);
+            } catch (Exception e) {
+                result.error("disable_bluetooth", "failed " + e, null);
             }
         } else if (method.equals("peripheralStartAdvertising")) {
             getPeripheralPlugin().onStartAdvertising(request);
@@ -326,6 +331,7 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
             onCheckBluetoothPermissions(request);
         } else {
             Log.i(TAG, "Unhandled " + call.method);
+            result.notImplemented();
         }
     }
 
@@ -489,6 +495,7 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
                 }
 
 
+                checkPermissionsRequestCode = requestCode;
                 checkPermissionsResult = request.result;
                 ActivityCompat.requestPermissions(
                         activityBinding.getActivity(),
@@ -507,17 +514,25 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
     @Override
     public boolean onRequestPermissionsResult(
             int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == checkPermissionsRequestCode) {
+        if (requestCode == checkPermissionsRequestCode && checkPermissionsResult != null) {
+            Result result = checkPermissionsResult;
+            checkPermissionsResult = null;
+            // An empty result means the request was cancelled
+            if (grantResults.length == 0) {
+                result.error(
+                        "checkCoarseLocationPermission", "permission request cancelled", null);
+                return true;
+            }
             for (int grantResult : grantResults) {
                 if (grantResult != PackageManager.PERMISSION_GRANTED) {
 
-                    checkPermissionsResult.error(
+                    result.error(
                             "checkCoarseLocationPermission", "missing location permissions for scanning", null);
                     return true;
 
                 }
             }
-            checkPermissionsResult.success(true);
+            result.success(true);
             return true;
         }
         return false;
@@ -525,13 +540,15 @@ public class BluetoothFlutterPlugin implements FlutterPlugin, ActivityAware, Met
 
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == enableBluetoothRequestCode) {
-            if (requestCode == Activity.RESULT_OK) {
-                enableBluetoothResult.success(null);
+        if (requestCode == enableBluetoothRequestCode && enableBluetoothResult != null) {
+            Result result = enableBluetoothResult;
+            enableBluetoothResult = null;
+            if (resultCode == Activity.RESULT_OK) {
+                result.success(null);
             } else {
                 // Check enabled again
                 // bluetoothAdapter.isEnabled()
-                enableBluetoothResult.error("enable_bluetooth", "failed " + resultCode, null);
+                result.error("enable_bluetooth", "failed " + resultCode, null);
             }
             return true;
         }

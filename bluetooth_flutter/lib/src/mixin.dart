@@ -27,7 +27,7 @@ mixin BluetoothFlutterManagerMixin
     var connection = BluetoothDeviceConnectionFlutterImpl(manager: this);
 
     var map = <String, Object?>{};
-    map['deviceId'] = deviceId;
+    map['deviceId'] = deviceId.id;
     var result = await invokeMethod<dynamic>('remoteNewConnection', map);
     int? connectionId;
     if (result is int) {

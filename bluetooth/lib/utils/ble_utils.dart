@@ -36,9 +36,8 @@ var _flagToPropertyMap = {
   // TODO BlueZGattCharacteristicFlag.encryptWrite,
   // TODO BlueZGattCharacteristicFlag.encryptAuthenticatedRead,
   // TODO BlueZGattCharacteristicFlag.encryptAuthenticatedWrite,
-  //      TODO BlueZGattCharacteristicFlag.secureRead: bleProperty,
-  BleCharacteristicPropertyFlag.secureWrite: blePropertySignedWrite,
-  // TODO BlueZGattCharacteristicFlag.authorize,
+  // secureRead/secureWrite (secure connection required) and authorize have no
+  // characteristic property bit (0x40 is authenticatedSignedWrites).
 };
 
 int propertyFlagsToPropertyValue(Set<BleCharacteristicPropertyFlag> flags) {
