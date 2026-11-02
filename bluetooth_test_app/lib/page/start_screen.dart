@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tekartik_bluetooth_test_app/ble/app_ble.dart';
 import 'package:tekartik_bluetooth_test_app/import/common_import.dart';
 import 'package:tekartik_bluetooth_test_app/import/import_bluetooth.dart';
@@ -8,8 +8,9 @@ import 'package:tekartik_bluetooth_test_app/page/scan_page.dart';
 
 import '../test_main.dart' as test_main;
 
-typedef StartScreenAutoStartFunction =
-    Future<void> Function(BuildContext context);
+typedef StartScreenAutoStartFunction = Future<void> Function(
+  BuildContext context,
+);
 
 StartScreenAutoStartFunction? startScreenAutoStartFunction;
 

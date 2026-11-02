@@ -1,6 +1,6 @@
 // ignore_for_file: avoid_print, duplicate_ignore
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tekartik_bluetooth_test_app/ble/app_ble.dart';
 import 'package:tekartik_bluetooth_test_app/import/common_import.dart';

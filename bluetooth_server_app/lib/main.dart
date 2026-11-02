@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tekartik_bluetooth_server_app/page/main_page.dart';
 
 void main() => runApp(const BluetoothServerApp());

@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tekartik_app_platform/app_platform.dart';
 import 'package:tekartik_bluetooth_test_app/page/peripheral_screen.dart';
 import 'package:tekartik_bluetooth_test_app/page/start_screen.dart';

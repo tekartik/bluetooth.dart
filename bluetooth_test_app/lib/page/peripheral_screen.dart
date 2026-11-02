@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tekartik_bluetooth_test_app/ble/simple_peripheral.dart';
 import 'package:tekartik_bluetooth_test_app/import/common_import.dart';
 
