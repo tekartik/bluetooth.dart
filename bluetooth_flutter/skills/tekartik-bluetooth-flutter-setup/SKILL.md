@@ -89,18 +89,25 @@ skill.
 * Scanning: `bluetoothManagerFlutter.scan(scanMode: ScanMode.lowLatency)`
   returns a `Stream<ScanResult>`. The native scan starts when the stream is
   built and `stopScan` is invoked when the subscription is cancelled, so keep
-  the subscription in the `State` and cancel it in `dispose()`. A new `scan()`
-  closes the previous controller: one scan at a time. Results repeat, so dedupe
-  on `result.device.id`.
+  the subscription in the `State` and cancel it in `dispose()`.
+  `withServices:` is sent as Android `ScanFilter`s (service uuids). A scan
+  that cannot start (adapter off, missing permission) is an error on the
+  stream. A new `scan()` ends the previous stream, but Android keeps the
+  running native scan with its first filter and mode: cancel the previous
+  subscription (which stops the native scan) before scanning with other
+  options. Results repeat, so dedupe on `result.device.id`.
 * Connecting: `await bluetoothManagerFlutter.newConnection(deviceId)` allocates
-  a native connection id, then `await connection.connect()`,
-  `await connection.getServices()`, `readCharacteristic` /
-  `writeCharacteristic` / `registerCharacteristic` /
-  `onCharacteristicValueChanged` from the `tekartik_bluetooth` API, and
+  a native connection id, then `await connection.connect()` (completes on the
+  native `connected` state, `TimeoutException` after 30 s),
+  `await connection.discoverServices()` (Android only lists the services once
+  discovered: without it `getServices()` returns an empty list; the
+  `@Deprecated` on the plugin's override is wrong, call it through the
+  `BluetoothDeviceConnection` type `newConnection` returns),
+  `await connection.getServices()`, `readCharacteristic(bc)`, and
   `disconnect()` + `close()` at the end (`close()` removes the connection from
-  the manager, so do it last). `connection.discoverServices()` is deprecated
-  here: `getServices()` already asks the native side
-  (`remoteGetServices`). `connection.onConnectionState` never emits
+  the manager, so do it last). Not implemented on this plugin, they throw
+  `UnimplementedError`: `writeCharacteristic`, `registerCharacteristic`,
+  `onCharacteristicValueChanged`. `connection.onConnectionState` never emits
   `connecting`/`disconnecting` on Android.
 * `BluetoothFlutter` is a thin static wrapper on the method channel:
   `platformVersion`, `enableBluetooth`, `disableBluetooth`,
@@ -113,11 +120,15 @@ skill.
   peripheral side or for debugging.
 * `BluetoothOptions` / `devSetOptions` / `bluetoothLogLevelVerbose` are
   `@Deprecated('Dev only')`: do not ship calls to them.
-* Testing: this package's `dart test` equivalent is `flutter test`, and it only
-  covers the map serialisation (`test/invoke_test.dart`); the plugin needs a
-  real Android device. Unit test app logic against `BluetoothManagerMock` from
+* Testing: unit test app logic against `BluetoothManagerMock` from
   `package:tekartik_bluetooth/bluetooth_mock.dart` and inject the manager
-  rather than calling `bluetoothManagerFlutter` from deep inside widgets.
+  rather than calling `bluetoothManagerFlutter` from deep inside widgets. The
+  package's `flutter test` covers the map serialisation
+  (`test/invoke_test.dart`) and the Dart side of the channel with a faked
+  native side (`test/review_regression_test.dart`:
+  `TestDefaultBinaryMessenger.setMockMethodCallHandler` answers the calls,
+  `handlePlatformMessage` plays the native `scanResult`,
+  `remoteConnectionState`... calls); the radio needs a real Android device.
 
 ## Examples
 
@@ -126,7 +137,7 @@ skill.
 ```dart
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
 
@@ -220,7 +231,6 @@ Future<bool> ensureBluetoothReady({bool advertise = false}) async {
 ### Connect and read a characteristic
 
 ```dart
-import 'package:tekartik_bluetooth/ble.dart';
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/uuid.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
@@ -233,7 +243,8 @@ Future<int?> readBatteryLevel(BluetoothDeviceId deviceId) async {
   var connection = await bluetoothManagerFlutter.newConnection(deviceId);
   try {
     await connection.connect();
-    // no discoverServices() here: it is deprecated on the flutter plugin
+    // needed: Android lists the services once discovered
+    await connection.discoverServices();
     var services = await connection.getServices();
     var bc = services
         .firstWhere((s) => s.uuid == batteryServiceUuid)
@@ -268,7 +279,9 @@ Future<void> logPlatform() async {
 * Using this plugin on iOS or web: it only registers an Android platform. Pick
   `tekartik_bluetooth_flutter_blue` for a cross-platform Flutter app.
 * Scanning without `checkBluetoothPermissions()` on Android 12+: the scan
-  silently returns nothing.
+  stream gets an error (a `PlatformException`, `SecurityException` natively).
+* Writing or listening to notifications with this plugin: not implemented,
+  use `tekartik_bluetooth_flutter_blue` when you need them.
 * Not cancelling the scan subscription in `dispose()`.
 * Calling `connection.close()` before `disconnect()`, or never calling it: the
   connection stays in the manager's map.

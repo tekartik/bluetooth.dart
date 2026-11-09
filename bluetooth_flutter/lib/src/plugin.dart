@@ -30,9 +30,15 @@ class MethodChannelFlutter implements MethodChannel {
   @override
   String get name => _native.name;
 
+  /// Native calls (scan results, connection states, read results) reach
+  /// [handler].
   @override
   void setMethodCallHandler(Future Function(MethodCall call)? handler) {
-    // TODO: implement setMethodCallHandler
+    _native.setMethodCallHandler(
+      handler == null
+          ? null
+          : (call) => handler(MethodCallFlutter(call.method, call.arguments)),
+    );
   }
 }
 

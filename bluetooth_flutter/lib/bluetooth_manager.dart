@@ -24,11 +24,12 @@ BluetoothFlutterManager get bluetoothService => bluetoothManager;
 @Deprecated('Use bluetoothManagerFlutter')
 BluetoothFlutterManager get bluetoothManager => bluetoothManagerFlutter;
 
-/// Bluetooth manager for flutter, experimental
+/// The Android plugin manager (central role: scan, connect, read), the same
+/// instance as [bluetoothAdminManagerFlutter].
 BluetoothFlutterManager get bluetoothManagerFlutter =>
     flutterBluetoothServiceImpl;
 
-/// Admin manager, ok for Android, not for iOS
+/// The Android plugin admin manager (permissions, enable), Android only.
 BluetoothAdminManager get bluetoothAdminManagerFlutter =>
     flutterBluetoothServiceImpl;
 @Deprecated('Use [bluetoothManager] instead')

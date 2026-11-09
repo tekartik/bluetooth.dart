@@ -24,6 +24,8 @@ class BluetoothDeviceConnectionWeb
       onStateController.add(BluetoothDeviceConnectionState.connected);
     } catch (e) {
       onStateController.add(BluetoothDeviceConnectionState.disconnected);
+      // A failed connection throws, as on the other platforms.
+      rethrow;
     }
   }
 

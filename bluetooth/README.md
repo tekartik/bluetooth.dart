@@ -41,7 +41,8 @@ final sigBaseUuid = Uuid128('00000000-0000-1000-8000-00805f9b34fb');
 final batteryServiceUuid = sigBaseUuid.withUuid16(Uuid16.fromValue(0x180f));
 final batteryLevelUuid = sigBaseUuid.withUuid16(Uuid16.fromValue(0x2a19));
 
-/// Works with any manager: bluetooth_flutter, bluez, web or the mock.
+/// Works with bluetooth_flutter, bluez or the mock (the web implementation
+/// has no GATT read yet).
 Future<int> readBatteryLevel(BluetoothManager manager) async {
   var scanResult = await manager
       .scan(withServices: [batteryServiceUuid])
@@ -49,6 +50,9 @@ Future<int> readBatteryLevel(BluetoothManager manager) async {
   var connection = await manager.newConnection(scanResult.device.id);
   try {
     await connection.connect();
+    // Android (bluetooth_flutter) and Linux (bluez) list the services once
+    // discovered.
+    await connection.discoverServices();
     var services = await connection.getServices();
     var bc = services
         .firstWhere((service) => service.uuid == batteryServiceUuid)
@@ -111,8 +115,8 @@ Future<void> main() async {
   and writes, not hand built ones.
 * On Android call `checkBluetoothPermissions()` of the admin manager before
   scanning.
-* `withServices` is only applied by bluetooth_flutter (Android) and
-  flutter_blue; filter the results yourself elsewhere.
+* `withServices` is applied by bluetooth_flutter (Android), flutter_blue and
+  bluez; filter the results yourself on the web and with the mock.
 
 Agent skills: [skills/tekartik-bluetooth-client](skills/tekartik-bluetooth-client/SKILL.md)
 (scan, connect, read, write, notify) and

@@ -64,23 +64,43 @@ class BluetoothManagerBluezImpl
     ScanMode scanMode = ScanMode.lowLatency,
     List<Uuid128>? withServices,
   }) {
+    // Stop the previous scan before this one starts its discovery (BlueZ has
+    // one discovery per D-Bus client).
+    var previousStopped = _scanBluezSubscription?.cancel();
+    _scanBluezSubscription = null;
     scanController?.close();
 
-    scanController = StreamController<ScanResult>(
-      onCancel: () {
-        _scanBluezSubscription?.cancel();
-
-        scanController?.close();
+    late StreamController<ScanResult> controller;
+    StreamSubscription<ScanResultBluez>? subscription;
+    var cancelled = false;
+    controller = StreamController<ScanResult>(
+      onCancel: () async {
+        // Only this scan's subscription: a previous scan closed by a new one
+        // must not stop the new one.
+        cancelled = true;
+        if (_scanBluezSubscription == subscription) {
+          _scanBluezSubscription = null;
+        }
+        await subscription?.cancel();
+        if (scanController == controller) {
+          scanController = null;
+        }
       },
       onListen: () async {
-        _scanService = ScanServicesBluez();
-        _scanBluezSubscription = _scanService?.startScan().listen((data) {
-          scanController?.add(data);
-        });
+        try {
+          await previousStopped;
+        } catch (_) {}
+        if (cancelled) {
+          return;
+        }
+        var scanService = _scanService = ScanServicesBluez();
+        subscription = _scanBluezSubscription = scanService
+            .startScan(withServices: withServices)
+            .listen(controller.add, onError: controller.addError);
       },
     );
-
-    return scanController!.stream;
+    scanController = controller;
+    return controller.stream;
   }
 
   static int _connectionId = 0;
@@ -107,5 +127,6 @@ class BluetoothManagerBluezImpl
 final BluetoothManagerBluezImpl bluetoothManagerBluezImpl =
     BluetoothManagerBluezImpl();
 
-/// Linux only
+/// The Linux manager (BlueZ over the D-Bus system bus), one instance for the
+/// process.
 BluetoothManagerBluez get bluetoothManagerBluez => bluetoothManagerBluezImpl;

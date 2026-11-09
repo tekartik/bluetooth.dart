@@ -208,17 +208,20 @@ class BluetoothDeviceConnectionBluezImpl extends BluetoothDeviceConnectionBluez
     }
   }
 
+  /// How long [discoverServices] waits for BlueZ to resolve the services.
+  Duration discoverServicesTimeout = const Duration(seconds: 30);
+
   @override
   Future discoverServices() async {
     var deviceBluez = device.blueZDevice;
-    var sw = Stopwatch();
+    var sw = Stopwatch()..start();
     while (true) {
       // devPrint('Waiting for services');
       // devPrint('gattServices: ${deviceBluez.gattServices}');
       if (deviceBluez.servicesResolved) {
         break;
       }
-      if (sw.elapsedMilliseconds > 30000) {
+      if (sw.elapsed > discoverServicesTimeout) {
         throw StateError('Unable to resolve services');
       }
       await sleep(100);

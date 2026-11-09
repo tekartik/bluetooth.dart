@@ -50,7 +50,6 @@ class BluetoothManagerWebImpl
 
   /// Key if the id
   final nativeDeviceMap = <String, web.BluetoothDevice>{};
-  StreamSubscription? _scanWebSubscription;
 
   /// Web specific API
   @override
@@ -122,27 +121,30 @@ class BluetoothManagerWebImpl
   }) {
     scanController?.close();
 
-    scanController = StreamController<ScanResult>(
-      onCancel: () {
-        _scanWebSubscription?.cancel();
-
-        scanController?.close();
+    late StreamController<ScanResult> controller;
+    StreamSubscription? subscription;
+    controller = StreamController<ScanResult>(
+      onCancel: () async {
+        // Only this scan's subscription: a previous scan closed by a new one
+        // must not stop the new one.
+        await subscription?.cancel();
+        if (scanController == controller) {
+          scanController = null;
+        }
       },
-      onListen: () async {
-        _scanWebSubscription = web.FlutterWebBluetooth.instance.devices.listen((
-          data,
-        ) {
+      onListen: () {
+        subscription = web.FlutterWebBluetooth.instance.devices.listen((data) {
           for (var nativeDevice in data) {
             _addNativeDevice(nativeDevice);
-            scanController?.add(
-              ScanResultWeb(BluetoothDeviceWeb(nativeDevice)),
-            );
+            if (!controller.isClosed) {
+              controller.add(ScanResultWeb(BluetoothDeviceWeb(nativeDevice)));
+            }
           }
         });
       },
     );
-
-    return scanController!.stream;
+    scanController = controller;
+    return controller.stream;
   }
 
   // static int _connectionId = 0;
@@ -162,5 +164,6 @@ class BluetoothManagerWebImpl
 final BluetoothManagerWebImpl bluetoothManagerWebImpl =
     BluetoothManagerWebImpl();
 
-/// Linux only
+/// The Web Bluetooth manager (Chromium browsers, dart2js), one instance:
+/// pick a device with [BluetoothManagerWeb.webRequestDevice].
 BluetoothManagerWeb get bluetoothManagerWeb => bluetoothManagerWebImpl;

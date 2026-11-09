@@ -69,7 +69,10 @@ skill.
   Do it once and keep the instance; a second `initPeripheral` re-registers the
   services natively.
 * Advertise with `peripheral.startAdvertising(advertiseData: AdvertiseData(services: [AdvertiseDataService(uuid: serviceUuid)], includeDeviceName: false))`
-  and stop with `peripheral.stopAdvertising()`. The legacy static
+  and stop with `peripheral.stopAdvertising()`. On Android today
+  `stopAdvertising()` also closes the GATT server (connected centrals lose
+  it, and advertising again advertises a server without services): call
+  `initPeripheral` again before advertising again. The legacy static
   `BluetoothFlutter.startAdvertising` / `stopAdvertising` do the same on the
   current peripheral; prefer the instance methods. **Keep the advertisement
   small**: the legacy advertising payload is 31 bytes, so a 128-bit service uuid
@@ -89,9 +92,11 @@ skill.
   internal class, so bind it with `var`/`(connection)` rather than naming it;
   the static `BluetoothFlutter.onSlaveConnectionChanged()` gives the publicly
   named `BluetoothSlaveConnection` instead.
-* Shut down in this order: `stopAdvertising()`, cancel the subscriptions, then
-  `await peripheral.close()` (releases the native GATT server). Wrap each in
-  try/catch: the native side throws when the adapter went off in between.
+* Shut down in this order: `stopAdvertising()` (which closes the native GATT
+  server on Android), cancel the subscriptions, then `peripheral.close()`.
+  The Android plugin does not implement `close()` yet (`peripheralClose`): it
+  throws a `MissingPluginException`. Wrap each in try/catch: the native side
+  also throws when the adapter went off in between.
 * Finding a characteristic from the central-side model: the
   `findGattCharacteristic(bc)` extensions on `BluetoothGattService` and on
   `Iterable<BluetoothGattService>` map a `BleBluetoothCharacteristic` back to
@@ -107,7 +112,6 @@ skill.
 ### Declare a service and start advertising
 
 ```dart
-import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/uuid.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_flutter.dart';
 import 'package:tekartik_bluetooth_flutter/bluetooth_flutter_peripheral.dart';
@@ -302,6 +306,7 @@ void main() {
 * Only calling `setCharacteristicValue` and expecting subscribed centrals to be
   woken up: use `notifyCharacteristicValue` or
   `setAndNotifyCharacteristicValue`.
-* Forgetting `peripheral.close()`: the native GATT server and the advertisement
-  survive the screen.
+* Forgetting `peripheral.stopAdvertising()`: the native GATT server and the
+  advertisement survive the screen (`close()` alone does not release them on
+  Android today).
 * Expecting the peripheral role on iOS or web: the plugin is Android only.

@@ -86,7 +86,7 @@ the interfaces and inject the manager.
   times: dedupe on `device.id`. `scanMode` values: `lowPower`, `balanced`,
   `lowLatency`, `opportunistic` (Android only); `withServices` filters on
   advertised service uuids where supported (bluetooth_flutter on Android,
-  flutter_blue; ignored by bluez, web and the mock).
+  flutter_blue, bluez; ignored by web and the mock).
 * Devices: `BluetoothDevice` has `name` (`String?`), `address`, `id`
   (`BluetoothDeviceId`, `==` is case insensitive on `id.id`, `toString()` is
   the id) and `type` (`BluetoothDeviceType.le` by default). Keep the
@@ -101,10 +101,12 @@ the interfaces and inject the manager.
   compare with `==`; `connecting`/`disconnecting` are not reported on Android
   and iOS); `await connection.disconnect()`, then `connection.close()` to
   release it.
-* Services: `await connection.getServices()` returns
-  `List<BleBluetoothService>` (most implementations discover on first call;
-  `discoverServices()` forces it). A service has `uuid`, `characteristics`,
-  `shortNumber`. A `BleBluetoothCharacteristic` has `service`, `uuid`,
+* Services: call `await connection.discoverServices()` after `connect()`
+  (bluetooth_flutter on Android and bluez only list the services once
+  discovered; flutter_blue and the mock discover on their own), then
+  `await connection.getServices()` returns `List<BleBluetoothService>`. A
+  service has `uuid`, `characteristics`, `shortNumber`. A
+  `BleBluetoothCharacteristic` has `service`, `uuid`,
   `properties` (int flags: `blePropertyRead`, `blePropertyWrite`,
   `blePropertyWriteNoResponse`, `blePropertyNotify`, `blePropertyIndicate`...),
   `propertyFlags` (`Set<BleCharacteristicPropertyFlag>`), `descriptors`,
@@ -181,6 +183,7 @@ Future<int?> readBatteryLevel(
   var connection = await manager.newConnection(deviceId);
   try {
     await connection.connect();
+    await connection.discoverServices();
     var services = await connection.getServices();
     var service = services.firstWhere((s) => s.uuid == batteryServiceUuid);
     var bc = service.characteristics.firstWhere(

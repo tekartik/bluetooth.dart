@@ -45,9 +45,10 @@ instance is picked.
   `package:tekartik_bluetooth/bluetooth_device.dart`,
   `package:tekartik_bluetooth/ble.dart` and
   `package:tekartik_bluetooth/uuid.dart`.
-* Linux only: the getter connects to the D-Bus system bus on first use. It
-  needs a running `bluetoothd` and a user allowed to talk to it. There is no
-  compile-time guard, so keep the import out of web/Android/iOS code paths.
+* Linux only: the first call (`getInfo`, `getAdminInfo`, `scan`...) connects to
+  the D-Bus system bus. It needs a running `bluetoothd` and a user allowed to
+  talk to it. There is no compile-time guard, so keep the import out of
+  web/Android/iOS code paths.
 * `bluetoothManagerBluez` is a single shared instance for the whole process,
   not a factory: the scan state and the connection ids are global. Do not try
   to run two independent scans.
@@ -66,18 +67,21 @@ instance is picked.
   them is not. `close()` is a no-op too.
 * Scanning: `bluetoothManagerBluez.scan()` returns a `Stream<ScanResult>`.
   BlueZ discovery starts when you listen and stops when you cancel the
-  subscription, so always keep the `StreamSubscription` and cancel it. The
-  `scanMode:` and `withServices:` parameters are accepted but ignored by this
-  implementation: filter on `result.device` yourself. Devices BlueZ already
-  knows (paired or recently seen) are emitted immediately on listen, then new
-  ones as they are discovered; dedupe on `result.device.id`. `result.rssi`
-  comes straight from BlueZ.
+  subscription, so always keep the `StreamSubscription` and cancel it. A new
+  `scan()` ends the previous stream (its listener gets done) and starts its
+  discovery once the previous one stopped. `withServices:` sets the BlueZ
+  discovery filter (`SetDiscoveryFilter` with the uuids) and only emits the
+  devices whose advertised uuids hold one of them; `scanMode:` is ignored.
+  Devices BlueZ already knows (paired or recently seen) are emitted
+  immediately on listen, then new ones as they are discovered; dedupe on
+  `result.device.id`. `result.rssi` comes straight from BlueZ. A scan that
+  cannot start (no `bluetoothd`, no system bus) is an error on the stream.
 * Device ids are the Bluetooth address (`AA:BB:CC:DD:EE:FF`), and `==` on
   `BluetoothDeviceId` is case insensitive.
-* `newConnection(deviceId)` only accepts an id seen by the **current** scan
-  (the scan results of the running `ScanServicesBluez`); anything else throws
-  `StateError('Device id ... not found')`. Scan first, then connect, and do not
-  cancel the scan before calling `newConnection`.
+* `newConnection(deviceId)` only accepts an id seen by the **last** scan
+  (cancelling the scan keeps its results, a new `scan()` clears them);
+  anything else throws `StateError('Device id ... not found')`. Scan first,
+  then connect.
 * Connecting: `await connection.connect()`. `connection.onConnectionState`
   reports `BluetoothDeviceConnectionState.connecting`, then `connected` or
   `disconnected` (this implementation does emit `connecting`/`disconnecting`,
@@ -86,7 +90,8 @@ instance is picked.
   resolves the GATT tree asynchronously and `getServices()` returns whatever is
   cached right now, so on a fresh connection it returns an empty list.
   `discoverServices()` polls until `servicesResolved` (or gattServices are
-  non-empty) and throws `StateError('Unable to resolve services')` after 30 s.
+  non-empty) and throws `StateError('Unable to resolve services')` after 30 s
+  (or `StateError('Device not connected')` when the device disconnects).
 * Read/write/notify take the `BleBluetoothCharacteristic` objects returned by
   `getServices()`; a hand-built one is looked up by service uuid +
   characteristic uuid and throws `StateError('Characteristic ... not found')`
@@ -102,10 +107,12 @@ instance is picked.
 * Command line programs: the D-Bus system bus connection stays open and keeps
   the Dart VM alive after your work is done. End the program with `exit(0)`
   from `dart:io`.
-* Testing: there is no hardware-free test here (`dart test` only runs the uuid
-  conversion test). Unit test the logic against `BluetoothManagerMock` from
+* Testing: unit test the logic against `BluetoothManagerMock` from
   `package:tekartik_bluetooth/bluetooth_mock.dart` and keep this package to the
-  one line that picks the manager.
+  one line that picks the manager. The package's own scan tests run against a
+  fake BlueZ daemon on a private D-Bus (`test/review_regression_test.dart`:
+  a `DBusServer`, objects for the adapter and the devices, and the global
+  `bluezClient` of `src/bluetooth_manager_bluez.dart` pointed at it).
 
 ## Examples
 
@@ -144,7 +151,6 @@ Future<void> main() async {
 import 'dart:async';
 import 'dart:io';
 
-import 'package:tekartik_bluetooth/ble.dart';
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/uuid.dart';
 import 'package:tekartik_bluetooth_bluez/bluetooth_bluez.dart';
@@ -157,7 +163,7 @@ Future<void> main(List<String> args) async {
   var wantedName = args.first;
   var manager = bluetoothManagerBluez;
 
-  // Keep the scan alive: newConnection only knows the current scan results.
+  // newConnection only knows the devices of the last scan.
   var completer = Completer<BluetoothDeviceId>();
   var subscription = manager.scan().listen((result) {
     if (result.device.name == wantedName && !completer.isCompleted) {
@@ -241,9 +247,10 @@ Future<void> watch(BluetoothDeviceId deviceId) async {
 
 * Calling `getServices()` right after `connect()` and getting an empty list:
   `discoverServices()` first.
-* Cancelling the scan subscription before `newConnection()`: the device id is
-  then unknown and `newConnection` throws a `StateError`.
-* Expecting `scanMode:` or `withServices:` to do anything on BlueZ.
+* Starting a new scan before `newConnection()`: the new scan forgets the
+  previous results, so the device id is unknown and `newConnection` throws a
+  `StateError`.
+* Expecting `scanMode:` to do anything on BlueZ.
 * Calling `getConnectedDevices()`, `checkBluetoothPermissions()`, `enable()`
   or `disable()` on Linux: they throw `UnimplementedError`.
 * Forgetting `exit(0)` in a CLI and wondering why the program hangs.

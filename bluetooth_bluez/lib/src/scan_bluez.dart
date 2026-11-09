@@ -1,6 +1,8 @@
 import 'package:bluez/bluez.dart';
+import 'package:tekartik_bluetooth/uuid.dart';
 
 import 'bluetooth_manager_bluez.dart';
+import 'bluez_utils.dart';
 import 'import.dart';
 import 'import_bluetooth.dart';
 
@@ -67,56 +69,82 @@ class ScanServicesBluez {
 
   final _lastScanData = <BluetoothDeviceId, ScanResultBluez>{};
 
-  Stream<ScanResultBluez> startScan() {
+  /// Starts the discovery on listen, stops it on cancel.
+  ///
+  /// With [withServices], BlueZ only discovers the devices advertising one of
+  /// them, and the devices it already knows are filtered on their uuids.
+  Stream<ScanResultBluez> startScan({List<Uuid128>? withServices}) {
     // Clear previous scan data
     // TODO keep recent items?
 
     _lastScanData.clear();
+    var services = withServices?.toSet();
+    var cancelled = false;
     late StreamController<ScanResultBluez> resultController;
     resultController = StreamController<ScanResultBluez>(
       onListen: () async {
-        try {
-          await _stopScan();
-        } catch (_) {}
-
-        /// Start discovery
-        _scanAdapters = <BlueZAdapter>[];
-
-        var adapters = bluezClient.adapters;
-        await bluezClient.connect();
-        for (var adapter in adapters) {
+        // A cancel during the start waits for it (same lock) then stops.
+        await _scanLock.synchronized(() async {
+          if (cancelled) {
+            return;
+          }
           try {
+            // Connect first: the adapters are only known once connected.
+            await bluezClient.connect();
+
+            /// Start discovery
+            var scanAdapters = _scanAdapters = <BlueZAdapter>[];
+            for (var adapter in bluezClient.adapters) {
+              try {
+                // No uuids clears the filter of a previous scan.
+                await adapter.setDiscoveryFilter(
+                  uuids: services?.map((uuid) => uuid.toString()).toList(),
+                );
+              } catch (e) {
+                _log('setDiscoveryFilter error $e');
+              }
+              try {
+                await adapter.startDiscovery();
+                scanAdapters.add(adapter);
+              } catch (e) {
+                _log('startDiscovery error $e');
+              }
+            }
+            isScanning = true;
+            void addDevice(BlueZDevice device) {
+              if (services != null &&
+                  !device.uuids.any(
+                    (uuid) => services.contains(uuidFromBluezUuid(uuid)),
+                  )) {
+                return;
+              }
+              var deviceBluez = BluetoothDeviceBluezImpl(device);
+              var scanResultBluez = ScanResultBluezImpl(deviceBluez);
+              resultController.add(scanResultBluez);
+              _lastScanData[deviceBluez.id] = scanResultBluez;
+            }
+
+            void addDevices(List<BlueZDevice> devices) {
+              for (var device in devices) {
+                addDevice(device);
+              }
+            }
+
             /// Add current devices
-
-            await adapter.startDiscovery();
-            _scanAdapters!.add(adapter);
-          } catch (e) {
-            _log('startDiscovery error $e');
+            addDevices(bluezClient.devices);
+            addedSubscription = bluezClient.deviceAdded.listen(addDevice);
+            removedSubscription = bluezClient.deviceRemoved.listen((device) {
+              //data.removeDevice(device.address);
+              // resultController.add(data);
+            });
+          } catch (e, st) {
+            // No BlueZ (or no system bus): reported to the listener.
+            resultController.addError(e, st);
           }
-        }
-        isScanning = true;
-        void addDevice(BlueZDevice device) {
-          var deviceBluez = BluetoothDeviceBluezImpl(device);
-          var scanResultBluez = ScanResultBluezImpl(deviceBluez);
-          resultController.add(scanResultBluez);
-          _lastScanData[deviceBluez.id] = scanResultBluez;
-        }
-
-        void addDevices(List<BlueZDevice> devices) {
-          for (var device in devices) {
-            addDevice(device);
-          }
-        }
-
-        addDevices(bluezClient.devices);
-        addedSubscription = bluezClient.deviceAdded.listen(addDevice);
-        removedSubscription = bluezClient.deviceRemoved.listen((device) {
-          //data.removeDevice(device.address);
-          // resultController.add(data);
         });
-        // add current data
       },
       onCancel: () async {
+        cancelled = true;
         try {
           await _stopScan();
         } catch (_) {}
@@ -127,13 +155,12 @@ class ScanServicesBluez {
   }
 
   Future<void> _stopScan() async {
-    isScanning = false;
-    addedSubscription?.cancel().unawait();
-    addedSubscription = null;
-    removedSubscription?.cancel().unawait();
-    removedSubscription = null;
-
     await _scanLock.synchronized(() async {
+      isScanning = false;
+      addedSubscription?.cancel().unawait();
+      addedSubscription = null;
+      removedSubscription?.cancel().unawait();
+      removedSubscription = null;
       var adapters = _scanAdapters;
       if (adapters?.isNotEmpty ?? false) {
         for (var adapter in adapters!) {
@@ -144,6 +171,7 @@ class ScanServicesBluez {
           }
         }
       }
+      _scanAdapters = null;
     });
   }
 

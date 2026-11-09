@@ -39,8 +39,11 @@ limitations below before designing around it.
 * Browser only, and only where Web Bluetooth exists: Chrome, Edge and other
   Chromium browsers, over **https or `http://localhost`**. Firefox and Safari
   have no Web Bluetooth. Check `chrome://bluetooth-internals` and
-  `chrome://flags` when debugging. There is no compile guard, so keep this
-  import out of VM/Flutter-native code paths.
+  `chrome://flags` when debugging. dart2js only: the fork picks its web
+  implementation with `dart.library.html`, so under dart2wasm (Flutter
+  `--wasm`) it uses its unsupported implementation (`isBluetoothApiSupported`
+  is false). It compiles on the VM too (same unsupported implementation), but
+  nothing works there.
 * `package:tekartik_bluetooth_web/bluetooth_web.dart` exports exactly four
   names: `bluetoothManagerWeb` (a `BluetoothManagerWeb`, which is both a
   `BluetoothManager` and a `BluetoothAdminManager`), `BluetoothManagerWeb`,
@@ -68,18 +71,21 @@ limitations below before designing around it.
   to it.
 * `scan()` does not scan the radio: it streams the devices the user has already
   granted for this origin (`FlutterWebBluetooth.instance.devices`), as
-  `ScanResult`s whose `rssi` is always `0`. Use it to repopulate the device
-  list on reload, and `webRequestDevice()` to add a new one. Cancel the
-  subscription as usual.
+  `ScanResult`s whose `rssi` is always `0`; `scanMode` and `withServices` are
+  ignored (a device's services are unknown before a GATT connection). Use it
+  to repopulate the device list on reload, and `webRequestDevice()` to add a
+  new one. Cancel the subscription as usual; a new `scan()` ends the previous
+  stream.
 * `newConnection(deviceId)` only resolves ids that this manager has seen, from
   `webRequestDevice()` or from the `scan()` stream; anything else throws
   `StateError('device id ... not found')`.
 * `connection.connect()` / `disconnect()` work, and
   `connection.onConnectionState` emits `connecting` then `connected`, or
-  `disconnected` on failure. **`connect()` never throws**: it catches the error
-  and emits `disconnected`, so listen to `onConnectionState` (subscribe before
-  calling `connect()`: the controller is a broadcast without replay) instead of
-  relying on the future. `connection.close()` is a no-op.
+  `disconnected` on failure. `connect()` throws when the connection fails
+  (after emitting `disconnected`), like the other implementations: wrap it in
+  try/catch. `onConnectionState` is a broadcast without replay: subscribe
+  before calling `connect()` to see `connecting`. `connection.close()` is a
+  no-op.
 * **Not implemented yet**, they throw `UnimplementedError`:
   `discoverServices()`, `getServices()`, `readCharacteristic()`,
   `writeCharacteristic()`, `registerCharacteristic()` and
@@ -96,9 +102,12 @@ limitations below before designing around it.
   `tekartik_test_menu_browser` page exercising `isBluetoothApiSupported`,
   `isAvailable` and `requestDevice`; serve it with
   `dart run build_runner serve` and open it in Chrome.
-* Testing: nothing here is unit testable without a browser and a user. Test the
-  logic against `BluetoothManagerMock` from
-  `package:tekartik_bluetooth/bluetooth_mock.dart` and inject the manager.
+* Testing: test the logic against `BluetoothManagerMock` from
+  `package:tekartik_bluetooth/bluetooth_mock.dart` and inject the manager. A
+  real device needs a browser and a user. The package's own tests
+  (`test/review_regression_test.dart`, VM and Chrome) cover the scan stream
+  and `connect()` with a fake `BluetoothDevice` (`implements` the plugin
+  class, `noSuchMethod` for the rest).
 
 ## Examples
 
@@ -170,24 +179,16 @@ import 'package:tekartik_bluetooth_web/bluetooth_web.dart';
 
 Future<bool> connectTo(BluetoothDeviceId deviceId) async {
   var connection = await bluetoothManagerWeb.newConnection(deviceId);
-  var completer = Completer<bool>();
-  // subscribe first: connect() never throws, it only emits disconnected
+  // subscribe first: the state stream does not replay
   var subscription = connection.onConnectionState.listen((state) {
-    if (completer.isCompleted) {
-      return;
-    }
-    if (state == BluetoothDeviceConnectionState.connected) {
-      completer.complete(true);
-    } else if (state == BluetoothDeviceConnectionState.disconnected) {
-      completer.complete(false);
-    }
+    print('state $state'); // connecting, then connected or disconnected
   });
   try {
-    await connection.connect();
-    return await completer.future.timeout(
-      const Duration(seconds: 30),
-      onTimeout: () => false,
-    );
+    await connection.connect(); // throws when the connection fails
+    return true;
+  } catch (e) {
+    print('connect failed $e');
+    return false;
   } finally {
     await subscription.cancel();
   }
@@ -228,4 +229,5 @@ Future<List<BluetoothDevice>> knownDevices() async {
 * Writing GATT code against this package: `getServices()`,
   `readCharacteristic()`, `writeCharacteristic()` and
   `registerCharacteristic()` throw `UnimplementedError`.
-* Relying on `connect()` throwing on failure, or on `rssi` being meaningful.
+* Relying on `rssi` being meaningful, or on `scan(withServices:)` filtering.
+* Building the Flutter web app with `--wasm`: no Web Bluetooth there.

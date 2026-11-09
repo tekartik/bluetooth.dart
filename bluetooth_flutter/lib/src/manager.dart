@@ -11,10 +11,12 @@ import 'package:tekartik_bluetooth_flutter/src/mixin.dart';
 
 import 'import.dart';
 
+// BluetoothFlutterManagerMixin comes after BluetoothManagerMixin: its
+// newConnection must override the base one (which throws).
 class BluetoothFlutterManagerImpl
     with
-        BluetoothFlutterManagerMixin,
         BluetoothManagerMixin,
+        BluetoothFlutterManagerMixin,
         BluetoothAdminManagerMixin
     implements BluetoothManager {
   final channel = bluetoothFlutterPlugin.methodChannel;

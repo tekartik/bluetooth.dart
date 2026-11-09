@@ -72,8 +72,11 @@ class BluetoothDeviceConnectionFlutterImpl
         .listen((map) {
           var readServiceUuid = map[serviceUuidKey] as String?;
           var readCharacteristicUuid = map[characteristicUuidKey] as String?;
-          if (readServiceUuid == serviceUuid &&
-              readCharacteristicUuid == characteristicUuid) {
+          // Android sends lower case uuids, ours keep the case they were
+          // written with.
+          if (readServiceUuid?.toLowerCase() == serviceUuid.toLowerCase() &&
+              readCharacteristicUuid?.toLowerCase() ==
+                  characteristicUuid.toLowerCase()) {
             var status = map[statusKey];
             if (!completer.isCompleted) {
               if (status == androidBleGattSuccess) {
