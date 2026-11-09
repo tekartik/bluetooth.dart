@@ -117,6 +117,7 @@ class BatteryRemoteDevice {
     await bluetoothPeripheral!.notifyCharacteristicValue(
       serviceUuid: bcv.service.uuid,
       characteristicUuid: bcv.uuid,
+      value: bcv.value,
     );
   }
 

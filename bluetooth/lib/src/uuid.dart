@@ -33,17 +33,19 @@ class Uuid16 {
 
   // The number
   int get value {
-    var byteData = ByteData.view(bytes.buffer);
+    // A view of the bytes (that can start anywhere in its buffer).
+    var byteData = ByteData.sublistView(bytes);
     return byteData.getUint16(0);
   }
 
   @override
   int get hashCode => value;
 
+  /// Compares all the bytes ([Uuid128.longNumberUuid32] holds 4 bytes).
   @override
   bool operator ==(other) {
     if (other is Uuid16) {
-      return other.value == value;
+      return const ListEquality<int>().equals(other.bytes, bytes);
     }
     return false;
   }
@@ -70,13 +72,28 @@ class Uuid32 {
   String toString() => _text ??= toHexString(bytes)!.toLowerCase();
 }
 
+final _uuid128TextRegExp = RegExp(
+  r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
+  caseSensitive: false,
+);
+
+/// Checks the format only, not the RFC 4122 version and variant.
+Uint8List _parseUuid128Text(String text) {
+  if (!_uuid128TextRegExp.hasMatch(text)) {
+    throw FormatException('Invalid 128 bit uuid', text);
+  }
+  return Uint8List.fromList(Uuid.parse(text, validate: false));
+}
+
 // 128 bit uuid - 16 bytes
 class Uuid128 {
   final Uint8List _value;
   String? _text;
 
+  /// [text] must be in the 8-4-4-4-12 hex format, any version (most vendor
+  /// uuids are not RFC 4122 ones).
   Uuid128.from({Uint8List? bytes, String? text})
-    : _value = bytes ?? Uint8List.fromList(Uuid.parse(text!)),
+    : _value = bytes ?? _parseUuid128Text(text!),
       _text = text;
 
   /// 16 bytes

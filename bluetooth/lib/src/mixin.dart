@@ -181,19 +181,37 @@ mixin BluetoothManagerMixin implements BluetoothManager {
   }) {
     var param = StartScanParam()..androidScanMode.v = scanMode.value;
     var map = param.toMap();
+    if (withServices != null) {
+      // Read by the Android plugin to filter the scan.
+      map['serviceUuids'] = withServices
+          .map((uuid) => uuid.toString())
+          .toList();
+    }
 
     scanController?.close();
 
-    scanController = StreamController<ScanResult>(
+    late StreamController<ScanResult> controller;
+    controller = StreamController<ScanResult>(
       onCancel: () async {
-        scanController = null;
-        await invokeStopScan();
+        // A previous scan closed by a new one must not stop the new one.
+        if (scanController == controller) {
+          scanController = null;
+          await invokeStopScan();
+        }
       },
     );
+    scanController = controller;
     () async {
-      await invokeMethod<dynamic>(methodStartScan, map);
+      try {
+        await invokeMethod<dynamic>(methodStartScan, map);
+      } catch (e, st) {
+        // Reported to the listener (was an uncaught error).
+        if (!controller.isClosed) {
+          controller.addError(e, st);
+        }
+      }
     }();
-    return scanController!.stream;
+    return controller.stream;
   }
 
   void onScanResult(dynamic map) {

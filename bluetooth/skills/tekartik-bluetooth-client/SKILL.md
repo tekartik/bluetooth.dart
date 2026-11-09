@@ -50,14 +50,18 @@ the interfaces and inject the manager.
   gives `BluetoothStateService` (`supportsEnable`, `enable`, `disable`), which
   every manager implements.
 * Uuids: `Uuid128('0000180f-0000-1000-8000-00805f9b34fb')` parses a text uuid
-  (non strict, so vendor uuids that are not RFC 4122 compliant are accepted);
+  (non strict, so vendor uuids that are not RFC 4122 compliant are accepted;
+  `Uuid128.from(text:)` accepts them too and only checks the
+  8-4-4-4-12 hex format);
   `Uuid128.bytes(bytes)` wraps 16 bytes; `uuid.bytes` reads them back. Build a
   Bluetooth SIG 16-bit id in 128-bit form with
   `Uuid128('00000000-0000-1000-8000-00805f9b34fb').withUuid16(Uuid16.fromValue(0x180f))`
   and read the short id with `uuid128.shortNumberUuid16.value`.
   `Uuid16.fromText('180f')`, `Uuid16.fromValue(0x180f)`,
-  `Uuid16.fromBytes(bytes)`, `Uuid32('1234abcd')`, `uuid128.withUuid32(uuid32)`.
-  Uuids compare by value with `==` and print lowercase.
+  `Uuid16.fromBytes(bytes)` (a view such as `Uint8List.sublistView(data, 2,
+  4)` is fine), `Uuid32('1234abcd')`, `uuid128.withUuid32(uuid32)`.
+  Uuids compare by value (their bytes) with `==`; one built from text
+  prints that text, the others print lowercase.
 * Manager lifecycle: `await manager.init()` at startup (on Android it cancels
   a scan left running by a hot restart), `await manager.stop()` when leaving
   the feature (cancels scan and connections), `await manager.getInfo()` for a
@@ -76,10 +80,13 @@ the interfaces and inject the manager.
   returns a `Stream<ScanResult>` (`result.device`, `result.rssi`). The scan
   starts on listen and stops when the subscription is cancelled: keep the
   `StreamSubscription` and cancel it. One scan at a time per manager (a new
-  `scan()` replaces the previous stream). The same device is reported many
+  `scan()` closes the previous stream, its listener gets done, the scan
+  goes on for the new one). A scan that cannot start (adapter off, missing
+  permission) is an error on the stream. The same device is reported many
   times: dedupe on `device.id`. `scanMode` values: `lowPower`, `balanced`,
   `lowLatency`, `opportunistic` (Android only); `withServices` filters on
-  advertised service uuids where supported.
+  advertised service uuids where supported (bluetooth_flutter on Android,
+  flutter_blue; ignored by bluez, web and the mock).
 * Devices: `BluetoothDevice` has `name` (`String?`), `address`, `id`
   (`BluetoothDeviceId`, `==` is case insensitive on `id.id`, `toString()` is
   the id) and `type` (`BluetoothDeviceType.le` by default). Keep the
@@ -104,8 +111,8 @@ the interfaces and inject the manager.
   `shortNumber` and `ref` (`BleBluetoothCharacteristicRef`, a value object
   usable as map key). Use the characteristics returned by `getServices()`
   rather than hand built ones: implementations look their native object up by
-  service and characteristic uuid, and a `BleBluetoothService(uuid:)` created
-  without `characteristics:` throws when `.characteristics` is read.
+  service and characteristic uuid (a `BleBluetoothService(uuid:)` created
+  without `characteristics:` has an empty list).
 * Read and write: `var bcv = await connection.readCharacteristic(bc)`;
   `bcv.value` is a `Uint8List`, plus `bcv.bc`, `bcv.service`, `bcv.uuid`.
   Write with `connection.writeCharacteristic(bc.withValue(bytes))` or

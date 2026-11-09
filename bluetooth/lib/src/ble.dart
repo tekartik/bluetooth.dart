@@ -31,9 +31,10 @@ mixin BleBluetoothServiceMixin implements BleBluetoothService {
 
   List<BleBluetoothCharacteristic>? _characteristics;
 
-  /// Modifiable
+  /// Modifiable, empty for a service created without characteristics.
   @override
-  List<BleBluetoothCharacteristic> get characteristics => _characteristics!;
+  List<BleBluetoothCharacteristic> get characteristics =>
+      _characteristics ??= <BleBluetoothCharacteristic>[];
 
   /// Deprecate for safety only
   @override
