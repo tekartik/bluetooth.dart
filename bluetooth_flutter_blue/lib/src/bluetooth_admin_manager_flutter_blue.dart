@@ -84,5 +84,7 @@ class BluetoothAdminManagerFlutterBlue implements BluetoothAdminManager {
   bool get supportsEnable => isAndroid;
 }
 
-/// Implementation basic but only solution for iOS
+/// The adapter through flutter_blue_plus (the only one on iOS):
+/// `getAdminInfo()` (supported, on), `enable()` (Android). The permissions
+/// are not handled here (`checkBluetoothPermissions` throws).
 final bluetoothAdminManagerFlutterBlue = BluetoothAdminManagerFlutterBlue();

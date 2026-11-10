@@ -1,3 +1,8 @@
+/// The tekartik_bluetooth central API on top of flutter_blue_plus (Android,
+/// iOS, macOS): [bluetoothManagerFlutterBlue] scans and connects,
+/// [bluetoothAdminManagerFlutterBlue] gives the adapter state.
+library;
+
 //export 'package:flutter_blue/flutter_blue.dart';
 import 'package:tekartik_bluetooth_flutter_blue/src/flutter_blue_import.dart';
 
@@ -15,6 +20,7 @@ export 'src/bluetooth_admin_manager_flutter_blue.dart'
 export 'src/bluetooth_manager_flutter_blue.dart'
     show BluetoothManagerFlutterBlue, bluetoothManagerFlutterBlue;
 
+/// flutter_blue_plus helpers.
 class BluetoothFlutterBlue {
   static bool? _isSupported;
 
@@ -22,6 +28,7 @@ class BluetoothFlutterBlue {
     return _isSupported ??= await FlutterBluePlus.isSupported;
   }
 
+  /// The adapter state (`unavailable` when Bluetooth LE is not supported).
   static Future<BluetoothAdapterState> get bluetoothState async {
     _isSupported ??= await _isSupportedReady;
     if (_isSupported!) {

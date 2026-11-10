@@ -48,6 +48,8 @@ dev_dependencies:
   test: ">=1.31.0"
   flutter_test:
     sdk: flutter
+  # A fake platform in the scan tests.
+  flutter_blue_plus_platform_interface: ">=9.0.4"
   process_run: ">=1.2.1+1"
   tekartik_lints_flutter:
     git:

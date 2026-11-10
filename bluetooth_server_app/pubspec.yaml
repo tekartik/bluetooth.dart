@@ -26,6 +26,14 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ">=1.0.9"
   sqflite: ">=2.4.3"
+  tekartik_bluetooth_flutter:
+    git:
+      url: https://github.com/tekartik/bluetooth.dart
+      path: bluetooth_flutter
+  tekartik_bluetooth_server:
+    git:
+      url: https://github.com/tekartik/bluetooth.dart
+      path: bluetooth_server
   tekartik_test_menu_flutter:
     git:
       url: https://github.com/tekartik/test_menu_flutter

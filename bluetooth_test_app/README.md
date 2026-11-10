@@ -1,16 +1,21 @@
 # bluetooth_test_app
 
-Simple bluetooth test app
+A Flutter app to try the [tekartik_bluetooth](../bluetooth/README.md)
+implementations on a real device: scan, pick a device, connect, list its
+services, read, write and subscribe to its characteristics, and (Android) act
+as a simple peripheral.
 
-## Getting Started
+| Platform | Manager used |
+|---|---|
+| Android | `bluetoothManagerFlutterBlue` (scan, GATT), `bluetoothAdminManagerFlutter` (permissions, enable), the `tekartik_bluetooth_flutter` peripheral |
+| iOS | `bluetoothManagerFlutterBlue`, `bluetoothAdminManagerFlutterBlue` |
+| Web | `bluetoothManagerWeb` (Chrome, a device chosen with Web.requestDevice) |
+| Linux | `bluetoothManagerBluez` (no `linux/` folder committed: `flutter create --platforms linux .` first) |
 
-This project is a starting point for a Flutter application.
+## Run it
 
-A few resources to get you started if this is your first Flutter project:
+`flutter run -d <device>` from this folder. On Android, grant the Bluetooth
+permissions when asked. The start screen has the scan, the simple peripheral
+(Android only) and a test menu (`lib/test_main.dart`).
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+`dart run tool/test_app_build_menu.dart` opens a build menu.

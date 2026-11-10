@@ -1,3 +1,4 @@
+import 'package:tekartik_bluetooth_flutter/bluetooth_manager.dart';
 import 'package:tekartik_bluetooth_server_app/src/prefs.dart';
 
 import 'import.dart';
@@ -20,6 +21,10 @@ class App {
     BluetoothServerNotifyCallback? notifyCallback,
   }) async {
     await _closeServer();
+    // The server forwards every remote call to these: the Bluetooth plugin
+    // of the phone.
+    serverBluetoothManager = bluetoothManagerFlutter;
+    serverBluetoothAdminManager = bluetoothAdminManagerFlutter;
     _bluetoothServer = await BluetoothServer.serve(
       port: port,
       notifyCallback: notifyCallback,

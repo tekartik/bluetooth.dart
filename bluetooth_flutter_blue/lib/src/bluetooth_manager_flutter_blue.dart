@@ -45,6 +45,10 @@ class _ScanCache {
   }
 }
 
+/// A [BluetoothManager] through flutter_blue_plus: scan, connections.
+/// `init()`, `getInfo()`, `close()`, `enable()`, `disable()` and
+/// `supportsEnable` throw `UnimplementedError`
+/// (see `bluetoothAdminManagerFlutterBlue`).
 class BluetoothManagerFlutterBlue implements BluetoothManager {
   final _scanCache = _ScanCache();
 
@@ -116,41 +120,62 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
     return BluetoothDeviceConnectionFlutterBlue(device);
   }
 
+  /// The native subscription of the current scan.
   StreamSubscription? scannerSubscription;
 
+  StreamController<ScanResult>? _scanController;
+
+  /// Scans until cancelled, [stop] or an error (given to the stream); a new
+  /// scan replaces the running one (its stream ends). [scanMode] is ignored.
   @override
   Stream<ScanResult> scan({
     ScanMode scanMode = ScanMode.lowLatency,
     List<Uuid128>? withServices,
   }) {
-    scannerSubscription?.cancel();
-    scannerSubscription = null;
-    StreamController<ScanResult>? ctlr;
     var nativeServices =
         withServices?.map((e) => guidFromUuid(e)).toList() ?? <Guid>[];
-    ctlr = StreamController<ScanResult>(
+    // The previous scan ends (flutter_blue_plus restarts the native one).
+    _scanController?.close();
+    scannerSubscription?.cancel();
+    scannerSubscription = null;
+    late StreamController<ScanResult> controller;
+    controller = StreamController<ScanResult>(
       onListen: () {
-        scannerSubscription ??=
-            native.FlutterBluePlusPrvExt.scanAndStreamResults(
-              withServices: nativeServices,
-            ).listen((nativeResult) {
-              var scanResult = ScanResultFlutter(nativeResult);
+        // Listened after a newer scan replaced it: done already.
+        if (_scanController != controller) {
+          return;
+        }
+        scannerSubscription = native
+            .flutterBluePlusScan(withServices: nativeServices)
+            .listen(
+              (nativeResult) {
+                var scanResult = ScanResultFlutter(nativeResult);
 
-              // cache
-              _scanCache.addDevice(
-                scanResult.device as BluetoothDeviceFlutterBlue,
-              );
+                // cache
+                _scanCache.addDevice(
+                  scanResult.device as BluetoothDeviceFlutterBlue,
+                );
 
-              ctlr!.add(scanResult);
-            });
+                controller.add(scanResult);
+              },
+              onError: controller.addError,
+              onDone: controller.close,
+            );
       },
-      onCancel: () {
-        native.FlutterBlue.stopScan();
-        scannerSubscription?.cancel();
-        ctlr?.close();
+      onCancel: () async {
+        // A scan replaced by a new one must not stop the new one (its native
+        // subscription was cancelled by the new scan).
+        if (_scanController == controller) {
+          _scanController = null;
+          var subscription = scannerSubscription;
+          scannerSubscription = null;
+          await subscription?.cancel();
+          await native.FlutterBlue.stopScan();
+        }
       },
     );
-    return ctlr.stream;
+    _scanController = controller;
+    return controller.stream;
   }
 
   @override
@@ -168,4 +193,5 @@ class BluetoothManagerFlutterBlue implements BluetoothManager {
   bool get supportsEnable => throw UnimplementedError();
 }
 
+/// The central manager through flutter_blue_plus (Android, iOS, macOS).
 final bluetoothManagerFlutterBlue = BluetoothManagerFlutterBlue();

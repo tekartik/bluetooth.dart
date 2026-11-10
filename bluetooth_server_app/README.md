@@ -1,16 +1,33 @@
 # bluetooth_server_app
 
-Bluetooth server app
+The phone side of [tekartik_bluetooth_server](../bluetooth_server/README.md):
+an Android app running a `BluetoothServer` (web socket JSON-RPC, port 8502 by
+default) that forwards the remote calls to the phone's Bluetooth plugin
+([tekartik_bluetooth_flutter](../bluetooth_flutter/README.md), Android only).
+A desktop Dart program or a test then uses the phone's Bluetooth radio.
 
-## Getting Started
+## Run it
 
-This project is a starting point for a Flutter application.
+1. `flutter run` on an Android phone. The `android/` folder predates
+   Flutter 3: regenerate it first (`flutter create --platforms android .`)
+   if the build fails.
+2. Press START (the port is kept, and the server starts again on the next
+   launch). The log shows the url.
+3. On the computer: `adb forward tcp:8502 tcp:8502`, then connect with
+   `initBluetoothClientService()` of `tekartik_bluetooth_server`.
 
-A few resources to get you started if this is your first Flutter project:
+`lib/test_main.dart` is a test menu starting and stopping the server.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## What works
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The request/response calls of the remote manager (`getInfo()`,
+`getConnectedDevices()`, `init()`, `stop()`, `enable()`, `disable()`). The
+protocol has no server to client message: a remote `scan()` starts the scan on
+the phone but gives no result, and `newConnection()` is not supported.
+
+No authentication and no TLS: keep it behind `adb forward`.
+
+## Test
+
+`flutter test`: a client reads the info of a faked Bluetooth plugin through
+the app's server.

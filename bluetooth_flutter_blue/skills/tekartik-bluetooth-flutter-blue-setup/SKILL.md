@@ -63,9 +63,9 @@ platform configuration is flutter_blue_plus' own.
     the same file clashes on `ScanResult`, `BluetoothDevice` and
     `BluetoothService`: use `show` (or `as native`) for the one native type you
     need, typically `BluetoothAdapterState`.
-* Call `platformInit()` from `package:tekartik_app_platform/app_platform.dart`
-  in `main()`: `bluetoothAdminManagerFlutterBlue.isAndroid` / `.isIOS` /
-  `.supportsEnable` read `platformContext` and answer `false` before that.
+* `bluetoothAdminManagerFlutterBlue.isAndroid` / `.isIOS` / `.supportsEnable`
+  read `platformContext` of `tekartik_app_platform` (no init needed, `false`
+  on the web).
 * **Only part of `BluetoothManager` is implemented.** These throw
   `UnimplementedError` on `bluetoothManagerFlutterBlue`: `init()`, `getInfo()`,
   `close()`, `enable()`, `disable()`, `supportsEnable`, and the deprecated
@@ -88,10 +88,10 @@ platform configuration is flutter_blue_plus' own.
 * Scanning: `bluetoothManagerFlutterBlue.scan(withServices: [uuid128, ...])`
   returns a `Stream<ScanResult>`; `withServices` is translated to
   flutter_blue_plus `Guid`s and applied natively, while `scanMode:` is ignored.
-  It throws `Exception('Another scan is already in progress')` when
-  `FlutterBluePlus.isScanningNow`, so only run one scan and cancel the
-  subscription (which calls `FlutterBluePlus.stopScan`) before starting
-  another. `manager.stop()` also stops the native scan.
+  Cancelling the subscription stops the native scan; `manager.stop()` stops
+  it too and ends the stream. A new `scan()` replaces the running one (the
+  previous stream ends, flutter_blue_plus restarts the native scan). A start
+  error (permission, adapter off) is an error of the stream.
 * **The manager keeps a scan cache and `newConnection(deviceId)` only resolves
   ids from it**, otherwise it throws
   `StateError('Scan first before connecting to ...')`. Scan (or call
@@ -104,10 +104,11 @@ platform configuration is flutter_blue_plus' own.
   than using this wrapper.
 * `getServices()` discovers on first call and caches;
   `discoverServices()` forces a rediscovery. Services whose uuid cannot be
-  parsed are skipped with a printed message. Always use the
-  `BleBluetoothCharacteristic` objects you got from `getServices()`: lookup is
-  by the `BleBluetoothService` instance and the characteristic uuid, and a
-  hand-built one throws `StateError('Characteristic ... not found')`.
+  parsed are skipped with a printed message. 16 and 32 bit uuids are given in
+  full (`0000180f-0000-1000-8000-00805f9b34fb` for the battery service):
+  compare with full `Uuid128`s. A characteristic is looked up by its service
+  uuid and its uuid among the discovered services: call `getServices()`
+  first, an unknown one throws `StateError('Characteristic ... not found')`.
 * Reads time out after 10 s. `readCharacteristic(bc)` gives a
   `BleBluetoothCharacteristicValue` (`value` is a `Uint8List`),
   `writeCharacteristic(bc.withValue(bytes))` writes,
@@ -117,8 +118,9 @@ platform configuration is flutter_blue_plus' own.
   `BluetoothDeviceConnectionState.connected` and `.disconnected` (iOS and
   Android no longer report connecting/disconnecting). `connection.close()` is a
   no-op; `disconnect()` is what releases the link.
-* Testing: `flutter test` here only covers the `Guid`/`Uuid128` conversion.
-  Unit test the app logic against `BluetoothManagerMock` from
+* Testing: the tests here fake the flutter_blue_plus platform
+  (`test/src/fake_flutter_blue_plus.dart`: `FlutterBluePlusPlatform.instance`
+  answering a scan). Unit test the app logic against `BluetoothManagerMock` from
   `package:tekartik_bluetooth/bluetooth_mock.dart` and inject the manager, so
   this package appears in one place only.
 
@@ -129,7 +131,7 @@ platform configuration is flutter_blue_plus' own.
 ```dart
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth/uuid.dart';
 import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
@@ -184,11 +186,9 @@ class _ScanScreenState extends State<ScanScreen> {
 ### Check the adapter before scanning
 
 ```dart
-import 'package:tekartik_app_platform/app_platform.dart';
 import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
 
 Future<bool> ensureBluetoothReady() async {
-  platformInit(); // needed for isAndroid/isIOS/supportsEnable
   var adminManager = bluetoothAdminManagerFlutterBlue;
   var info = await adminManager.getAdminInfo();
   if (info.hasBluetoothBle != true) {
@@ -248,7 +248,6 @@ Future<StreamSubscription<BleBluetoothCharacteristicValue>> openDevice(
 ### Reconnect to an already connected device
 
 ```dart
-import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
 
 /// getConnectedDevices() also populates the internal scan cache, so the
@@ -267,7 +266,7 @@ Future<BluetoothDeviceConnection?> reuseConnected(String address) async {
 ### Show the raw flutter_blue_plus adapter state
 
 ```dart
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart' show BluetoothAdapterState;
 import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
 
@@ -291,9 +290,8 @@ class AdapterStateText extends StatelessWidget {
   `bluetoothAdminManagerFlutterBlue` for the adapter state.
 * Calling `newConnection()` with an id that the current process never saw in a
   scan or in `getConnectedDevices()`: `StateError('Scan first ...')`.
-* Starting a second `scan()` while one is running:
-  `Exception('Another scan is already in progress')`.
+* Comparing a discovered 16 bit uuid with a short form: they come in full
+  (`0000180f-0000-1000-8000-00805f9b34fb`), never as `180f`.
 * Importing `package:flutter_blue_plus/flutter_blue_plus.dart` without `show`
   next to this package: `ScanResult` and `BluetoothDevice` clash.
-* Forgetting `platformInit()` and getting `isAndroid == false` everywhere.
 * Shipping a commercial app on the built-in `License.nonprofit` connect call.
