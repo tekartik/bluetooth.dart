@@ -1,68 +1,40 @@
-import 'package:tekartik_bluetooth_flutter_blue/bluetooth_flutter.dart';
+// A check against a real bluetooth server: a phone running
+// bluetooth_server_app (`adb forward tcp:8502 tcp:8502`), skipped when no
+// server answers. The url comes from the same defines as
+// initBluetoothClientService, e.g.
+// `flutter test --dart-define=TEKARTIK_BLUETOOTH_SERVER_PORT=8502`.
+// ignore_for_file: implementation_imports
+import 'package:flutter_test/flutter_test.dart';
 import 'package:tekartik_bluetooth_server/bluetooth.dart';
-import 'package:test/test.dart';
+import 'package:tekartik_bluetooth_server/bluetooth_client.dart';
+import 'package:tekartik_bluetooth_server_flutter/src/service_flutter.dart';
+
+String get _serverUrl {
+  const envUrl = String.fromEnvironment(bluetoothServerUrlEnvKey);
+  const envPort = String.fromEnvironment(bluetoothServerPortEnvKey);
+  return envUrl.isNotEmpty
+      ? envUrl
+      : getBluetoothServerUrl(port: int.tryParse(envPort));
+}
 
 void main() {
   group('example', () {
-    BluetoothManager? service;
+    BluetoothServerFlutterService? service;
     setUpAll(() async {
-      service = await initBluetoothClientService();
+      service = await BluetoothServerFlutterService.create(_serverUrl);
     });
 
-    tearDownAll(() async {});
+    tearDownAll(() async {
+      await service?.close();
+    });
 
-    test('simple', () async {
-      if (service != null) {
-        expect('service', 'TODO');
+    test('getInfo of the phone', () async {
+      if (service == null) {
+        markTestSkipped('no bluetooth server on $_serverUrl');
+        return;
       }
-      /*
-      // Always test if the factory is available before each test
-      if (databaseFactory != null) {
-        var path = join(await databaseFactory.getDatabasesPath(),
-            'sqlite_server_example.db');
-        await databaseFactory.deleteDatabase(path);
-
-        var database = await databaseFactory.openDatabase(path,
-            options: OpenDatabaseOptions(version: 1));
-        expect(await database.getVersion(), 1);
-
-        await database.execute(
-            "CREATE TABLE Test (id INTEGER PRIMARY KEY, name TEXT, value INTEGER, num REAL)");
-        print("table created");
-        int id = await database.rawInsert(
-            'INSERT INTO Test(name, value, num) VALUES("some name",1234,?)',
-            <dynamic>[456.789]);
-        print("inserted1: $id");
-        id = await database.rawInsert(
-            'INSERT INTO Test(name, value) VALUES(?, ?)',
-            <dynamic>["another name", 12345678]);
-        print("inserted2: $id");
-        int count = await database.rawUpdate(
-            'UPDATE Test SET name = ?, VALUE = ? WHERE name = ?',
-            <dynamic>["updated name", "9876", "some name"]);
-        print("updated: $count");
-        expect(count, 1);
-        List<Map> list = await database.rawQuery('SELECT * FROM Test');
-        List<Map> expectedList = [
-          <String, dynamic>{
-            "name": "updated name",
-            "id": 1,
-            "value": 9876,
-            "num": 456.789
-          },
-          <String, dynamic>{
-            "name": "another name",
-            "id": 2,
-            "value": 12345678,
-            "num": null
-          }
-        ];
-
-        print("list: ${json.encode(list)}");
-        //print("expected $expectedList");
-        expect(list, expectedList);
-        await database.close();
-      }*/
-    });
+      var info = await service!.getInfo();
+      expect(info.hasBluetooth, isNotNull);
+    }, timeout: const Timeout(Duration(seconds: 30)));
   });
 }

@@ -5,8 +5,9 @@ description: >-
   whose radio is on another device running the tekartik bluetooth server, with
   tekartik_bluetooth_server_flutter: BluetoothServerFlutterService.create(url,
   webSocketChannelClientFactory), its BluetoothManager API forwarded over web
-  socket JSON-RPC (getInfo, getConnectedDevices, newConnection, invokeMethod,
-  isAndroid, isIOS, close), the src/service_flutter.dart import, how it relates
+  socket JSON-RPC (getInfo, getConnectedDevices, invokeMethod, isAndroid,
+  isIOS, close; newConnection throws UnimplementedError, scan and connection
+  events never arrive), the src/service_flutter.dart import, how it relates
   to tekartik_bluetooth_server (BluetoothServer.serve, BluetoothServerContext,
   BluetoothServerService) and tekartik_bluetooth_flutter, adb forward, and
   in-process tests over webSocketChannelFactoryMemory.
@@ -18,11 +19,13 @@ One class, `BluetoothServerFlutterService`: a `BluetoothManager` that lives in
 a Flutter program but forwards every call over a web socket (JSON-RPC) to the
 `tekartik_bluetooth_server` running on a phone, which executes it on its own
 radio. It is the Flutter side twin of `BluetoothServerService` (the pure Dart
-client of `tekartik_bluetooth_server`): same connection, same forwarding, plus
-the `newConnection` implementation of `tekartik_bluetooth_flutter`, which
-needs Flutter. Despite the package description, nothing here serves: the
-server is `BluetoothServer.serve` from `tekartik_bluetooth_server`, hosted by
-the `bluetooth_server_app` of the repo.
+client of `tekartik_bluetooth_server`): same connection, same forwarding. It
+also mixes in `BluetoothFlutterManagerMixin` (Flutter only) for its
+`newConnection`, but the base mixin comes last and its throwing
+`newConnection` wins: today the two classes behave the same. Despite the
+package description, nothing here serves: the server is
+`BluetoothServer.serve` from `tekartik_bluetooth_server`, hosted by the
+`bluetooth_server_app` of the repo.
 
 ```dart
 import 'package:tekartik_bluetooth/bluetooth_manager.dart';
@@ -95,16 +98,22 @@ Future<BluetoothManager?> connectRemoteBluetooth(String url) =>
   `package:tekartik_bluetooth/src/exception.dart` (no public export): import
   it with `// ignore: implementation_imports` to catch it, or catch
   `Exception`.
-* `isAndroid` and `isIOS` are `null` with the current server: the handshake
-  only carries the server name and version. Do not branch on them, and note
-  that `supportsEnable` (`isAndroid`) is `null` too.
+* `isAndroid` and `isIOS` are the platform of the server, sent in its server
+  info: `isAndroid` true for an Android phone, both false for a desktop
+  server (an in-process test). A server app built before 2026-11 does not send
+  them: they are `null` then, and so is `supportsEnable` (`isAndroid`).
 * The transport is request/response only: nothing on the phone pushes to the
   client. Calls that return a value (`getInfo()`, `getConnectedDevices()`,
-  `init()`, `stop()`, `enable()`, `disable()`, `newConnection()`, raw
-  `invokeMethod`) work; what the phone plugin delivers by callback does not
-  arrive: `scan()` starts the scan on the phone but its stream stays silent
-  (cancel the subscription to stop the remote scan), `connection.connect()`
-  waits for a connected event and times out, `onConnectionState` never emits.
+  `init()`, `stop()`, `enable()`, `disable()`, raw `invokeMethod`) work; what
+  the phone plugin delivers by callback does not arrive: `scan()` starts the
+  scan on the phone but its stream stays silent (cancel the subscription to
+  stop the remote scan).
+* `newConnection()` throws `UnimplementedError` (the base mixin hides the
+  Flutter one). Putting `BluetoothFlutterManagerMixin` last would not help
+  alone: `newConnection` would reach the phone, but `connection.connect()`
+  waits for a connection state event the server cannot send and times out
+  after 30 s. Remote connections need server to client messages in the
+  server protocol first.
 * `await manager.close()` closes the web socket and is the only cleanup; a
   test or a tool that skips it stays alive. `close()` never fails when the
   socket is already gone.
@@ -194,7 +203,8 @@ void main() {
       webSocketChannelClientFactory: factory.client,
     );
     expect(manager, isNotNull);
-    expect(manager!.isAndroid, isNull); // not in the handshake
+    // The platform of the server: this test process, not a phone.
+    expect(manager!.isAndroid, isFalse);
     // serverBluetoothManager is not assigned: the remote error comes back.
     await expectLater(manager.getInfo(), throwsA(isA<BluetoothException>()));
     await manager.close();
@@ -213,7 +223,10 @@ void main() {
   no other library; keep the `// ignore: implementation_imports`.
 * Waiting for scan results or `connection.connect()` through the server: the
   protocol has no notifications, only request/response calls complete.
-* Branching on `manager.isAndroid`: it is `null`, the server does not send it.
+* Expecting `newConnection()` to work through the server: it throws
+  `UnimplementedError`.
+* Expecting `isAndroid` to be non null with an old server app (built before
+  2026-11): it does not send its platform.
 * Catching a `StateError` or `SocketException` from `create`: it returns
   `null` instead and prints.
 * Forgetting `close()`: the web socket keeps the test or tool alive.
