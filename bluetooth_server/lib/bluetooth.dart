@@ -1,3 +1,8 @@
+/// Client side: [initBluetoothClientService] returns a BluetoothManager
+/// forwarding its calls to a bluetooth server (a phone running the server
+/// app), [BluetoothServerContext] is the lower level connection.
+library;
+
 import 'package:tekartik_bluetooth/bluetooth_manager.dart';
 import 'package:tekartik_bluetooth_server/bluetooth_context.dart';
 import 'package:tekartik_bluetooth_server/src/bluetooth_server_client.dart';
@@ -17,6 +22,11 @@ int? parseBluetoothServerUrlPort(String url, {int? defaultValue}) {
 
 final bluetoothServerDefaultUrl = getBluetoothServerUrl();
 
+/// Connects to the bluetooth server at the url given by the
+/// TEKARTIK_BLUETOOTH_SERVER_URL or TEKARTIK_BLUETOOTH_SERVER_PORT defines
+/// (default `ws://localhost:8502`).
+///
+/// Returns null, after printing a hint, when no server answers.
 Future<BluetoothManager?> initBluetoothClientService() async {
   BluetoothManager? service;
   var envUrl = const String.fromEnvironment(bluetoothServerUrlEnvKey);

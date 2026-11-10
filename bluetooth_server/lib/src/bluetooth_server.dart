@@ -14,6 +14,8 @@ typedef BluetoothServerNotifyCallback =
     void Function(bool response, String method, dynamic params);
 
 /// Web socket server
+/// Web socket JSON-RPC server forwarding the remote calls to
+/// [serverBluetoothManager].
 class BluetoothServer {
   BluetoothServer._(this._webSocketChannelServer, this._notifyCallback) {
     _webSocketChannelServer.stream.listen((WebSocketChannel<String> channel) {
@@ -62,6 +64,9 @@ class BluetoothServerChannel {
       var result = <String, dynamic>{
         keyName: serverInfoName,
         keyVersion: serverInfoVersion.toString(),
+        // Platform of the server (read by the client serverInfo)
+        keyIsAndroid: bluetoothLocalContext.isAndroid,
+        keyIsIOS: bluetoothLocalContext.isIOS,
       };
       if (_notifyCallback != null) {
         _notifyCallback!(true, methodGetServerInfo, result);

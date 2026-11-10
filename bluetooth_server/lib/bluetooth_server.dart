@@ -1,3 +1,7 @@
+/// Server side: [BluetoothServer.serve] exposes [serverBluetoothManager]
+/// (to set first) over a web socket.
+library;
+
 import 'package:tekartik_bluetooth/bluetooth.dart';
 
 export 'package:tekartik_bluetooth_server/src/bluetooth_server.dart'

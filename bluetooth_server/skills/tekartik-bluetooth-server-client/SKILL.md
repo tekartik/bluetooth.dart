@@ -8,8 +8,9 @@ description: >-
   bluetoothServerContext, getBluetoothServerUrl,
   bluetoothServerDefaultPort, parseBluetoothServerUrlPort, the
   TEKARTIK_BLUETOOTH_SERVER_URL / TEKARTIK_BLUETOOTH_SERVER_PORT defines, the
-  bluetooth.dart and bluetooth_client.dart imports, adb forward, and getting a
-  remote BluetoothManager for scan/newConnection.
+  bluetooth.dart and bluetooth_client.dart imports, adb forward, and what a
+  remote BluetoothManager can do (request/response calls; no scan results nor
+  device connections).
 ---
 
 # tekartik_bluetooth_server: the client side
@@ -71,14 +72,15 @@ skill.
   until you forward it, once per device:
   `adb forward tcp:8502 tcp:8502` (use the port the app prints). On iOS there
   is no equivalent, use the LAN address of the phone with an explicit url.
-* The returned manager is a real `BluetoothManager`: `scan()`,
-  `getConnectedDevices()`, `newConnection()`, `getInfo()`, `init()`, `stop()`
-  and the whole `BluetoothDeviceConnection` API work exactly as on the phone,
-  because every call is forwarded to the phone's manager. Errors raised there
-  come back as `BluetoothException` (from
+* The returned manager forwards each call to the phone's manager and returns
+  its answer: `getInfo()`, `getConnectedDevices()`, `init()`, `stop()`,
+  `enable()`, `disable()` work. What needs the phone to call back does not:
+  the protocol has no server to client message, so `scan()` starts the scan
+  on the phone but its stream never emits, and `newConnection()` throws
+  `UnimplementedError` (no `BluetoothDeviceConnection` through the server).
+  Errors raised on the phone come back as `BluetoothException` (from
   `package:tekartik_bluetooth/bluetooth.dart`'s implementation) carrying the
-  remote message. Latency is a web socket round trip: keep the scan filters
-  tight.
+  remote message. Latency is a web socket round trip.
 * `await manager.close()` closes the web socket. Always do it in `tearDownAll`
   or a `finally`, otherwise the VM stays alive.
 * `BluetoothServerContext` is the lower level: `await BluetoothServerContext.connect(url)`
@@ -106,7 +108,6 @@ skill.
 ### Integration test skipped when no phone is connected
 
 ```dart
-import 'package:tekartik_bluetooth/bluetooth_device.dart';
 import 'package:tekartik_bluetooth_server/bluetooth.dart';
 import 'package:test/test.dart';
 
@@ -120,14 +121,9 @@ Future<void> main() async {
   });
 
   group('remote bluetooth', () {
-    test('scan', () async {
-      var devices = <BluetoothDeviceId, BluetoothDevice>{};
-      var subscription = manager!.scan().listen((result) {
-        devices[result.device.id] = result.device;
-      });
-      await Future<void>.delayed(const Duration(seconds: 5));
-      await subscription.cancel();
-      expect(devices, isNotEmpty);
+    test('info', () async {
+      var info = await manager!.getInfo();
+      expect(info.hasBluetoothBle, isNotNull);
     });
   }, skip: manager == null ? 'no bluetooth server' : null);
 }
@@ -216,3 +212,5 @@ Future<void> disposeRemoteBluetooth() => bluetoothServerContext.close();
 * Never calling `close()`: the web socket keeps the VM alive.
 * Pointing the client at an unrelated web socket server: the
   `bluetoothGetServerInfo` handshake throws a `StateError`.
+* Waiting for scan results or calling `newConnection()` on the remote
+  manager: not supported through the server (see above).
